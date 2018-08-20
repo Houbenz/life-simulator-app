@@ -1,0 +1,20 @@
+[
+
+  {
+    "name":"highschool degree","price":100
+  }
+  ,
+
+  {
+    "name":"driving licence","price":1000
+  }
+  ,
+  {
+    "name":"teaching degree","price":1500
+  }
+  ,
+  {
+    "name":"programming licence","price":2500
+  }
+
+]

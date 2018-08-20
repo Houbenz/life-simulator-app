@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.ArrayList;
+
 /**
  * Created by Houbenz on 30/07/2018.
  */
@@ -12,6 +14,8 @@ public class Player {
     private int workMinutes;
     private Level level;
 
+    private ArrayList<String> acquiredDegress;
+
 
 
     public Player(){
@@ -19,6 +23,7 @@ public class Player {
         work=new Work();
         work.setName("none");
         level=new Level(0);
+        acquiredDegress=new ArrayList<>();
     }
 
     public Player(String name, int income, int balance, Work work) {
@@ -26,6 +31,7 @@ public class Player {
         this.balance = balance;
         this.work = work;
         workMinutes=getWork().getTimeOfWork()*60;
+        acquiredDegress=new ArrayList<>();
     }
 
     public String getName() {
@@ -63,6 +69,14 @@ public class Player {
     public Level getLevel(){return level;}
 
     public void setLevel(Level level){this.level=level;}
+
+    public ArrayList<String> getAcquiredDegress() {
+        return acquiredDegress;
+    }
+
+    public void setAcquiredDegress(ArrayList<String> acquiredDegress) {
+        this.acquiredDegress = acquiredDegress;
+    }
 
     public void upgradeLevel(){
 

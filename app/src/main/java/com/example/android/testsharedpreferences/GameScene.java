@@ -26,12 +26,16 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 
+import java.util.ArrayList;
+
 import beans.Food;
 import beans.Fourniture;
 import beans.House;
+import beans.Learn;
 import beans.Level;
 import beans.Medicine;
 import beans.Player;
+import beans.Sleep;
 import beans.Store;
 import beans.Work;
 import fragments.BankFragment;
@@ -40,6 +44,7 @@ import fragments.FoodFragment;
 import fragments.FournitureFragment;
 import fragments.HouseFragment;
 import fragments.IntroFragment;
+import fragments.LearnFragment;
 import fragments.PharmacyFragment;
 import fragments.SleepFragment;
 import fragments.StoreFragment;
@@ -50,6 +55,7 @@ public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnBuyClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked,IntroFragment.OnStartWork
+    , LearnFragment.OnLearnClick
 {
 
 
@@ -326,6 +332,17 @@ public class GameScene extends AppCompatActivity
         });
 
         study=findViewById(R.id.study);
+        study.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle =new Bundle();
+                bundle.putStringArrayList("arr",player.getAcquiredDegress());
+                LearnFragment learnFragment =new LearnFragment() ;
+                learnFragment.setArguments(bundle);
+                fragmentInsertion(learnFragment);
+            }
+        });
 
         playerN = (TextView)findViewById(R.id.playerN);
         playerN.setText(player.getName());
@@ -772,6 +789,21 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void startDecHour() {
+    }
+
+    @Override
+    public void deliverLearn(Learn learn) {
+        float newBalance =player.getBalance()-learn.getPrice();
+
+        if(newBalance>=0){
+            player.setBalance(newBalance);
+            balance.setText(player.getBalance()+"$");
+            Toast.makeText(getApplicationContext(),"purchase of "+learn.getName()+" done succesfully",Toast.LENGTH_SHORT).show();
+            player.getAcquiredDegress().add(learn.getName());
+            fragmentManager.popBackStack();
+        }
+        else
+            Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+learn.getName(),Toast.LENGTH_SHORT).show();
 
     }
 
@@ -812,6 +844,14 @@ public class GameScene extends AppCompatActivity
         editor.putInt("level",player.getLevel().getLevel());
         editor.putInt("maxProgress",player.getLevel().getMaxProgress());
         editor.putInt("progressLevel",player.getLevel().getProgressLevel());
+
+        //put player degress
+        for(int i=0;i< player.getAcquiredDegress().size();i++){
+
+            editor.putString("degree"+i,player.getAcquiredDegress().get(i));
+        }
+        editor.putInt("degreeSize",player.getAcquiredDegress().size());
+
         //save time
         editor.putInt("day", day);
         editor.putInt("hour", hour);
@@ -843,6 +883,21 @@ public class GameScene extends AppCompatActivity
         player.getWork().setName(sharedPreferences.getString("work","none"));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
+
+        //load player degress
+        int degreeSize =sharedPreferences.getInt("degreeSize",0);
+
+        ArrayList<String > degrees = new ArrayList<>();
+        for (int i=0 ; i< degreeSize;i++){
+
+            String degree =sharedPreferences.getString("degree"+i,null);
+
+            degrees.add(degree);
+
+        }
+
+        player.setAcquiredDegress(degrees);
+
 
 
 
