@@ -168,6 +168,7 @@ public class MainMenu extends AppCompatActivity {
         slotDate2.setText(date2);
         slotDate3.setText(date3);
 
+        //
         String imagePath1=sharedPreferences1.getString("imagePath","android.resource://com.example.android." +
                 "testsharedpreferences/drawable/ic_empty");
         String imagePath2=sharedPreferences2.getString("imagePath","android.resource://com.example.android." +
