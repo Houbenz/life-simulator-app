@@ -1,0 +1,46 @@
+[
+  {
+    "name":"worker", "timeofWork":8, "pay":15,"leveltoWork":0
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_worker"
+
+  }
+,
+  {
+    "name":"Fire fighter", "timeofWork":8, "pay":20, "leveltoWork":2
+    ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_firefighter"
+
+  }
+,
+  {
+    "name":"delivery man", "timeofWork":8, "pay":25, "leveltoWork":3
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_deliveryman"
+
+  }
+,
+  {
+    "name":"Waiter", "timeofWork":7, "pay":30,"leveltoWork":4
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_waiter"
+
+  }
+,
+  {
+    "name":"Highschool teacher", "timeofWork":6, "pay":35,"leveltoWork":10
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_teacher"
+
+  }
+,
+
+  {
+    "name":"Professor", "timeofWork":6, "pay":125,"leveltoWork":20
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_professor"
+
+  }
+,
+  {
+    "name":"Pilot", "timeofWork":12, "pay":250,"leveltoWork":25
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_pilot"
+
+  }
+
+
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "name":"grass","price":0, "benefit":1
+  }
+  ,
+  {
+    "name":"Mediocre pills","price":25, "benefit":10
+  }
+  ,
+  {
+    "name":"High quality pills","price":50, "benefit":30
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "name":"street","price":0,"bonusE":0,"bonusH":0
+  }
+  ,
+  {
+    "name":"one room ap","price":100,"bonusE":0,"bonusH":0
+  }
+  ,
+  {
+    "name":"apartement","price":5000,"bonusE":0,"bonusH":0
+  }
+  ,
+  {
+    "name":"Villa","price":100000,"bonusE":0,"bonusH":0
+  }
+  ,
+  {
+    "name":"mansion","price":500000,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Castle","price":5000000,"bonusE":0,"bonusH":0
+  }
+]

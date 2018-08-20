@@ -1,0 +1,17 @@
+[
+  {
+    "name":"Small Store","price":10000,"income":100
+  }
+  ,
+  {
+    "name":"Medium Store","price":50000,"income":500
+  }
+  ,
+  {
+    "name":"Big Store","price":150000,"income":1000
+  }
+  ,
+  {
+    "name":"Super Market","price":5000000,"income":100000
+  }
+]
