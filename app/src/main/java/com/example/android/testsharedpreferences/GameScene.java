@@ -8,17 +8,13 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -38,6 +34,7 @@ import beans.Player;
 import beans.Sleep;
 import beans.Store;
 import beans.Work;
+import conf.Params;
 import fragments.BankFragment;
 import fragments.BuyFragment;
 import fragments.FoodFragment;
@@ -96,7 +93,6 @@ public class GameScene extends AppCompatActivity
     private Button  startWorking;
 
 
-    private TextView intro;
 
     private  int minute ;
     private  int hour ;
@@ -105,11 +101,7 @@ public class GameScene extends AppCompatActivity
 
     private int sleepTime;
 
-    private final static int TIME_SPEED_NORMAL =500;
-    private final static int TIME_SPEED_FAST =250;
-    private final static int TIME_SPEED_ULTRA_FAST =125;
-    private final static int TIME_SPEED_SUPER_FAST =75;
-    private int speed = TIME_SPEED_NORMAL;
+    private int speed = Params.TIME_SPEED_NORMAL;
 
     private SeekBar speedSeekBar;
     private TextView speedName;
@@ -137,12 +129,7 @@ public class GameScene extends AppCompatActivity
     private boolean ignore=true;
 
 
-    private static final  int XP_GAIN=25;
 
-    private static final  int ENERGY_LOSS=8;
-
-    private static final int ENERGY_GAIN_PER_HOUR=8;
-    private static final int HUNGER_LOSS_PER_HOUR=4;
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -212,13 +199,31 @@ public class GameScene extends AppCompatActivity
                                 if (minute == 60) {
                                     minute = 0;
                                     hour++;
-                                    hungerBar.setProgress(hungerBar.getProgress()-HUNGER_LOSS_PER_HOUR);
+                                    hungerBar.setProgress(hungerBar.getProgress()-Params.HUNGER_LOSS_PER_HOUR);
                                     hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
-                                    if(hungerBar.getProgress()==0){
-                                        healthbar.setProgress(healthbar.getProgress() -HUNGER_LOSS_PER_HOUR);
+                                    ///
+
+                                    if(hungerBar.getProgress()==0 && energyBar.getProgress()==0){
+
+                                        healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                         healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+
+                                    }else {
+                                        if(hungerBar.getProgress()==0 && energyBar.getProgress()>0){
+
+                                            healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR );
+                                            healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                        }else{
+                                            if(hungerBar.getProgress()>0 && energyBar.getProgress()==0){
+                                                healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
+                                                healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                            }
+                                        }
                                     }
+
+
+
 
                                 }
                                 if (hour >= 24) {
@@ -391,19 +396,19 @@ public class GameScene extends AppCompatActivity
 
                 if(progress==0){
                     speedName.setText(getString(R.string.normalSpeed));
-                    speed=TIME_SPEED_NORMAL;
+                    speed=Params.TIME_SPEED_NORMAL;
                 };
                 if(progress==1){
                     speedName.setText(getString(R.string.fastSpeed));
-                    speed=TIME_SPEED_FAST;
+                    speed=Params.TIME_SPEED_FAST;
                 };
                 if(progress==2){
                     speedName.setText(getString(R.string.ultraSpeed));
-                    speed=TIME_SPEED_ULTRA_FAST;
+                    speed=Params.TIME_SPEED_ULTRA_FAST;
                 };
                 if(progress==3){
                     speedName.setText(getString(R.string.superSpeed));
-                    speed=TIME_SPEED_SUPER_FAST;
+                    speed=Params.TIME_SPEED_SUPER_FAST;
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -477,13 +482,12 @@ public class GameScene extends AppCompatActivity
 
 
                                     //reduce player energy
-                                    energyBar.setProgress(energyBar.getProgress()-ENERGY_LOSS);
+                                    energyBar.setProgress(energyBar.getProgress()-Params.ENERGY_LOSS);
                                     energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
 
                                     //increment player progress for a level
-                                    player.getLevel().setProgressLevel(player.getLevel().getProgressLevel()+XP_GAIN);
+                                    player.getLevel().setProgressLevel(player.getLevel().getProgressLevel()+Params.XP_GAIN);
                                     levelBar.setProgress(player.getLevel().getProgressLevel());
-                                    //progressLevel.setText(player.getLevel().getProgressLevel()+"/"+player.getLevel().getMaxProgress()+getString(R.string.xp));
                                 }
 
                                 if(player.getLevel().getMaxProgress()<=player.getLevel().getProgressLevel()) {
@@ -512,7 +516,6 @@ public class GameScene extends AppCompatActivity
 
                                     levelBar.setMax(player.getLevel().getMaxProgress());
                                     levelBar.setProgress(player.getLevel().getProgressLevel()+actualProgress);
-                                    //progressLevel.setText(levelBar.getProgress()+"/"+player.getLevel().getMaxProgress()+getString(R.string.xp));
 
                                 }
                                 if(remainingMinutes==0){
@@ -524,7 +527,7 @@ public class GameScene extends AppCompatActivity
                                     startWorking.setText(getString(R.string.startwork));
                                     work.setEnabled(true);
                                     speedSeekBar.setProgress(0);
-                                    speed=TIME_SPEED_NORMAL;
+                                    speed=Params.TIME_SPEED_NORMAL;
 
                                     ignore=true;
                                 }
@@ -691,14 +694,14 @@ public class GameScene extends AppCompatActivity
         sleepTime=hoursNumber;
 
 
-        energyBar.setProgress(hoursNumber * ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
+        energyBar.setProgress(hoursNumber * Params.ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
         energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
 
-        hungerBar.setProgress(hungerBar.getProgress()-hoursNumber * (HUNGER_LOSS_PER_HOUR/3));
+        hungerBar.setProgress(hungerBar.getProgress()-hoursNumber * Params.HUNGER_LOSS_PER_HOUR_IN_SLEEP);
         hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
         if(hungerBar.getProgress()==0){
-            healthbar.setProgress(healthbar.getProgress() - hoursNumber * (HUNGER_LOSS_PER_HOUR/3));
+            healthbar.setProgress(healthbar.getProgress() - hoursNumber * Params.HEALTH_LOSS_PER_HOUR_IN_SLEEP);
             healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
         }
 
@@ -708,19 +711,32 @@ public class GameScene extends AppCompatActivity
             hour -= 24;
             day++;
         }
-
         switcher=findViewById(R.id.switcher);
 
+        switcher.animate().alpha(0f).setDuration(500).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                switcher.animate().setDuration(500).alpha(1.0f);
+                switcher.showNext();
+            }
+        });
 
-            switcher.showNext();
 
             CountDownTimer countDownTimer = new CountDownTimer(3000,1000) {
                 @Override public void onTick(long millisUntilFinished) {
+
+
                 }
                 @Override public void onFinish() {
 
+                switcher.animate().alpha(0f).setDuration(500).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        switcher.animate().alpha(1.0f).setDuration(500);
+                        switcher.showPrevious();
+                    }
+                });
 
-             switcher.showPrevious();
                 }
             };
         countDownTimer.start();
@@ -783,7 +799,6 @@ public class GameScene extends AppCompatActivity
             Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+store.getName(),Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void startDecHour() {
