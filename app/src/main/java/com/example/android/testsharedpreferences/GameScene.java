@@ -1,5 +1,6 @@
 package com.example.android.testsharedpreferences;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -25,13 +26,12 @@ import android.widget.ViewSwitcher;
 import java.util.ArrayList;
 
 import beans.Food;
-import beans.Fourniture;
+import beans.Furniture;
 import beans.House;
 import beans.Learn;
 import beans.Level;
 import beans.Medicine;
 import beans.Player;
-import beans.Sleep;
 import beans.Store;
 import beans.Work;
 import conf.Params;
@@ -627,7 +627,7 @@ public class GameScene extends AppCompatActivity
         fragmentInsertionSecond(foodFragment);
 
         }
-        if(nameOfFragment.equals("Fourniture")) {
+        if(nameOfFragment.equals("Furniture")) {
 
             FournitureFragment fournitureFragment =new FournitureFragment();
             fragmentInsertionSecond(fournitureFragment);
@@ -651,7 +651,7 @@ public class GameScene extends AppCompatActivity
     }
 
     @Override
-    public void deliverFourniture(final Fourniture fourniture) {
+    public void deliverFourniture(final Furniture fourniture) {
 
         AlertDialog.Builder builder =new AlertDialog.Builder(GameScene.this);
 
@@ -784,7 +784,6 @@ public class GameScene extends AppCompatActivity
         }else
             Toast.makeText(getApplicationContext(),"insuficient funds to buy "+house.getName(),Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void deliverStore(Store store) {
@@ -945,12 +944,12 @@ public class GameScene extends AppCompatActivity
 
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
-        fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
+
+
         fragmentTransaction.replace(R.id.placefragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
-
 
 
     }
@@ -958,7 +957,7 @@ public class GameScene extends AppCompatActivity
     public void fragmentInsertionSecond(Fragment fragment){
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
-        fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
         fragmentTransaction.replace(R.id.placefragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

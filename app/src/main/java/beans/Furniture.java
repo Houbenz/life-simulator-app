@@ -14,13 +14,13 @@ import java.util.ArrayList;
  * Created by Houbenz on 19/07/2018.
  */
 
-public class Fourniture extends Buy {
+public class Furniture extends Buy {
 
 
     private String fournitureType ;
 
 
-    public Fourniture(String name, float price,String fournitureType) {
+    public Furniture(String name, float price, String fournitureType) {
         super(name, price);
     this.fournitureType=fournitureType;
     }
@@ -36,14 +36,14 @@ public class Fourniture extends Buy {
 
 
 
-    public static ArrayList<Fourniture> initFourniture(Context context){
+    public static ArrayList<Furniture> initFourniture(Context context){
 
-        ArrayList<Fourniture> fournitures =new ArrayList<Fourniture>();
+        ArrayList<Furniture> fournitures =new ArrayList<Furniture>();
 
         String json ;
         try
         {
-            InputStream is = context.getAssets().open("fourniture.json");
+            InputStream is = context.getAssets().open("furniture.json");
 
             int size=is.available();
 
@@ -64,7 +64,7 @@ public class Fourniture extends Buy {
                 String name =jsonObject.getString("name");
                 int price =jsonObject.getInt("price");
                 String fournitureType=jsonObject.getString("fournitureType");
-                Fourniture fourniture =new Fourniture(name,price,fournitureType);
+                Furniture fourniture =new Furniture(name,price,fournitureType);
 
                 fournitures.add(fourniture);
             }

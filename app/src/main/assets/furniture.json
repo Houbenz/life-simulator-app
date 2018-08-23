@@ -27,7 +27,8 @@
   {
     "name":"Medium TV",
     "price":300,
-    "fournitureType":"Electronics"
+    "fournitureType":"Electronics",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv"
   }
   ,
   {

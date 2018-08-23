@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
+    android:layout_width="210dp"
     android:layout_height="100dp"
-    android:orientation="horizontal"
     android:layout_centerInParent="true"
+    android:orientation="horizontal"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/fournitureImg"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="72dp"
         android:layout_weight="1"
-        android:src="@drawable/delivery_man"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_medium_tv" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,11 +24,12 @@
             android:id="@+id/fournitureName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:fontFamily="casual"
             android:text="fournitureName"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView

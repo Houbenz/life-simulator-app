@@ -5,7 +5,7 @@
   }
 ,
   {
-    "name":"Fourniture","color":"#327ead"
+    "name":"Furniture","color":"#327ead"
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_desk"
   }
 ,

@@ -9,14 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
 
 import arrayAdapters.FournitureGridAdapter;
-import beans.Fourniture;
+import beans.Furniture;
 
 
 public class FournitureFragment extends Fragment {
@@ -41,9 +40,9 @@ public class FournitureFragment extends Fragment {
         View fournitureFragment= inflater.inflate(R.layout.fragment_fourniture, container, false);
 
 
-        ArrayList<Fourniture> fournitures =Fourniture.initFourniture(getContext());
+        ArrayList<Furniture> furnitures = Furniture.initFourniture(getContext());
 
-        FournitureGridAdapter fournitureGridAdapter =new FournitureGridAdapter(getContext(),fournitures);
+        FournitureGridAdapter fournitureGridAdapter =new FournitureGridAdapter(getContext(), furnitures);
 
         GridView gridFourniture =fournitureFragment.findViewById(R.id.gridFourniture);
 
@@ -53,7 +52,7 @@ public class FournitureFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Fourniture fourniture =(Fourniture)parent.getItemAtPosition(position);
+                Furniture fourniture =(Furniture)parent.getItemAtPosition(position);
 
                 monFournitureClicked.deliverFourniture(fourniture);
 
@@ -81,7 +80,7 @@ public class FournitureFragment extends Fragment {
     public interface OnFournitureClicked{
 
 
-        public void deliverFourniture(Fourniture fourniture);
+        public void deliverFourniture(Furniture fourniture);
     }
 
 }
