@@ -21,18 +21,19 @@ public class Work {
     private float pay ;
     private int leveltoWork;
     private String imagePath;
-    private static final Type WORK_TYPE = new TypeToken<List<Work>>(){}.getType();
+    private String reqDegree;
 
     public Work (){
 
     }
 
-    public Work(String name, float pay, int leveltoWork, int timeOfWork,String imagePath) {
+    public Work(String name, float pay, int leveltoWork, int timeOfWork,String reqDegree,String imagePath) {
 
         this.name = name;
         this.timeOfWork = timeOfWork;
         this.pay = pay;
         this.leveltoWork = leveltoWork;
+        this.reqDegree=reqDegree;
         this.imagePath=imagePath;
 
     }
@@ -77,6 +78,13 @@ public class Work {
         this.imagePath = imagePath;
     }
 
+    public String getReqDegree() {
+        return reqDegree;
+    }
+
+    public void setReqDegree(String reqDegree) {
+        this.reqDegree = reqDegree;
+    }
 
     public static ArrayList<Work> workInit(Context context){
 
@@ -108,8 +116,9 @@ public class Work {
                 int leveltoWork = jsonObject.getInt("leveltoWork");
                 int timeOfWork =jsonObject.getInt("timeofWork");
                 String imagePath = jsonObject.getString("uri");
+                String reqDegree = jsonObject.getString("degree");
 
-                Work work =new Work(name,pay,leveltoWork,timeOfWork,imagePath);
+                Work work =new Work(name,pay,leveltoWork,timeOfWork,reqDegree,imagePath);
                 works.add(work);
 
             }

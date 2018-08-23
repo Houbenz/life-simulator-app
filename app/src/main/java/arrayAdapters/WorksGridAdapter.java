@@ -25,9 +25,11 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
 
     private int level ;
-    public WorksGridAdapter(@NonNull Context context, ArrayList<Work> works, int level){
+    private  ArrayList<String > acquiredDegrees;
+    public WorksGridAdapter(@NonNull Context context, ArrayList<Work> works, int level,ArrayList<String > acquiredDegrees){
         super(context, R.layout.work_res,works);
         this.level=level;
+        this.acquiredDegrees=acquiredDegrees;
     }
 
     @NonNull
@@ -46,26 +48,56 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
         TextView workPay=workView.findViewById(R.id.workpay);
         TextView workTime=workView.findViewById(R.id.workTime);
         TextView workLevel =workView.findViewById(R.id.workLevel);
+        TextView reqDegree =workView.findViewById(R.id.reqDegree);
         ImageView imageView = (ImageView)workView.findViewById(R.id.imageView);
 
         workName.setText(work.getName());
         workPay.setText("pay : "+work.getPay()+"$");
         workTime.setText("work time :"+work.getTimeOfWork()+"hrs");
         workLevel.setText("Required Level : "+work.getLeveltoWork());
+        reqDegree.setText("Required : "+work.getReqDegree());
 
         Uri imageURI =Uri.parse(work.getImagePath());
 
         imageView.setImageURI(imageURI);
 
-        if(work.getLeveltoWork()>level) {
-            workLevel.setTextColor(getContext().getResources().getColor(R.color.red));
-            workView.setClickable(true);
-        }
-        else {
-            workLevel.setTextColor(getContext().getResources().getColor(R.color.green));
-            workView.setClickable(false);
+
+        boolean in =false ;
+        int i=0;
+
+        while (!in && i<acquiredDegrees.size()){
+
+            if(acquiredDegrees.get(i).equals(work.getReqDegree()))
+                in=true;
+            Log.i("LOKIA",acquiredDegrees.get(i));
+            i++;
         }
 
+
+        if(work.getLeveltoWork()>level && !in){
+            reqDegree.setTextColor(getContext().getResources().getColor(R.color.red));
+            workLevel.setTextColor(getContext().getResources().getColor(R.color.red));
+            workView.setClickable(true);
+
+        }else{
+            if(work.getLeveltoWork()>level && in){
+                reqDegree.setTextColor(getContext().getResources().getColor(R.color.green));
+                workLevel.setTextColor(getContext().getResources().getColor(R.color.red));
+                workView.setClickable(true);
+            }else{
+                if(work.getLeveltoWork()<=level && !in){
+
+                    reqDegree.setTextColor(getContext().getResources().getColor(R.color.red));
+                    workLevel.setTextColor(getContext().getResources().getColor(R.color.green));
+                    workView.setClickable(true);
+                }else {
+
+                    reqDegree.setTextColor(getContext().getResources().getColor(R.color.green));
+                    workLevel.setTextColor(getContext().getResources().getColor(R.color.green));
+                    workView.setClickable(false);
+                }
+            }
+        }
 
             return workView;
 

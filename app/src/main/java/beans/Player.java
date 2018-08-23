@@ -24,6 +24,7 @@ public class Player {
         work.setName("none");
         level=new Level(0);
         acquiredDegress=new ArrayList<>();
+        acquiredDegress.add("none");
     }
 
     public Player(String name, int income, int balance, Work work) {

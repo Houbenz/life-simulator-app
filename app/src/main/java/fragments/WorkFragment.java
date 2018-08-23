@@ -27,6 +27,7 @@ public class WorkFragment extends Fragment {
 
 
     onWorkSelected mWorkSelected;
+    private ArrayList<String> acquiredDegress;
 
     public WorkFragment() {
     }
@@ -46,8 +47,9 @@ public class WorkFragment extends Fragment {
         int playerLevel = getArguments().getInt("playerLevel");
 
 
-        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel);
-        Log.i("aze","the level : "+playerLevel);
+        acquiredDegress=getArguments().getStringArrayList("arr");
+
+        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel,acquiredDegress);
         GridView gridView =frameLayout.findViewById(R.id.workGrid);
 
         gridView.setAdapter(worksGridAdapter);

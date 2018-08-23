@@ -16,5 +16,11 @@
   {
     "name":"programming licence","price":2500
   }
-
+,
+  {
+    "name":"Piloting licence","price":5000
+  },
+  {
+    "name":"Phd","price":5000
+  }
 ]

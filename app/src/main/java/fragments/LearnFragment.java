@@ -38,10 +38,6 @@ public class LearnFragment extends Fragment {
 
         acquiredDegress=getArguments().getStringArrayList("arr");
 
-        for(int i=0;i<acquiredDegress.size();i++){
-            Log.i("LOKIA",acquiredDegress.get(i));
-        }
-
 
 
 

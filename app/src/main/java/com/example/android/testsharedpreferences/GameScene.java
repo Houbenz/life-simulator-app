@@ -121,13 +121,11 @@ public class GameScene extends AppCompatActivity
 
     private IntroFragment introFragment;
 
-    private ConstraintLayout constraintLayout;
     private  Player player = new Player();
     private Work choosenWork;
 
 
 
-    private LinearLayout linesButtons ;
     private ViewSwitcher switcher ;
 
     //for payment per hour
@@ -293,6 +291,7 @@ public class GameScene extends AppCompatActivity
                 workFragment=new WorkFragment();
                 Bundle bundle =new Bundle();
                 bundle.putInt("playerLevel",player.getLevel().getLevel());
+                bundle.putStringArrayList("arr",player.getAcquiredDegress());
 
                 workFragment.setArguments(bundle);
                 fragmentInsertion(workFragment);
@@ -359,7 +358,6 @@ public class GameScene extends AppCompatActivity
 
 
 
-        constraintLayout =findViewById(R.id.introLayout);
 
         //Init of progress bars
         initialiseProgressBars();
@@ -413,7 +411,6 @@ public class GameScene extends AppCompatActivity
         });
 
 
-        linesButtons=findViewById(R.id.buttonsLine);
 
 
 
@@ -603,6 +600,7 @@ public class GameScene extends AppCompatActivity
                 ,work.getPay()
                 ,work.getLeveltoWork()
                 ,work.getTimeOfWork()
+                ,work.getReqDegree()
                 ,work.getImagePath());
 
         player.setWork(choosenWork);
@@ -896,6 +894,7 @@ public class GameScene extends AppCompatActivity
 
         }
 
+        degrees.add("none");
         player.setAcquiredDegress(degrees);
 
 

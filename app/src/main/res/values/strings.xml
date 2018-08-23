@@ -67,4 +67,6 @@
     <string name="credit">Credits</string>
     <string name="intro">Press start working button to start work or choose a work from work section</string>
 
+    <string name="Required">Required :</string>
+
 </resources>
