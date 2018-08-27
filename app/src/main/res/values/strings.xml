@@ -68,5 +68,10 @@
     <string name="intro">Press start working button to start work or choose a work from work section</string>
 
     <string name="Required">Required :</string>
+    <string name="deposit">Deposit</string>
+    <string name="bankTitleW">How much do you want to withdraw ?</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="bankTitleD">How much do you want to deposit ?</string>
+    <string name="bankOpt">Choose your Option</string>
 
 </resources>

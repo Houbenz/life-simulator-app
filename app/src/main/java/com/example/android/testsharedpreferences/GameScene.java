@@ -25,6 +25,7 @@ import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 
+import beans.Bank;
 import beans.Food;
 import beans.Furniture;
 import beans.House;
@@ -37,6 +38,7 @@ import beans.Work;
 import conf.Params;
 import fragments.BankFragment;
 import fragments.BuyFragment;
+import fragments.DepositFragment;
 import fragments.FoodFragment;
 import fragments.FournitureFragment;
 import fragments.HouseFragment;
@@ -45,6 +47,7 @@ import fragments.LearnFragment;
 import fragments.PharmacyFragment;
 import fragments.SleepFragment;
 import fragments.StoreFragment;
+import fragments.WithdrawFragment;
 import fragments.WorkFragment;
 
 
@@ -52,7 +55,7 @@ public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnBuyClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked,IntroFragment.OnStartWork
-    , LearnFragment.OnLearnClick
+    , LearnFragment.OnLearnClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
 {
 
 
@@ -230,6 +233,8 @@ public class GameScene extends AppCompatActivity
                                     hour = 0;
                                     minute = 0;
                                     day++;
+
+                                    player.setBankDeposit(player.getBankDeposit()*1.01f);
                                 }
                                 time.setText(hourS + ":" + minuteS);
                                 dayView.setText(getString(R.string.day)+" "+ dayS);
@@ -309,6 +314,13 @@ public class GameScene extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 bankFragment=new BankFragment();
+                Bundle bundle =new Bundle();
+                bundle.putFloat("accountSum",player.getBankDeposit());
+                bundle.putFloat("balance",player.getBalance());
+
+
+                bankFragment.setArguments(bundle);
+
                 fragmentInsertion(bankFragment);
 
             }
@@ -710,13 +722,14 @@ public class GameScene extends AppCompatActivity
         if(hour>=24) {
             hour -= 24;
             day++;
+            player.setBankDeposit(player.getBankDeposit()*1.01f);
         }
         switcher=findViewById(R.id.switcher);
 
-        switcher.animate().alpha(0f).setDuration(500).withEndAction(new Runnable() {
+        switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
             @Override
             public void run() {
-                switcher.animate().setDuration(500).alpha(1.0f);
+                switcher.animate().setDuration(250).alpha(1.0f);
                 switcher.showNext();
             }
         });
@@ -729,10 +742,10 @@ public class GameScene extends AppCompatActivity
                 }
                 @Override public void onFinish() {
 
-                switcher.animate().alpha(0f).setDuration(500).withEndAction(new Runnable() {
+                switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        switcher.animate().alpha(1.0f).setDuration(500);
+                        switcher.animate().alpha(1.0f).setDuration(250);
                         switcher.showPrevious();
                     }
                 });
@@ -819,6 +832,63 @@ public class GameScene extends AppCompatActivity
 
     }
 
+    @Override
+    public void depositAndWithdraw(String operation) {
+
+
+
+
+        if(operation.equals("deposit")){
+
+
+            Bundle bundle =new Bundle();
+            bundle.putFloat("balance",(int)player.getBalance());
+            bundle.putFloat("balanceInBank",player.getBankDeposit());
+
+            DepositFragment depositFragment =new DepositFragment();
+            depositFragment.setArguments(bundle);
+
+            fragmentInsertion(depositFragment);
+
+        }else {
+            WithdrawFragment withdrawFragment =new WithdrawFragment();
+
+            Bundle bundle =new Bundle();
+            bundle.putFloat("balanceInBank",player.getBankDeposit());
+            withdrawFragment.setArguments(bundle);
+
+            fragmentInsertion(withdrawFragment);
+        }
+
+    }
+
+
+
+    @Override
+    public void deliverDeposit(int deposit){
+
+        int newBalance =(int)player.getBalance()-deposit;
+
+
+
+        player.setBankDeposit(player.getBankDeposit()+deposit);
+        player.setBalance(newBalance);
+        balance.setText(newBalance+"$");
+
+        fragmentInsertion(bankFragment);
+    }
+    @Override
+    public void deliverWithdraw(int withdraw) {
+
+        player.setBankDeposit(player.getBankDeposit()-withdraw);
+
+        player.setBalance(player.getBalance()+withdraw);
+
+        balance.setText(player.getBalance()+"$");
+
+        fragmentInsertion(bankFragment);
+    }
+
     public void showPurchaseDialog(String msg){
 
         AlertDialog.Builder builder=new AlertDialog.Builder(GameScene.this);
@@ -848,6 +918,7 @@ public class GameScene extends AppCompatActivity
         editor.putFloat("balance",player.getBalance());
         editor.putString("work",player.getWork().getName());
         editor.putFloat("pay",player.getWork().getPay());
+        editor.putFloat("bankDeposit",player.getBankDeposit());
 
         if(choosenWork!=null)
         editor.putString("imagePath",choosenWork.getImagePath());
@@ -895,6 +966,7 @@ public class GameScene extends AppCompatActivity
         player.getWork().setName(sharedPreferences.getString("work","none"));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
+        player.setBankDeposit(sharedPreferences.getFloat("bankDeposit",0));
 
         //load player degress
         int degreeSize =sharedPreferences.getInt("degreeSize",0);

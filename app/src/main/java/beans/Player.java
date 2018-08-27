@@ -13,6 +13,7 @@ public class Player {
     private Work work ;
     private int workMinutes;
     private Level level;
+    private float bankDeposit;
 
     private ArrayList<String> acquiredDegress;
 
@@ -27,12 +28,13 @@ public class Player {
         acquiredDegress.add("none");
     }
 
-    public Player(String name, int income, int balance, Work work) {
+    public Player(String name, int income, int balance, Work work,int bankDeposit) {
         this.name = name;
         this.balance = balance;
         this.work = work;
         workMinutes=getWork().getTimeOfWork()*60;
         acquiredDegress=new ArrayList<>();
+        this.bankDeposit=bankDeposit;
     }
 
     public String getName() {
@@ -78,6 +80,11 @@ public class Player {
     public void setAcquiredDegress(ArrayList<String> acquiredDegress) {
         this.acquiredDegress = acquiredDegress;
     }
+
+    /** return how much the player have in bank **/
+    public float getBankDeposit() {return bankDeposit;}
+
+    public void setBankDeposit(float bankDeposit) {this.bankDeposit = bankDeposit;}
 
     public void upgradeLevel(){
 

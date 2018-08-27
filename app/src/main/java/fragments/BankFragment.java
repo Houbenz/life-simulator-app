@@ -1,26 +1,37 @@
 package fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
 
-import arrayAdapters.BankListAdapter;
 import beans.Bank;
 
 
 public class BankFragment extends Fragment {
+
+
+
+
+    private Button depositOpt;
+    private Button withdrawOpt;
+
+    private OnDeposit monDeposit;
 
     public BankFragment() {
 
@@ -33,26 +44,51 @@ public class BankFragment extends Fragment {
 
         FrameLayout frameLayout =(FrameLayout) inflater.inflate(R.layout.fragment_bank, container, false);
 
-        ArrayList<Bank> banks=Bank.initBank(getContext());
 
-        BankListAdapter bankListAdapter= new BankListAdapter(getContext(),banks);
 
-        ListView bankView =(ListView)frameLayout.findViewById(R.id.bankView);
+        depositOpt=frameLayout.findViewById(R.id.depositOpt);
+        withdrawOpt=frameLayout.findViewById(R.id.withdrawOpt);
 
-        bankView.setAdapter(bankListAdapter);
-
-        bankView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        depositOpt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
 
-                Bank bank = (Bank) parent.getItemAtPosition(position);
+               monDeposit.depositAndWithdraw("deposit");
 
-                Toast.makeText(getContext(),""+bank.getLoan(),Toast.LENGTH_SHORT).show();
             }
         });
 
+        withdrawOpt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                monDeposit.depositAndWithdraw("withdraw");
+            }
+        });
+
+
         return frameLayout;
+
     }
 
+
+
+
+    public interface OnDeposit{
+
+        public void depositAndWithdraw(String operation);
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try{
+            monDeposit=(OnDeposit)context;
+
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString()+" must implement OnDeposit interface");
+        }
+    }
 }
