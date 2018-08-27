@@ -38,7 +38,7 @@ public class FournitureFragment extends Fragment {
 
 
         View fournitureFragment= inflater.inflate(R.layout.fragment_fourniture, container, false);
-
+/*
 
         ArrayList<Furniture> furnitures = Furniture.initFourniture(getContext());
 
@@ -60,7 +60,7 @@ public class FournitureFragment extends Fragment {
             }
         });
 
-
+*/
         return fournitureFragment;
     }
 

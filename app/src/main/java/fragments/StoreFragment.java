@@ -34,7 +34,7 @@ public class StoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment= inflater.inflate(R.layout.fragment_store, container, false);
-
+/*
         ArrayList<Store> stores =Store.initStore(getContext());
 
         ListView storeView =fragment.findViewById(R.id.storeView);
@@ -51,6 +51,8 @@ public class StoreFragment extends Fragment {
                 monStoreClicked.deliverStore(store);
             }
         });
+
+        */
 
         return fragment;
     }

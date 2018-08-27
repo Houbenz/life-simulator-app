@@ -36,7 +36,7 @@ public class HouseFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment= inflater.inflate(R.layout.fragment_house, container, false);
 
-
+/*
         ArrayList<House>houses=House.initHouse(getContext());
         ListView houseView =fragment.findViewById(R.id.houseView);
         HouseListAdapter houseListAdapter =new HouseListAdapter(getContext(),houses);
@@ -51,6 +51,7 @@ public class HouseFragment extends Fragment {
             }
         });
 
+*/
         return fragment;
 
     }
