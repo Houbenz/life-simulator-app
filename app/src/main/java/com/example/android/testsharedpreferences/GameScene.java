@@ -33,6 +33,7 @@ import beans.Learn;
 import beans.Level;
 import beans.Medicine;
 import beans.Player;
+import beans.Sleep;
 import beans.Store;
 import beans.Work;
 import conf.Params;
@@ -235,6 +236,17 @@ public class GameScene extends AppCompatActivity
                                     day++;
 
                                     player.setBankDeposit(player.getBankDeposit()*1.01f);
+
+                                    player.setBalance(player.getBalance()+player.getStoreIncome());
+                                    balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
+                                            mp.start();
+                                            balance.setText(player.getBalance() + "$");
+                                            balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
+                                        }
+                                    });
                                 }
                                 time.setText(hourS + ":" + minuteS);
                                 dayView.setText(getString(R.string.day)+" "+ dayS);
@@ -351,12 +363,8 @@ public class GameScene extends AppCompatActivity
         study.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                insertStudyFragment();
 
-                Bundle bundle =new Bundle();
-                bundle.putStringArrayList("arr",player.getAcquiredDegress());
-                LearnFragment learnFragment =new LearnFragment() ;
-                learnFragment.setArguments(bundle);
-                fragmentInsertion(learnFragment);
             }
         });
 
@@ -647,13 +655,11 @@ public class GameScene extends AppCompatActivity
         }
         if(nameOfFragment.equals("House")) {
 
-            HouseFragment houseFragment=new HouseFragment();
-            fragmentInsertionSecond(houseFragment);
+
         }
 
         if(nameOfFragment.equals("Store")){
-            StoreFragment storeFragment =new StoreFragment();
-            fragmentInsertionSecond(storeFragment);
+            insertStoreFragment();
         }
 
         if(nameOfFragment.equals("Pharmacy")){
@@ -723,6 +729,16 @@ public class GameScene extends AppCompatActivity
             hour -= 24;
             day++;
             player.setBankDeposit(player.getBankDeposit()*1.01f);
+            player.setBalance(player.getBalance()+player.getStoreIncome());
+            balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
+                    mp.start();
+                    balance.setText(player.getBalance() + "$");
+                    balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
+                }
+            });
         }
         switcher=findViewById(R.id.switcher);
 
@@ -803,10 +819,15 @@ public class GameScene extends AppCompatActivity
 
         float newBalance = player.getBalance()-store.getPrice();
 
+
         if(newBalance>=0){
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
+            player.getAcquiredStores().add(store.getName());
+            player.setStoreIncome(store.getIncome());
             Toast.makeText(getApplicationContext(),"congratulation you purchased"+store.getName()+" !",Toast.LENGTH_SHORT).show();
+
+            insertStoreFragment();
         }else {
             Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+store.getName(),Toast.LENGTH_SHORT).show();
         }
@@ -825,7 +846,7 @@ public class GameScene extends AppCompatActivity
             balance.setText(player.getBalance()+"$");
             Toast.makeText(getApplicationContext(),"purchase of "+learn.getName()+" done succesfully",Toast.LENGTH_SHORT).show();
             player.getAcquiredDegress().add(learn.getName());
-            fragmentManager.popBackStack();
+            insertStudyFragment();
         }
         else
             Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+learn.getName(),Toast.LENGTH_SHORT).show();
@@ -861,8 +882,6 @@ public class GameScene extends AppCompatActivity
         }
 
     }
-
-
 
     @Override
     public void deliverDeposit(int deposit){
@@ -919,6 +938,7 @@ public class GameScene extends AppCompatActivity
         editor.putString("work",player.getWork().getName());
         editor.putFloat("pay",player.getWork().getPay());
         editor.putFloat("bankDeposit",player.getBankDeposit());
+        editor.putFloat("storeIncome",player.getStoreIncome());
 
         if(choosenWork!=null)
         editor.putString("imagePath",choosenWork.getImagePath());
@@ -934,6 +954,25 @@ public class GameScene extends AppCompatActivity
             editor.putString("degree"+i,player.getAcquiredDegress().get(i));
         }
         editor.putInt("degreeSize",player.getAcquiredDegress().size());
+
+
+        //put player stores
+        for(int i=0;i<player.getAcquiredStores().size();i++){
+            editor.putString("store"+i,player.getAcquiredStores().get(i));
+
+        }
+        editor.putInt("storeSize",player.getAcquiredStores().size());
+
+
+        //put player houses
+        for (int i =0;i <player.getAcquiredHouses().size();i++){
+            editor.putString("house"+i,player.getAcquiredHouses().get(i));
+        }
+        editor.putInt("houseSize",player.getAcquiredHouses().size());
+
+
+
+
 
         //save time
         editor.putInt("day", day);
@@ -962,11 +1001,12 @@ public class GameScene extends AppCompatActivity
 
         //load player data
         player.setName(sharedPreferences.getString("PlayerName","none"));
-        player.setBalance(sharedPreferences.getFloat("balance",0));
+        player.setBalance(sharedPreferences.getFloat("balance",50000));
         player.getWork().setName(sharedPreferences.getString("work","none"));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
         player.setBankDeposit(sharedPreferences.getFloat("bankDeposit",0));
+        player.setStoreIncome(sharedPreferences.getFloat("storeIncome",0));
 
         //load player degress
         int degreeSize =sharedPreferences.getInt("degreeSize",0);
@@ -982,6 +1022,31 @@ public class GameScene extends AppCompatActivity
 
         degrees.add("none");
         player.setAcquiredDegress(degrees);
+
+
+        //load player stores
+        int storeSize=sharedPreferences.getInt("storeSize",0);
+
+        ArrayList<String> stores =new ArrayList<>();
+
+        for (int i =0 ; i<storeSize;i++){
+            String store =sharedPreferences.getString("store"+i,null);
+            stores.add(store);
+        }
+
+        player.setAcquiredStores(stores);
+
+
+        //load player houses
+        int houseSize=sharedPreferences.getInt("houseSize",0);
+        ArrayList<String> houses =new ArrayList<>();
+        for(int i=0;i<houseSize;i++){
+            String house = sharedPreferences.getString("house"+i,null);
+
+            houses.add(house);
+        }
+
+        player.setAcquiredHouses(houses);
 
 
 
@@ -1047,6 +1112,27 @@ public class GameScene extends AppCompatActivity
     }
 
 
+    public void insertStudyFragment() {
 
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("arr", player.getAcquiredDegress());
+        LearnFragment learnFragment = new LearnFragment();
+        learnFragment.setArguments(bundle);
+        fragmentInsertion(learnFragment);
+    }
+
+    public void insertStoreFragment() {
+        StoreFragment storeFragment = new StoreFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("stores", player.getAcquiredStores());
+        storeFragment.setArguments(bundle);
+        fragmentInsertionSecond(storeFragment);
+    }
+
+    public void insertHouseFragment(){
+        HouseFragment houseFragment=new HouseFragment();
+        fragmentInsertionSecond(houseFragment);
+    }
 
 }

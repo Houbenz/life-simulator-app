@@ -15,7 +15,16 @@ public class Player {
     private Level level;
     private float bankDeposit;
 
+
+    private float storeIncome;
+
+
+    private int houseHealthBenefit;
+    private int houseEnegryBenefit;
+
     private ArrayList<String> acquiredDegress;
+    private ArrayList<String> acquiredStores;
+    private ArrayList<String> acquiredHouses;
 
 
 
@@ -80,11 +89,52 @@ public class Player {
     public void setAcquiredDegress(ArrayList<String> acquiredDegress) {
         this.acquiredDegress = acquiredDegress;
     }
-
     /** return how much the player have in bank **/
     public float getBankDeposit() {return bankDeposit;}
 
     public void setBankDeposit(float bankDeposit) {this.bankDeposit = bankDeposit;}
+
+
+    public ArrayList<String> getAcquiredStores() {
+        return acquiredStores;
+    }
+
+    public void setAcquiredStores(ArrayList<String> acquiredStores) {
+        this.acquiredStores = acquiredStores;
+    }
+
+    public ArrayList<String> getAcquiredHouses() {
+        return acquiredHouses;
+    }
+
+    public void setAcquiredHouses(ArrayList<String> acquiredHouses) {
+        this.acquiredHouses = acquiredHouses;
+    }
+
+
+    public float getStoreIncome() {
+        return storeIncome;
+    }
+
+    public void setStoreIncome(float storeIncome) {
+        this.storeIncome = storeIncome;
+    }
+
+    public int getHouseHealthBenefit() {
+        return houseHealthBenefit;
+    }
+
+    public void setHouseHealthBenefit(int houseHealthBenefit) {
+        this.houseHealthBenefit = houseHealthBenefit;
+    }
+
+    public int getHouseEnegryBenefit() {
+        return houseEnegryBenefit;
+    }
+
+    public void setHouseEnegryBenefit(int houseEnegryBenefit) {
+        this.houseEnegryBenefit = houseEnegryBenefit;
+    }
 
     public void upgradeLevel(){
 

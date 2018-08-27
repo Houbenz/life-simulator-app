@@ -4,14 +4,14 @@
   }
   ,
   {
-    "name":"Medium Store","price":50000,"income":500
+    "name":"Medium Store","price":50000,"income":600
   }
   ,
   {
-    "name":"Big Store","price":150000,"income":1000
+    "name":"Big Store","price":150000,"income":1300
   }
   ,
   {
-    "name":"Super Market","price":5000000,"income":100000
+    "name":"Super Market","price":5000000,"income":170000
   }
 ]

@@ -56,6 +56,7 @@ public class LearnListAdapter extends ArrayAdapter<Learn> {
             if(acquiredDegrees.get(i).equals(learn.getName()))
                 in=true;
             i++;
+
         }
 
 
