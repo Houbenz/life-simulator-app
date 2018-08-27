@@ -24,6 +24,7 @@
 
     <Button
         android:id="@+id/newgame"
+        style="@style/MainMenuButtons"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -35,6 +36,7 @@
 
     <Button
         android:id="@+id/loadgame"
+        style="@style/MainMenuButtons"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -46,6 +48,7 @@
 
     <Button
         android:id="@+id/settings"
+        style="@style/MainMenuButtons"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -57,6 +60,7 @@
 
     <Button
         android:id="@+id/credits"
+        style="@style/MainMenuButtons"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

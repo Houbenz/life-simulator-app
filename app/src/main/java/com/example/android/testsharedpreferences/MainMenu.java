@@ -383,6 +383,8 @@ public class MainMenu extends AppCompatActivity {
 
         final TextInputLayout caracterName = putText.findViewById(R.id.nameInput);
 
+
+
         Button closeDialog =putText.findViewById(R.id.closeDialog);
 
         closeDialog.setOnClickListener(new View.OnClickListener() {
@@ -399,25 +401,31 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                editor.clear().apply();
 
-                editor.putString("PlayerName",caracterName.getEditText().getText().toString());
+                if(caracterName.getEditText().getText().toString().equals("")) {
+                    caracterName.setError("you must write at least 1 caracter");
+                }
+                else
+                {
+                    editor.clear().apply();
 
-                Calendar cal = Calendar.getInstance();
-                editor.putString("PlayerTime",cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)
-                +" at "+cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE)+":"+cal.get(Calendar.SECOND));
+                    editor.putString("PlayerName", caracterName.getEditText().getText().toString());
 
-                editor.commit();
+                    Calendar cal = Calendar.getInstance();
+                    editor.putString("PlayerTime", cal.get(Calendar.DATE) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR)
+                            + " at " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
 
-                putText.dismiss();
+                    editor.commit();
 
-                Intent intent = new Intent(MainMenu.this,GameScene.class);
+                    putText.dismiss();
 
-                intent.putExtra("slotNumber",slotNumber);
+                    Intent intent = new Intent(MainMenu.this, GameScene.class);
 
-                startActivity(intent);
+                    intent.putExtra("slotNumber", slotNumber);
 
+                    startActivity(intent);
 
+                }
 
             }
         });
