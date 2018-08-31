@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -379,9 +380,6 @@ public class GameScene extends AppCompatActivity
 
         income=findViewById(R.id.income);
         income.setText(player.getWork().getPay()+"$/"+getString(R.string.day));
-
-
-
 
 
         //Init of progress bars
@@ -824,7 +822,7 @@ public class GameScene extends AppCompatActivity
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
             player.getAcquiredStores().add(store.getName());
-            player.setStoreIncome(store.getIncome());
+            player.setStoreIncome(player.getStoreIncome()+store.getIncome());
             Toast.makeText(getApplicationContext(),"congratulation you purchased"+store.getName()+" !",Toast.LENGTH_SHORT).show();
 
             insertStoreFragment();
@@ -896,6 +894,7 @@ public class GameScene extends AppCompatActivity
 
         fragmentInsertion(bankFragment);
     }
+
     @Override
     public void deliverWithdraw(int withdraw) {
 
@@ -1001,7 +1000,7 @@ public class GameScene extends AppCompatActivity
 
         //load player data
         player.setName(sharedPreferences.getString("PlayerName","none"));
-        player.setBalance(sharedPreferences.getFloat("balance",50000));
+        player.setBalance(sharedPreferences.getFloat("balance",500000));
         player.getWork().setName(sharedPreferences.getString("work","none"));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
@@ -1082,6 +1081,7 @@ public class GameScene extends AppCompatActivity
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
         fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
+        //fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.move,R.animator.move_out);
 
 
         fragmentTransaction.replace(R.id.placefragment, fragment);
@@ -1092,9 +1092,11 @@ public class GameScene extends AppCompatActivity
     }
 
     public void fragmentInsertionSecond(Fragment fragment){
+
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
         fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
+
         fragmentTransaction.replace(R.id.placefragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -1110,7 +1112,6 @@ public class GameScene extends AppCompatActivity
         sharedPreferences.edit().clear().apply();
 
     }
-
 
     public void insertStudyFragment() {
 

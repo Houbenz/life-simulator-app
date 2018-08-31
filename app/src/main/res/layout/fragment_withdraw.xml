@@ -15,7 +15,7 @@
             android:id="@+id/withdrawTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="casual"
             android:text="@string/bankTitleW"
             android:textAlignment="center"
@@ -68,6 +68,20 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:fontFamily="casual"
+            android:text="Nb : interest is up tp 1.01 %"
+            android:textAlignment="viewEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </FrameLayout>

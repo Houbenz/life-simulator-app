@@ -1,5 +1,7 @@
 package com.example.android.testsharedpreferences;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,8 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,6 +39,13 @@ public class MainMenu extends AppCompatActivity {
     private SharedPreferences sharedPreferences2 ;
     private SharedPreferences sharedPreferences3 ;
 
+    private LinearLayout linearLayout;
+
+
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private ImageView imageView3;
+    private ImageView imageView4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +55,22 @@ public class MainMenu extends AppCompatActivity {
 
 
 
+
+
         newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
         settings = findViewById(R.id.settings);
+        credits=findViewById(R.id.credits);
+
+
+        imageView1=findViewById(R.id.imageView1);
+        imageView2=findViewById(R.id.imageView2);
+        imageView3=findViewById(R.id.imageView3);
+        imageView4=findViewById(R.id.imageView4);
+
+
+
+        linearLayout=(LinearLayout)findViewById(R.id.linearLayout);
 
 
         sharedPreferences1 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot1), Context.MODE_PRIVATE);
@@ -71,6 +96,15 @@ public class MainMenu extends AppCompatActivity {
 
 
 
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        animateButton();
     }
 
 
@@ -439,6 +473,56 @@ public class MainMenu extends AppCompatActivity {
         sharedPreferences1.edit().clear().apply();
         sharedPreferences2.edit().clear().apply();
         sharedPreferences3.edit().clear().apply();
+    }
+
+    public void animateButton(){
+
+
+
+
+        newGame.setY(-1000);
+        loadGame.setY(-1200);
+        settings.setY(-1400);
+        credits.setY(-1600);
+        animateView(newGame);
+        animateView(loadGame);
+        animateView(settings);
+
+
+        credits.animate().setDuration(4500).translationY(0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+
+                linearLayout.getLayoutParams().width= LinearLayout.LayoutParams.WRAP_CONTENT;
+
+            }
+        });
+
+
+        animateImages(imageView1,5000);
+        animateImages(imageView2,8000);
+        animateImages(imageView3,3000);
+        animateImages(imageView4,4000);
+    }
+
+
+    public void animateView(View view){
+        ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(view,view.TRANSLATION_Y,0f);
+        objectAnimator.setDuration(4500);
+        objectAnimator.start();
+
+
+
+
+    }
+
+
+    public void animateImages(ImageView imageView,int duration){
+        ObjectAnimator objectAnimator =ObjectAnimator.ofFloat(imageView, imageView.ALPHA,1f,0f);
+        objectAnimator.setDuration(duration);
+        objectAnimator.setRepeatCount(Animation.INFINITE);
+        objectAnimator.start();
+
     }
 
 
