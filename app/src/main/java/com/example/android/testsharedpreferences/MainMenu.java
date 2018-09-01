@@ -1,7 +1,6 @@
 package com.example.android.testsharedpreferences;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,24 +8,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import beans.Work;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -46,6 +42,8 @@ public class MainMenu extends AppCompatActivity {
     private ImageView imageView2;
     private ImageView imageView3;
     private ImageView imageView4;
+
+    private int firsttime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +103,75 @@ public class MainMenu extends AppCompatActivity {
         });
 
         animateButton();
+
+
+        firsttime  =4000;
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                while (!isDestroyed()){
+
+                    try {
+
+
+                        Thread.sleep(firsttime);
+                        firsttime=1500;
+                       runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               animateInThread(imageView3);
+                           }
+                       });
+
+                       Thread.sleep(1500);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                animateInThread(imageView4);
+                            }
+                        });
+
+                        Thread.sleep(2000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                animateInThread(imageView1);
+                            }
+                        });
+
+                        Thread.sleep(1500);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                animateInThread(imageView2);
+                            }
+                        });
+
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+        });
+
+        thread.start();
+
+
+    }
+
+
+    public void animateInThread(ImageView imageView){
+        int randomNumber = (int) ((imagesResources().length-0)* Math.random());
+
+        animateImagesAlphaToZero(imageView,4000);
+        imageView.setImageResource(imagesResources()[randomNumber]);
+        animateImageAlphaToOne(imageView,4000);
+
     }
 
 
@@ -480,50 +547,110 @@ public class MainMenu extends AppCompatActivity {
 
 
 
-        newGame.setY(-1000);
-        loadGame.setY(-1200);
-        settings.setY(-1400);
-        credits.setY(-1600);
-        animateView(newGame);
-        animateView(loadGame);
-        animateView(settings);
+
+        animateView(newGame,4500);
+        animateView(loadGame,5000);
+        animateView(settings,5500);
+        animateView(credits,6000);
 
 
-        credits.animate().setDuration(4500).translationY(0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-
-                linearLayout.getLayoutParams().width= LinearLayout.LayoutParams.WRAP_CONTENT;
-
-            }
-        });
 
 
-        animateImages(imageView1,5000);
-        animateImages(imageView2,8000);
-        animateImages(imageView3,3000);
-        animateImages(imageView4,4000);
+        animateTranslationImageX(imageView1,4500);
+        animateTranslationImageX(imageView2,5000);
+        animateTranslationImageX(imageView3,5500);
+        animateTranslationImageX(imageView4,6000);
+
+
+
+       // showRandomImage();
+
     }
 
 
-    public void animateView(View view){
-        ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(view,view.TRANSLATION_Y,0f);
-        objectAnimator.setDuration(4500);
+    public void animateView(View view, int duration){
+        ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(view,view.TRANSLATION_Y,-1000f,0f);
+        objectAnimator.setDuration(duration);
         objectAnimator.start();
-
-
-
-
     }
 
 
-    public void animateImages(ImageView imageView,int duration){
+    public void animateImagesAlphaToZero(ImageView imageView, int duration){
         ObjectAnimator objectAnimator =ObjectAnimator.ofFloat(imageView, imageView.ALPHA,1f,0f);
         objectAnimator.setDuration(duration);
-        objectAnimator.setRepeatCount(Animation.INFINITE);
         objectAnimator.start();
 
     }
 
+
+    public void animateTranslationImageX(ImageView imageView, int duration){
+        ObjectAnimator objectAnimator1 =ObjectAnimator.ofFloat(imageView, imageView.TRANSLATION_X,-1000f,0f);
+        objectAnimator1.setDuration(duration);
+        objectAnimator1.start();
+    }
+
+    public void animateImageAlphaToOne(ImageView view , int duration){
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,View.ALPHA,0f,1f);
+        objectAnimator.setDuration(duration);
+        objectAnimator.start();
+    }
+
+
+
+    public int[] imagesResources(){
+
+        int[] arrayImage =new int[10];
+        arrayImage[0]=R.drawable.ic_empty;
+        arrayImage[1]=R.drawable.ic_firefighter;
+        arrayImage[2]=R.drawable.ic_waiter;
+        arrayImage[3]=R.drawable.ic_deliveryman;
+        arrayImage[4]=R.drawable.ic_programmer;
+        arrayImage[5]=R.drawable.ic_teacher;
+        arrayImage[6]=R.drawable.ic_noodles;
+        arrayImage[7]=R.drawable.ic_professor;
+        arrayImage[8]=R.drawable.ic_food;
+        arrayImage[9]=R.drawable.ic_pilot;
+        return arrayImage;
+    }
+
+
+
+
+    public void showRandomImage(){
+        Handler handler =new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int randomNumber = (int) ((imagesResources().length-0)* Math.random());
+                int randomTime = (int)(Math.random() *(8000-2000));
+
+                    Log.i("LOKIA"," time : " +randomTime);
+
+                    animateImagesAlphaToZero(imageView1, randomTime);
+                    imageView1.setImageResource(imagesResources()[randomNumber]);
+                    animateImageAlphaToOne(imageView1, randomTime);
+
+                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
+                    animateImagesAlphaToZero(imageView2, randomTime);
+                    imageView2.setImageResource(imagesResources()[randomNumber]);
+                    animateImageAlphaToOne(imageView2, randomTime);
+
+                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
+                    animateImagesAlphaToZero(imageView3, randomTime);
+                    imageView3.setImageResource(imagesResources()[randomNumber]);
+                    animateImageAlphaToOne(imageView3, randomTime);
+
+                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
+                    animateImagesAlphaToZero(imageView4, randomTime);
+                    imageView4.setImageResource(imagesResources()[randomNumber]);
+                    animateImageAlphaToOne(imageView4, randomTime);
+
+                    showRandomImage();
+
+            }
+        },3000);
+
+    }
 
 }
