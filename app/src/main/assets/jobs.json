@@ -16,41 +16,41 @@
   {
     "name":"delivery man", "timeofWork":8, "pay":25, "leveltoWork":3
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_deliveryman"
-  ,"degree":"highschool degree"
+  ,"degree":"driving licence"
 
   }
 ,
   {
     "name":"Waiter", "timeofWork":7, "pay":30,"leveltoWork":4
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_waiter"
-  ,"degree":"highschool degree"
+  ,"degree":"waiter Licence"
 
   }
 ,
   {
-    "name":"Programmer", "timeofWork":7, "pay":40,"leveltoWork":5
-  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_programmer"
-  ,"degree":"programming licence"
-
-  }
-,
-  {
-    "name":"Highschool teacher", "timeofWork":6, "pay":35,"leveltoWork":10
+    "name":"Highschool teacher", "timeofWork":6, "pay":35,"leveltoWork":5
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_teacher"
   ,"degree":"teaching degree"
 
   }
 ,
+  {
+    "name":"Programmer", "timeofWork":7, "pay":40,"leveltoWork":7
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_programmer"
+  ,"degree":"programming licence"
+
+  }
+,
 
   {
-    "name":"Pilot", "timeofWork":12, "pay":250,"leveltoWork":25
+    "name":"Pilot", "timeofWork":12, "pay":250,"leveltoWork":9
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_pilot"
   ,"degree":"Piloting licence"
 
   }
 ,
   {
-    "name":"Professor", "timeofWork":6, "pay":125,"leveltoWork":20
+    "name":"Professor", "timeofWork":6, "pay":125,"leveltoWork":10
   ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_professor"
   ,"degree":"Phd"
 

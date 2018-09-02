@@ -1,10 +1,10 @@
 [
   {
-    "name":"grass","price":0, "benefit":1
+    "name":"grass","price":1, "benefit":1
   }
   ,
   {
-    "name":"Mediocre pills","price":25, "benefit":10
+    "name":"Mediocre pills","price":15, "benefit":10
   }
   ,
   {

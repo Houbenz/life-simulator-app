@@ -10,17 +10,22 @@
   }
   ,
   {
-    "name":"teaching degree","price":1500
+    "name":"waiter Licence","price":1500
   }
   ,
   {
-    "name":"programming licence","price":2500
+    "name":"teaching degree","price":3000
+  }
+  ,
+  {
+    "name":"programming licence","price":4000
   }
 ,
   {
     "name":"Piloting licence","price":5000
   },
   {
-    "name":"Phd","price":5000
+    "name":"Phd","price":10000
   }
+
 ]

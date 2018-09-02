@@ -38,9 +38,10 @@ public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
         TextView name =medicineView.findViewById(R.id.name);
         TextView price =medicineView.findViewById(R.id.price);
         TextView benefit =medicineView.findViewById(R.id.benefit);
+        TextView owned =medicineView.findViewById(R.id.owned);
 
         name.setText(medicine.getName());
-
+        owned.setText("");
         price.setText(medicine.getPrice()+"$");
         benefit.setText(medicine.getBenefit()+" to health");
 

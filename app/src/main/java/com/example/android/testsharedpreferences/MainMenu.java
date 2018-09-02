@@ -10,10 +10,12 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -45,6 +47,21 @@ public class MainMenu extends AppCompatActivity {
 
     private int firsttime;
 
+    private ConstraintLayout mainLayout;
+
+    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            //delayedHide();
+
+            hideSystemUI();
+            return false;
+        }
+    };
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +82,14 @@ public class MainMenu extends AppCompatActivity {
         imageView2=findViewById(R.id.imageView2);
         imageView3=findViewById(R.id.imageView3);
         imageView4=findViewById(R.id.imageView4);
+
+
+        mainLayout=(ConstraintLayout)findViewById(R.id.mainLayout);
+
+
+
+
+        mainLayout.setOnTouchListener(mOnTouchListener);
 
 
 

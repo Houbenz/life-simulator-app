@@ -1,6 +1,5 @@
 package com.example.android.testsharedpreferences;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -9,13 +8,14 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -26,7 +26,6 @@ import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 
-import beans.Bank;
 import beans.Food;
 import beans.Furniture;
 import beans.House;
@@ -134,6 +133,21 @@ public class GameScene extends AppCompatActivity
     private boolean ignore=true;
 
 
+
+
+
+    private ConstraintLayout constraintLayout;
+
+
+
+    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            hideSystemUI();
+            return false;
+        }
+    };
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -285,6 +299,12 @@ public class GameScene extends AppCompatActivity
 
          introFragment=new IntroFragment();
          fragmentInsertionSecond(introFragment);
+
+
+
+         constraintLayout=findViewById(R.id.mainLayout);
+
+         constraintLayout.setOnTouchListener(mOnTouchListener);
 
 
         slot =getIntent().getIntExtra("slotNumber",0);
@@ -1000,7 +1020,7 @@ public class GameScene extends AppCompatActivity
 
         //load player data
         player.setName(sharedPreferences.getString("PlayerName","none"));
-        player.setBalance(sharedPreferences.getFloat("balance",500000));
+        player.setBalance(sharedPreferences.getFloat("balance",50));
         player.getWork().setName(sharedPreferences.getString("work","none"));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
