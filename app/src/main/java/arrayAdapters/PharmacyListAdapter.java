@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Medicine;
 
@@ -31,6 +33,7 @@ public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
 
         LayoutInflater layoutInflater =LayoutInflater.from(getContext());
 
+        @SuppressLint("viewHolder")
         View medicineView =layoutInflater.inflate(R.layout.commun_buy_res,parent,false);
 
         Medicine medicine=getItem(position);
@@ -40,12 +43,18 @@ public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
         TextView benefit =medicineView.findViewById(R.id.benefit);
         TextView owned =medicineView.findViewById(R.id.owned);
 
-        name.setText(medicine.getName());
-        owned.setText("");
-        price.setText(medicine.getPrice()+"$");
-        benefit.setText(medicine.getBenefit()+" to health");
+        if(medicine != null) {
+            String priceString =String.format(Locale.ENGLISH,"%d$",(int)medicine.getPrice());
+            String benefitString =String.format(Locale.ENGLISH,"%s : %d %s",
+                    getContext().getString(R.string.benefit),medicine.getBenefit(),getContext().getString(R.string.health));
+
+            name.setText(medicine.getName());
+            owned.setText("");
+            price.setText(priceString);
+            benefit.setText(benefitString);
 
 
+        }
         return medicineView;
     }
 }

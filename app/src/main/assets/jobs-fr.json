@@ -1,0 +1,61 @@
+[
+  {
+    "name":"Travailleur", "timeofWork":8, "pay":15,"leveltoWork":0
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_worker"
+  ,"degree":"rien"
+
+  }
+,
+  {
+    "name":"Pompier", "timeofWork":8, "pay":20, "leveltoWork":2
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_firefighter"
+  ,"degree":"Diplome d'étude secondaire"
+
+  }
+,
+  {
+    "name":"Livreur", "timeofWork":8, "pay":25, "leveltoWork":3
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_deliveryman"
+  ,"degree":"Permis de conduite"
+
+  }
+,
+  {
+    "name":"Serveur", "timeofWork":7, "pay":30,"leveltoWork":4
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_waiter"
+  ,"degree":"Certificat de servement"
+
+  }
+,
+  {
+    "name":"Enseignat de Lycée", "timeofWork":6, "pay":35,"leveltoWork":5
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_teacher"
+  ,"degree":"Diplome d'enseignement"
+
+  }
+,
+  {
+    "name":"Programmeur", "timeofWork":7, "pay":40,"leveltoWork":7
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_programmer"
+  ,"degree":"Diplome de programmation"
+
+  }
+,
+
+  {
+    "name":"Pilote", "timeofWork":12, "pay":250,"leveltoWork":9
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_pilot"
+  ,"degree":"Permis de Pilotage"
+
+  }
+,
+  {
+    "name":"Professeur", "timeofWork":6, "pay":125,"leveltoWork":10
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_professor"
+  ,"degree":"Phd d'enseigement"
+
+  }
+
+
+
+]

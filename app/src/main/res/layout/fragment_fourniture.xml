@@ -23,7 +23,7 @@
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:fontFamily="casual"
-            android:text="Soon Enough ;)"
+            android:text="@string/soonEnough"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="30sp"

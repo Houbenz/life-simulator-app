@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 20/08/2018.
@@ -45,8 +46,17 @@ public class Learn {
         ArrayList<Learn> learns =new ArrayList<>();
 
         String json;
+        InputStream is=null;
         try{
-            InputStream is = context.getAssets().open("Learn.json");
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("Learn.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("Learn-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("Learn-ar.json");
 
             int size =is.available();
 
@@ -67,12 +77,9 @@ public class Learn {
                 learns.add(learn);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException|JSONException e) {
             e.printStackTrace();
         }
-
         return learns;
     }
 

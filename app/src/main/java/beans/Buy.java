@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 19/07/2018.
@@ -81,8 +82,17 @@ public class Buy {
         ArrayList<Buy> buys = new ArrayList<>();
 
         String json ;
+        InputStream is=null;
         try{
-            InputStream is =context.getAssets().open("buy.json");
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+            is =context.getAssets().open("buy.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("buy-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("buy-ar.json");
 
             int size =is.available();
 
@@ -107,9 +117,7 @@ public class Buy {
 
             }
 
-        }catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        }catch (IOException |JSONException e) {
             e.printStackTrace();
         }
 

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class Work {
@@ -91,9 +92,20 @@ public class Work {
         ArrayList<Work> works = new ArrayList<Work>();
 
         String json ;
-        try {
 
-            InputStream is =  context.getAssets().open("jobs.json");
+        InputStream is=null;
+
+
+        try{
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("jobs.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("jobs-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("jobs-ar.json");
 
             int size = is.available();
 
@@ -123,13 +135,8 @@ public class Work {
 
             }
 
-        } catch (IOException e) {
+        } catch (IOException |JSONException e) {
             e.printStackTrace();
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
         }
 
 

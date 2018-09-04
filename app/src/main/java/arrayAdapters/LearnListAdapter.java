@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Learn;
 
@@ -35,6 +37,7 @@ public class LearnListAdapter extends ArrayAdapter<Learn> {
 
         LayoutInflater layoutInflater= LayoutInflater.from(getContext());
 
+        @SuppressLint("viewHolder")
         View learnView = layoutInflater.inflate(R.layout.learn_res,parent,false);
 
         Learn learn=getItem(position);
@@ -43,34 +46,36 @@ public class LearnListAdapter extends ArrayAdapter<Learn> {
         TextView price=learnView.findViewById(R.id.priceLearn);
         TextView acquired=learnView.findViewById(R.id.acqLearn);
 
+            if(learn != null) {
 
-        name.setText(learn.getName());
-        price.setText("price : "+learn.getPrice()+"$");
-
-
-        boolean in = false;
-        int i=0;
-
-        while(!in && i<acquiredDegrees.size()){
-
-            if(acquiredDegrees.get(i).equals(learn.getName()))
-                in=true;
-            i++;
-
-        }
+                String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)learn.getPrice());
+                name.setText(learn.getName());
+                price.setText(priceString);
 
 
-        if(in) {
-            acquired.setText("acquired : Yes");
-            acquired.setTextColor(getContext().getResources().getColor(R.color.green));
-            learnView.setClickable(true);
-        }
-        else{
+                boolean in = false;
+                int i = 0;
 
-            acquired.setText("acquired : No");
-            acquired.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
+                while (!in && i < acquiredDegrees.size()) {
 
+                    if (acquiredDegrees.get(i).equals(learn.getName()))
+                        in = true;
+                    i++;
+
+                }
+
+
+                if (in) {
+                    acquired.setText(getContext().getString(R.string.acquiredYes));
+                    acquired.setTextColor(getContext().getResources().getColor(R.color.green));
+                    learnView.setClickable(true);
+                } else {
+
+                    acquired.setText(getContext().getString(R.string.acquiredNo));
+                    acquired.setTextColor(getContext().getResources().getColor(R.color.red));
+                }
+
+            }
         return  learnView;
     }
 }

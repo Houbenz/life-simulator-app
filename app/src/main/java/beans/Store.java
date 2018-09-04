@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Store extends Buy {
 
@@ -35,8 +36,17 @@ public class Store extends Buy {
         ArrayList<Store> stores = new ArrayList<>();
 
         String json;
+        InputStream is=null;
         try{
-            InputStream is = context.getAssets().open("store.json");
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("store.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("store-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("store-ar.json");
 
             int size =is.available();
 
@@ -58,9 +68,7 @@ public class Store extends Buy {
                 stores.add(store);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException|JSONException e) {
             e.printStackTrace();
         }
 

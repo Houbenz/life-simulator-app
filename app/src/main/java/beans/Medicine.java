@@ -10,6 +10,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 17/08/2018.
@@ -40,8 +41,18 @@ public class Medicine extends  Buy{
         ArrayList<Medicine> medicines =new ArrayList<>();
 
         String json ;
-        try {
-            InputStream is = context.getAssets().open("medicine.json");
+        InputStream is=null;
+
+        try{
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("medicine.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("medicine-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("medicine-ar.json");
 
             int size =is.available();
 
@@ -64,12 +75,9 @@ public class Medicine extends  Buy{
                 medicines.add(medicine);
             }
 
-        }catch (IOException e){
-            e.printStackTrace();
-        } catch (JSONException e) {
+        }catch (IOException|JSONException e){
             e.printStackTrace();
         }
-
 
         return medicines;
     }

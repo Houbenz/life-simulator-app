@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 19/07/2018.
@@ -58,10 +59,17 @@ public class Food extends Buy {
 
         ArrayList<Food> foods =new ArrayList<Food>();
 
-        String json ;
+        String json ;       InputStream is=null;
         try{
-            InputStream is = context.getAssets().open("food.json");
 
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("food.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("food-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("food-ar.json");
             int size =is.available();
 
 
@@ -93,9 +101,7 @@ public class Food extends Buy {
 
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 

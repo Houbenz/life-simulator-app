@@ -302,7 +302,7 @@
                     android:layout_above="@+id/playerInfo"
                     android:layout_alignParentStart="true"
                     android:layout_marginBottom="4dp"
-                    android:src="@drawable/ic_empty"
+                    app:srcCompat="@drawable/ic_empty"
                     tools:layout_editor_absoluteX="0dp"
                     tools:layout_editor_absoluteY="33dp" />
 

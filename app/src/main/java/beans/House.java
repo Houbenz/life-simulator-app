@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 19/07/2018.
@@ -45,9 +46,19 @@ public class House extends Buy {
     public static ArrayList<House> initHouse(Context context) {
         ArrayList<House> houses = new ArrayList<>();
 
-        String json;
-        try {
-            InputStream is = context.getAssets().open("house.json");
+        String json;       InputStream is=null;
+        try{
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("house.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("house-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("house-ar.json");
+
+
             int size = is.available();
             byte[] buffer = new byte[size];
 
@@ -70,12 +81,9 @@ public class House extends Buy {
 
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException |JSONException e) {
             e.printStackTrace();
         }
-
         return houses;
     }
 

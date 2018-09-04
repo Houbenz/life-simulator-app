@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.House;
 
@@ -32,6 +34,7 @@ public class HouseListAdapter extends ArrayAdapter<House> {
 
         LayoutInflater layoutInflater =LayoutInflater.from(getContext());
 
+        @SuppressLint("viewHolder")
         View houseView =layoutInflater.inflate(R.layout.commun_buy_res,parent,false);
 
         House house =getItem(position);
@@ -39,10 +42,19 @@ public class HouseListAdapter extends ArrayAdapter<House> {
        TextView name =houseView.findViewById(R.id.name);
         TextView price =houseView.findViewById(R.id.price);
         TextView benefit =houseView.findViewById(R.id.benefit);
-        name.setText(house.getName());
-        price.setText(house.getPrice()+"$");
-        benefit.setText("Energy Bonus : +"+house.getBonusE()+"\tHealth Bonus : +"+house.getBonusH());
 
+        if(house != null) {
+            String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)house.getPrice());
+            String benefitString =String.format(Locale.ENGLISH,"%s : +%d\t %s : +%d %s",
+                    getContext().getString(R.string.benefit),
+                    house.getBonusE(),getContext().getString(R.string.energyBonus),
+                    house.getBonusH(),getContext().getString(R.string.healthBonus));
+
+
+            name.setText(house.getName());
+            price.setText(priceString);
+            benefit.setText(benefitString);
+        }
         return houseView;
     }
 }

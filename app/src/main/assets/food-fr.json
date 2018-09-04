@@ -1,0 +1,28 @@
+[
+
+  {
+    "name":"Nouilles"
+  ,"price":15
+  ,"benefit":5
+  ,"description":"Mauvais"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_noodles"
+  }
+,
+  {
+    "name":"Poulet grillé"
+  ,"price":25
+  ,"benefit":23
+  ,"description":"Enorme"
+  ,  "uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_chicken"
+  }
+
+,
+
+  {
+    "name":"Steak"
+  ,"price":30
+  ,"benefit":25
+  ,"description":"Délicieux"
+  , "uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_steak"
+  }
+]

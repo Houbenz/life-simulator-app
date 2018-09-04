@@ -3,6 +3,7 @@ package com.example.android.testsharedpreferences;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
@@ -13,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import android.widget.ViewSwitcher;
 
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Food;
 import beans.Furniture;
@@ -291,10 +294,14 @@ public class GameScene extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_scene);
 
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+
         time=findViewById(R.id.time);
         dayView=findViewById(R.id.dayView);
 
          runClockThread();
+
 
 
          introFragment=new IntroFragment();
@@ -408,7 +415,7 @@ public class GameScene extends AppCompatActivity
         // when the button start work is pressed
         startWorking=findViewById(R.id.startWorking);
 
-        if(player.getWork().getName().equals("none"))
+        if(player.getWork().getName().equals(getString(R.string.none))  )
             startWorking.setEnabled(false);
         else
             startWorking.setEnabled(true);
@@ -541,6 +548,7 @@ public class GameScene extends AppCompatActivity
 
                                             MediaPlayer mp =MediaPlayer.create(getApplicationContext(),R.raw.level_up);
 
+
                                             if(player.getLevel().getLevel()<10)
                                                 levelNumber.setText(getString(R.string.level) +": 0"+ player.getLevel().getLevel());
                                             else
@@ -659,28 +667,29 @@ public class GameScene extends AppCompatActivity
     public void deliverBuy(String nameOfFragment) {
 
 
-        if(nameOfFragment.equals("Food")){
+        if(nameOfFragment.equals("Food") ||nameOfFragment.equals("Nourriture") ){
 
         FoodFragment foodFragment =new FoodFragment();
         fragmentInsertionSecond(foodFragment);
 
         }
-        if(nameOfFragment.equals("Furniture")) {
+        if(nameOfFragment.equals("Furniture")||nameOfFragment.equals("Fourniture")) {
 
             FournitureFragment fournitureFragment =new FournitureFragment();
             fragmentInsertionSecond(fournitureFragment);
 
         }
-        if(nameOfFragment.equals("House")) {
+        if(nameOfFragment.equals("House") ||nameOfFragment.equals("Maison")) {
 
-
+            HouseFragment houseFragment =new HouseFragment();
+            fragmentInsertion(houseFragment);
         }
 
-        if(nameOfFragment.equals("Store")){
+        if(nameOfFragment.equals("Store") ||nameOfFragment.equals("Magasin")){
             insertStoreFragment();
         }
 
-        if(nameOfFragment.equals("Pharmacy")){
+        if(nameOfFragment.equals("Pharmacy") || nameOfFragment.equals("Pharmacie")){
             PharmacyFragment pharmacyFragment = new PharmacyFragment();
             fragmentInsertionSecond(pharmacyFragment);
         }
@@ -1019,9 +1028,9 @@ public class GameScene extends AppCompatActivity
 
 
         //load player data
-        player.setName(sharedPreferences.getString("PlayerName","none"));
+        player.setName(sharedPreferences.getString("PlayerName",getString(R.string.none)));
         player.setBalance(sharedPreferences.getFloat("balance",50));
-        player.getWork().setName(sharedPreferences.getString("work","none"));
+        player.getWork().setName(sharedPreferences.getString("work",getString(R.string.none)));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
         player.setBankDeposit(sharedPreferences.getFloat("bankDeposit",0));
@@ -1039,7 +1048,7 @@ public class GameScene extends AppCompatActivity
 
         }
 
-        degrees.add("none");
+        degrees.add(getString(R.string.none));
         player.setAcquiredDegress(degrees);
 
 

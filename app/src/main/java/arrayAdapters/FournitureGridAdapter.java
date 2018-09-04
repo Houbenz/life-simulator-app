@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Furniture;
 
@@ -36,6 +38,7 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
 
         LayoutInflater layoutInflater =LayoutInflater.from(getContext());
 
+        @SuppressLint("viewHolder")
         View fournitureRes=layoutInflater.inflate(R.layout.fourniture_res,parent, false);
 
 
@@ -50,10 +53,15 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
 
         fournitureImg.setImageURI(uri);
 
-        name.setText(fourniture.getName());
-        price.setText("price : "+fourniture.getPrice()+"$");
-        fournitureType.setText("type : "+fourniture.getFournitureType());
+        if(fourniture != null) {
+            String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)fourniture.getPrice());
+            String fournitureTypeString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.type),fourniture.getFournitureType());
 
+            name.setText(fourniture.getName());
+            price.setText(priceString);
+            fournitureType.setText(fournitureTypeString);
+
+        }
 
 
         return fournitureRes;

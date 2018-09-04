@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.media.Image;
@@ -18,6 +19,7 @@ import com.example.android.testsharedpreferences.R;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Work;
 
@@ -42,6 +44,7 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
         Work work =getItem(position);
         LayoutInflater inflater =LayoutInflater.from(getContext());
 
+        @SuppressLint("ViewHolder")
         View workView =inflater.inflate(R.layout.work_res,parent,false);
 
         TextView workName=workView.findViewById(R.id.workName);
@@ -51,11 +54,21 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
         TextView reqDegree =workView.findViewById(R.id.reqDegree);
         ImageView imageView = (ImageView)workView.findViewById(R.id.imageView);
 
-        workName.setText(work.getName());
-        workPay.setText("pay : "+work.getPay()+"$");
-        workTime.setText("work time :"+work.getTimeOfWork()+"hrs");
-        workLevel.setText("Required Level : "+work.getLeveltoWork());
-        reqDegree.setText("Required : "+work.getReqDegree());
+
+        if(work != null) {
+
+
+            String workTimeString =String.format(Locale.ENGLISH,"%s : %d hrs",getContext().getString(R.string.workTime),work.getTimeOfWork());
+            String payString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.pay),(int)work.getPay());
+            String worklvlString =String.format(Locale.ENGLISH,"%s : %d %s",getContext().getString(R.string.required),(int)work.getLeveltoWork(),getContext().getString(R.string.level));
+            String reqDegreeString = String.format(Locale.ENGLISH,"%s : %s ",getContext().getString(R.string.required),work.getReqDegree());
+
+            workName.setText(work.getName());
+            workPay.setText(payString);
+            workTime.setText(workTimeString);
+            workLevel.setText(worklvlString);
+            reqDegree.setText(reqDegreeString);
+
 
         Uri imageURI =Uri.parse(work.getImagePath());
 
@@ -69,7 +82,6 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
             if(acquiredDegrees.get(i).equals(work.getReqDegree()))
                 in=true;
-            Log.i("LOKIA",acquiredDegrees.get(i));
             i++;
         }
 
@@ -98,7 +110,7 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
                 }
             }
         }
-
+        }
             return workView;
 
     }

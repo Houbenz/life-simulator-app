@@ -1,0 +1,25 @@
+[
+  {
+    "name":"Rue","price":0,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Studio","price":100,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Apartement","price":5000,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Villa","price":100000,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Manoir","price":500000,"bonusE":0,"bonusH":0
+  }
+,
+  {
+    "name":"Château","price":5000000,"bonusE":0,"bonusH":0
+  }
+]

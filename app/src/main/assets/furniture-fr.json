@@ -1,0 +1,52 @@
+[
+  {
+    "name":"chair",
+    "price":100,
+    "fournitureType":"chairs and tables"
+  }
+,
+  {
+    "name":"table",
+    "price":400,
+    "fournitureType":"chairs and tables"
+  }
+,
+  {
+    "name":"TV holder",
+    "price":50,
+    "fournitureType":"chairs and tables"
+  }
+,
+  {
+    "name":"Small TV",
+    "price":250,
+    "fournitureType":"Electronics"
+  }
+,
+  {
+    "name":"Medium TV",
+    "price":300,
+    "fournitureType":"Electronics",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv"
+  }
+,
+  {
+    "name":"Flat Screen TV",
+    "price":1000,
+    "fournitureType":"Electronics"
+  }
+,
+  {
+    "name":"LowEnd Computer",
+    "price":1500,
+    "fournitureType":"Electronics"
+  }
+,
+  {
+    "name":"HighEnd Computer",
+    "price":5000,
+    "fournitureType":"Electronics"
+  }
+
+
+]

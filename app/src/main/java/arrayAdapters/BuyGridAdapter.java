@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -35,7 +36,8 @@ public class BuyGridAdapter extends ArrayAdapter<Buy> {
 
         LayoutInflater inflater=LayoutInflater.from(getContext());
 
-        View buyView =inflater.inflate(R.layout.buy_res,parent,false);
+       @SuppressLint("viewHolder")
+       View buyView =inflater.inflate(R.layout.buy_res,parent,false);
 
 
         Buy buy =getItem(position);
@@ -43,14 +45,16 @@ public class BuyGridAdapter extends ArrayAdapter<Buy> {
         TextView buyName = buyView.findViewById(R.id.buyName);
         ImageView buyImg = buyView.findViewById(R.id.buyImg);
 
-        buyName.setText(buy.getName());
+        if(buy != null) {
+            buyName.setText(buy.getName());
+
 
         buyView.setBackgroundColor(Color.parseColor(buy.getColor()));
 
         Uri imgURI = Uri.parse(buy.getImagePath());
         buyImg.setImageURI(imgURI);
 
-
+        }
 
         return buyView;
     }

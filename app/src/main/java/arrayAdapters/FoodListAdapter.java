@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.Image;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.Food;
 
@@ -34,7 +36,8 @@ public class FoodListAdapter extends ArrayAdapter<Food> {
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
-        View foodView =layoutInflater.inflate(R.layout.food_res,parent,false);
+       @SuppressLint("viewHolder")
+       View foodView =layoutInflater.inflate(R.layout.food_res,parent,false);
 
         Food food=getItem(position);
 
@@ -45,15 +48,23 @@ public class FoodListAdapter extends ArrayAdapter<Food> {
         ImageView foodImg = foodView.findViewById(R.id.foodImg);
 
 
-        name.setText(food.getName());
-        price.setText("price : "+food.getPrice()+"$");
-        benefit.setText("benefit : "+food.getBenefit());
-        description.setText("description : "+food.getDescription());
 
-        Uri imgURI=Uri.parse(food.getImagePath());
-        foodImg.setImageURI(imgURI);
+            if(food != null) {
+
+                String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)food.getPrice());
+                String benefitString =String.format(Locale.ENGLISH,"%s : %d %s",getContext().getString(R.string.benefit),food.getBenefit(), getContext().getString(R.string.hunger));
+                String descriptionString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.description),food.getDescription());
+
+                name.setText(food.getName());
+                price.setText(priceString);
+                benefit.setText(benefitString);
+                description.setText(descriptionString);
+
+                Uri imgURI = Uri.parse(food.getImagePath());
+                foodImg.setImageURI(imgURI);
 
 
+            }
         return foodView;
     }
 }

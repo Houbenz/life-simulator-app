@@ -1,5 +1,6 @@
 package arrayAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.example.android.testsharedpreferences.R;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import beans.House;
 import beans.Store;
@@ -40,6 +42,7 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
 
         LayoutInflater layoutInflater= LayoutInflater.from(getContext());
 
+        @SuppressLint("viewHolder")
         View storeView =layoutInflater.inflate(R.layout.commun_buy_res,parent,false);
 
 
@@ -51,33 +54,43 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
         TextView owned =storeView.findViewById(R.id.owned);
 
 
-        name.setText(store.getName());
-        price.setText("Price : "+ store.getPrice()+"$");
-        benefit.setText("Income per day : "+store.getIncome()+"$");
 
-        boolean in =false;
-        int i=0;
 
-        while(!in && i<stores.size()){
 
-            if(stores.get(i).equals(store.getName()))
-            in=true;
 
-            Log.i("LOKIA",stores.get(i));
 
-            i++;
+        if(store != null) {
+            String benefitString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.incomePerDay),(int)store.getIncome());
+            String priceBenefit= String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)store.getPrice());
+            name.setText(store.getName());
+            price.setText(priceBenefit);
+
+            benefit.setText(benefitString);
+
+            boolean in = false;
+            int i = 0;
+
+            while (!in && i < stores.size()) {
+
+                if (stores.get(i).equals(store.getName()))
+                    in = true;
+
+                Log.i("LOKIA", stores.get(i));
+
+                i++;
+            }
+
+            if (in) {
+                owned.setText(getContext().getString(R.string.acquiredYes));
+                owned.setTextColor(getContext().getResources().getColor(R.color.green));
+                storeView.setClickable(true);
+
+            } else {
+                owned.setText(getContext().getString(R.string.acquiredNo));
+                owned.setTextColor(getContext().getResources().getColor(R.color.red));
+            }
+
         }
-
-        if(in){
-            owned.setText("Owned : Yes.");
-            owned.setTextColor(getContext().getResources().getColor(R.color.green));
-            storeView.setClickable(true);
-
-        }else{
-            owned.setText("Owned : No.");
-            owned.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-
 
 
         return storeView;

@@ -1,23 +1,23 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Life Simulator</string>
-    <string name="preference_file_key">com.TestSharedPreferences.PREFERENCE_FILE_KEY</string>
+    <string name="app_name" translatable="false">Life Simulator</string>
+    <string name="preference_file_key" translatable="false">com.TestSharedPreferences.PREFERENCE_FILE_KEY</string>
 
     <string name="buttonNewGame">New Game</string>
     <string name="buttonLoadGame">Load Game</string>
     <string name="buttonSettings">Settings</string>
     <string name="buttonExit">Exit</string>
-    <string name="GameTitle">Life Simulator</string>
+    <string name="GameTitle" translatable="false">Life Simulator</string>
     <string name="SlotnewGameTitle">Choose a slot</string>
 
     <string name="slotTitle1">none</string>
-    <string name="slotDate1">Slot Date 1 </string>
+    <string name="slotDate1" translatable="false">Slot Date 1 </string>
 
     <string name="slotTitle2">none</string>
-    <string name="slotDate2">Slot Date 2</string>
+    <string name="slotDate2" translatable="false">Slot Date 2</string>
 
     <string name="slotTitle3">none</string>
-    <string name="slotDate3">Slot Date 3</string>
+    <string name="slotDate3" translatable="false">Slot Date 3</string>
 
     <string name="closeDialog">Close</string>
     <string name="confirmDialog">confirm</string>
@@ -27,13 +27,13 @@
     <string name="hintCaracterName">Caracter name</string>
 
 
-    <string name="prefSlot1">com.android.slot1</string>
-    <string name="prefSlot2">com.android.slot2</string>
-    <string name="prefSlot3">com.android.slot3</string>
+    <string name="prefSlot1" translatable="false">com.android.slot1</string>
+    <string name="prefSlot2" translatable="false">com.android.slot2</string>
+    <string name="prefSlot3" translatable="false">com.android.slot3</string>
     <string name="buyButton">Buy</string>
     <string name="workButton">Work</string>
     <string name="sleepButton">Sleep</string>
-    <string name="logsButton">Logs</string>
+    <string name="logsButton" translatable="false">Logs</string>
     <string name="exitButton">exit</string>
     <string name="sumTitle">Sum</string>
     <string name="balanceTitle">Balance</string>
@@ -63,15 +63,48 @@
     <string name="study">Study</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="credit">Credits</string>
     <string name="intro">Press start working button to start work or choose a work from work section</string>
 
-    <string name="Required">Required :</string>
+    <string name="required">Required</string>
     <string name="deposit">Deposit</string>
     <string name="bankTitleW">How much do you want to withdraw ?</string>
     <string name="withdraw">Withdraw</string>
     <string name="bankTitleD">How much do you want to deposit ?</string>
     <string name="bankOpt">Choose your Option</string>
+
+
+    <string name="price">price</string>
+    <string name="benefit">benefit</string>
+    <string name="description">description</string>
+
+
+    <string name="type">type</string>
+    <string name="energyBonus">Energy Bonus</string>
+    <string name="healthBonus">Health Bonus</string>
+
+    <string name="health"> Health</string>
+
+    <string name="incomePerDay"> Income per day <xliff:g> : </xliff:g></string>
+
+    <string name="acquiredYes">Acquired <xliff:g> :</xliff:g> Yes</string>
+    <string name="acquiredNo">Acquired <xliff:g> :</xliff:g> No</string>
+    <string name="pay">pay</string>
+    <string name="requiredLevel">Required level</string>
+    <string name="hunger">Hunger</string>
+    <string name="sleepText">How much do you want to sleep ?</string>
+    <string name="intersetText">Nb : interest is up tp 1.00%</string>
+    <string name="soonEnough">Soon Enough :)</string>
+    <string name="none">none</string>
+    <string name="overwrite">Overwrite</string>
+    <string name="no">no</string>
+    <string name="overwriteTitle">would you like to overwrite this slot ?</string>
+
+
+    <string name="langTtile">Choose the language</string>
+    <string name="adjustSound">Adjust Sound</string>
+    <string name="adjustMusic">Adjust Music</string>
+
 
 </resources>

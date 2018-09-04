@@ -1,0 +1,13 @@
+[
+  {
+    "name":"herebe","price":1, "benefit":1
+  }
+,
+  {
+    "name":" Pillules mediocres","price":15, "benefit":10
+  }
+,
+  {
+    "name":"Pillules de haute qualité","price":50, "benefit":30
+  }
+]

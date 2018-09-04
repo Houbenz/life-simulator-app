@@ -1,0 +1,17 @@
+[
+  {
+    "name":"Petit Magasin","price":10000,"income":100
+  }
+,
+  {
+    "name":"Moyen Magasin","price":50000,"income":600
+  }
+,
+  {
+    "name":"Gros Marché","price":150000,"income":1300
+  }
+,
+  {
+    "name":"Super Marché","price":5000000,"income":170000
+  }
+]

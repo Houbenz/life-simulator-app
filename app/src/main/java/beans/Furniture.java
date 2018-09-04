@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 19/07/2018.
@@ -40,10 +41,17 @@ public class Furniture extends Buy {
 
         ArrayList<Furniture> fournitures =new ArrayList<Furniture>();
 
-        String json ;
-        try
-        {
-            InputStream is = context.getAssets().open("furniture.json");
+        String json ;       InputStream is=null;
+        try{
+
+            if(Locale.getDefault().getLanguage().equals("en"))
+                is =context.getAssets().open("furniture.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("furniture-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("ar"))
+                is =context.getAssets().open("furniture-ar.json");
 
             int size=is.available();
 
@@ -69,9 +77,7 @@ public class Furniture extends Buy {
                 fournitures.add(fourniture);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException |JSONException e) {
             e.printStackTrace();
         }
 

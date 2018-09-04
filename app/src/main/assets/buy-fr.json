@@ -1,0 +1,26 @@
+[
+  {
+    "name":"Nourriture","color":"#f44b42"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_food"
+  }
+,
+  {
+    "name":"Fourniture","color":"#327ead"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_desk"
+  }
+,
+  {
+    "name":"Maison","color":"#31ad40"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_house"
+  }
+,
+  {
+    "name":"Magasin","color":"#574382"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_store"
+  }
+,
+  {
+    "name":"Pharmacie","color" :"#d1ce32"
+  ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/health_img"
+  }
+]

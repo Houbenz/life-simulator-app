@@ -26,4 +26,28 @@ public class Bank {
         this.interest = interest;
     }
 
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public float getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(float deposit) {
+        this.deposit = deposit;
+    }
+
+    public int getInterest() {
+        return interest;
+    }
+
+    public void setInterest(int interest) {
+        this.interest = interest;
+    }
 }

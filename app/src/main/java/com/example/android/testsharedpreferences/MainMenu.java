@@ -37,8 +37,6 @@ public class MainMenu extends AppCompatActivity {
     private SharedPreferences sharedPreferences2 ;
     private SharedPreferences sharedPreferences3 ;
 
-    private LinearLayout linearLayout;
-
 
     private ImageView imageView1;
     private ImageView imageView2;
@@ -93,8 +91,6 @@ public class MainMenu extends AppCompatActivity {
 
 
 
-        linearLayout=(LinearLayout)findViewById(R.id.linearLayout);
-
 
         sharedPreferences1 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot1), Context.MODE_PRIVATE);
         sharedPreferences2 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot2), Context.MODE_PRIVATE);
@@ -120,13 +116,18 @@ public class MainMenu extends AppCompatActivity {
 
 
 
+
+        /*
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent =new Intent(getApplicationContext(),SettingsActivity.class);
+
+                startActivity(intent);
 
             }
         });
-
+        */
         animateButton();
 
 
@@ -230,8 +231,8 @@ public class MainMenu extends AppCompatActivity {
 
 
 
-        overwriteDialog.setMessage("would you like to overwrite this slot ?")
-                .setPositiveButton("overwrite", new DialogInterface.OnClickListener() {
+        overwriteDialog.setMessage(getString(R.string.overwriteTitle))
+                .setPositiveButton(getString(R.string.overwrite), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -241,7 +242,7 @@ public class MainMenu extends AppCompatActivity {
 
                     }
                 })
-                .setNegativeButton("nope", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
@@ -593,15 +594,16 @@ public class MainMenu extends AppCompatActivity {
     }
 
 
+
     public void animateView(View view, int duration){
-        ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(view,view.TRANSLATION_Y,-1000f,0f);
+        ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(view,View.TRANSLATION_Y,-1000f,0f);
         objectAnimator.setDuration(duration);
         objectAnimator.start();
     }
 
 
     public void animateImagesAlphaToZero(ImageView imageView, int duration){
-        ObjectAnimator objectAnimator =ObjectAnimator.ofFloat(imageView, imageView.ALPHA,1f,0f);
+        ObjectAnimator objectAnimator =ObjectAnimator.ofFloat(imageView, View.ALPHA,1f,0f);
         objectAnimator.setDuration(duration);
         objectAnimator.start();
 
@@ -609,7 +611,7 @@ public class MainMenu extends AppCompatActivity {
 
 
     public void animateTranslationImageX(ImageView imageView, int duration){
-        ObjectAnimator objectAnimator1 =ObjectAnimator.ofFloat(imageView, imageView.TRANSLATION_X,-1000f,0f);
+        ObjectAnimator objectAnimator1 =ObjectAnimator.ofFloat(imageView, View.TRANSLATION_X,-1000f,0f);
         objectAnimator1.setDuration(duration);
         objectAnimator1.start();
     }

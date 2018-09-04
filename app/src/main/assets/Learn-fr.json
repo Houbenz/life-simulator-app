@@ -1,0 +1,31 @@
+[
+
+  {
+    "name":"Diplome d'étude secondaire","price":100
+  }
+,
+
+  {
+    "name":"Permis de conduite","price":1000
+  }
+,
+  {
+    "name":"Certificat de servement","price":1500
+  }
+,
+  {
+    "name":"Diplome d'enseignement","price":3000
+  }
+,
+  {
+    "name":"Diplome de programmation","price":4000
+  }
+,
+  {
+    "name":"Permis de Pilotage","price":5000
+  },
+  {
+    "name":"Phd d'enseigement","price":10000
+  }
+
+]
