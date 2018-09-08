@@ -1,5 +1,9 @@
 package beans;
 
+import android.content.Context;
+
+import com.example.android.testsharedpreferences.R;
+
 import java.util.ArrayList;
 
 /**
@@ -28,13 +32,13 @@ public class Player {
 
 
 
-    public Player(){
+    public Player(Context context){
 
         work=new Work();
-        work.setName("none");
+        work.setName(context.getString(R.string.none));
         level=new Level(0);
         acquiredDegress=new ArrayList<>();
-        acquiredDegress.add("none");
+        acquiredDegress.add(context.getString(R.string.none));
     }
 
     public Player(String name, int income, int balance, Work work,int bankDeposit) {

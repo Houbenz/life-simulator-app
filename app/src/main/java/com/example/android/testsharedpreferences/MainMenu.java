@@ -8,8 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +22,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+
 import java.util.Calendar;
 
-public class MainMenu extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity{
 
 
     private Button newGame;
@@ -60,11 +63,14 @@ public class MainMenu extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+
+        MobileAds.initialize(this,"ca-app-pub-3940256099942544/5224354917");
 
 
 
@@ -84,12 +90,16 @@ public class MainMenu extends AppCompatActivity {
 
         mainLayout=(ConstraintLayout)findViewById(R.id.mainLayout);
 
-
-
-
         mainLayout.setOnTouchListener(mOnTouchListener);
 
 
+
+        credits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                }
+        });
 
 
         sharedPreferences1 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot1), Context.MODE_PRIVATE);
@@ -574,18 +584,18 @@ public class MainMenu extends AppCompatActivity {
 
 
 
-        animateView(newGame,4500);
-        animateView(loadGame,5000);
-        animateView(settings,5500);
-        animateView(credits,6000);
+        animateView(newGame,3500);
+        animateView(loadGame,4000);
+        animateView(settings,4500);
+        animateView(credits,5000);
 
 
 
 
-        animateTranslationImageX(imageView1,4500);
-        animateTranslationImageX(imageView2,5000);
-        animateTranslationImageX(imageView3,5500);
-        animateTranslationImageX(imageView4,6000);
+        animateTranslationImageX(imageView1,3500);
+        animateTranslationImageX(imageView2,4000);
+        animateTranslationImageX(imageView3,4500);
+        animateTranslationImageX(imageView4,5000);
 
 
 
@@ -638,46 +648,6 @@ public class MainMenu extends AppCompatActivity {
         arrayImage[8]=R.drawable.ic_food;
         arrayImage[9]=R.drawable.ic_pilot;
         return arrayImage;
-    }
-
-
-
-
-    public void showRandomImage(){
-        Handler handler =new Handler();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int randomNumber = (int) ((imagesResources().length-0)* Math.random());
-                int randomTime = (int)(Math.random() *(8000-2000));
-
-                    Log.i("LOKIA"," time : " +randomTime);
-
-                    animateImagesAlphaToZero(imageView1, randomTime);
-                    imageView1.setImageResource(imagesResources()[randomNumber]);
-                    animateImageAlphaToOne(imageView1, randomTime);
-
-                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
-                    animateImagesAlphaToZero(imageView2, randomTime);
-                    imageView2.setImageResource(imagesResources()[randomNumber]);
-                    animateImageAlphaToOne(imageView2, randomTime);
-
-                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
-                    animateImagesAlphaToZero(imageView3, randomTime);
-                    imageView3.setImageResource(imagesResources()[randomNumber]);
-                    animateImageAlphaToOne(imageView3, randomTime);
-
-                    randomNumber = (int) ((imagesResources().length - 0) * Math.random());
-                    animateImagesAlphaToZero(imageView4, randomTime);
-                    imageView4.setImageResource(imagesResources()[randomNumber]);
-                    animateImageAlphaToOne(imageView4, randomTime);
-
-                    showRandomImage();
-
-            }
-        },3000);
-
     }
 
 }

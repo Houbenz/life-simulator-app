@@ -26,6 +26,13 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -94,13 +101,14 @@ public class GameScene extends AppCompatActivity
     private ImageView caracterImg ;
     private TextView jobName;
 
-    private TextView workType;
     private TextView income;
     private TextView balance;
     private Button  startWorking;
+    private Button doubleEarn;
 
 
 
+    private  int doubleEarnMinutes ;
     private  int minute ;
     private  int hour ;
     private  int day;
@@ -120,7 +128,7 @@ public class GameScene extends AppCompatActivity
 
     private IntroFragment introFragment;
 
-    private  Player player = new Player();
+    private  Player player;
     private Work choosenWork;
 
 
@@ -137,10 +145,13 @@ public class GameScene extends AppCompatActivity
 
 
 
+    private RewardedVideoAd mRewardVideoAd;
 
 
     private ConstraintLayout constraintLayout;
 
+
+    private boolean doubleEarnWorking =false ;
 
 
     private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
@@ -253,18 +264,21 @@ public class GameScene extends AppCompatActivity
                                     minute = 0;
                                     day++;
 
-                                    player.setBankDeposit(player.getBankDeposit()*1.01f);
+                                    player.setBankDeposit(player.getBankDeposit() * 1.01f);
 
-                                    player.setBalance(player.getBalance()+player.getStoreIncome());
-                                    balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
-                                            mp.start();
-                                            balance.setText(player.getBalance() + "$");
-                                            balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                                        }
-                                    });
+                                    if (player.getStoreIncome() != 0) {
+
+                                        player.setBalance(player.getBalance() + player.getStoreIncome());
+                                        balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
+                                                mp.start();
+                                                balance.setText(player.getBalance() + "$");
+                                                balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
+                                            }
+                                        });
+                                    }
                                 }
                                 time.setText(hourS + ":" + minuteS);
                                 dayView.setText(getString(R.string.day)+" "+ dayS);
@@ -294,11 +308,32 @@ public class GameScene extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_scene);
 
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-
+        bank=findViewById(R.id.bank);
+        levelBar=findViewById(R.id.levelProgressBar);
+        levelNumber=findViewById(R.id.levelNumber);
+        jobName=findViewById(R.id.jobName);
         time=findViewById(R.id.time);
         dayView=findViewById(R.id.dayView);
+        caracterImg =findViewById(R.id.caracterImg);
+        doubleEarn=findViewById(R.id.doubleEarn);
+
+
+
+        MobileAds.initialize(this,"ca-app-pub-3940256099942544/5224354917");
+        mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(this);
+
+        listenReward();
+
+        loadRewardAdFirstTime();
+
+
+
+
+        player = new Player(getApplicationContext());
+
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
          runClockThread();
 
@@ -307,16 +342,12 @@ public class GameScene extends AppCompatActivity
          introFragment=new IntroFragment();
          fragmentInsertionSecond(introFragment);
 
-
-
          constraintLayout=findViewById(R.id.mainLayout);
 
          constraintLayout.setOnTouchListener(mOnTouchListener);
 
 
         slot =getIntent().getIntExtra("slotNumber",0);
-
-
 
             healthbar=findViewById(R.id.healthBar);
             energyBar=findViewById(R.id.energyBar);
@@ -326,13 +357,9 @@ public class GameScene extends AppCompatActivity
             energypr=findViewById(R.id.energypr);
             hungerpr=findViewById(R.id.hungerpr);
 
-        caracterImg  = findViewById(R.id.caracterImg);
-        jobName=findViewById(R.id.jobName);
+
+
         loadProgress();
-
-            levelBar=findViewById(R.id.levelProgressBar);
-
-            levelNumber=findViewById(R.id.levelNumber);
 
         work=findViewById(R.id.work);
         work.setOnClickListener(new View.OnClickListener() {
@@ -349,7 +376,7 @@ public class GameScene extends AppCompatActivity
             }
         });
 
-        bank=findViewById(R.id.bank);
+
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -402,8 +429,6 @@ public class GameScene extends AppCompatActivity
         balance=findViewById(R.id.balance);
         balance.setText(player.getBalance()+"$");
 
-        workType=findViewById(R.id.workType);
-        workType.setText(player.getWork().getName());
 
         income=findViewById(R.id.income);
         income.setText(player.getWork().getPay()+"$/"+getString(R.string.day));
@@ -425,6 +450,23 @@ public class GameScene extends AppCompatActivity
             public void onClick(View v) {
 
                 startWorkThread();
+            }
+        });
+
+
+
+        doubleEarn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mRewardVideoAd.isLoaded()){
+
+                    mRewardVideoAd.show();
+
+                   //doubleEarnThread();
+
+
+                }
+
             }
         });
 
@@ -460,20 +502,76 @@ public class GameScene extends AppCompatActivity
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-
-
-
-
-
     }
-    public void startWorkThread(){
 
-        final Handler handler =new Handler(Looper.getMainLooper());
-        Thread thread =new Thread(new Runnable() {
 
+    public void doubleEarnThread(){
+
+        doubleEarnWorking=true;
+
+        final float rewardIncome=player.getWork().getPay() * Params.NUMBER_OF_MULTI_INOCME;
+        player.getWork().setPay(rewardIncome);
+        doubleEarn.setEnabled(false);
+        income.setText(player.getWork().getPay() + "$");
+
+        Thread minusTime =new Thread(new Runnable() {
             @Override
             public void run() {
 
+               final Handler handler =new Handler(getMainLooper());
+
+
+                int hours = Params.NUMBER_OF_HOURS_BENEFIT;
+                doubleEarnMinutes = hours * 60;
+
+                while (doubleEarnMinutes >= 0) {
+                    try {
+                        Thread.sleep(speed);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                doubleEarnMinutes--;
+                                doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
+                            }
+                        });
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        float normalIncome = player.getWork().getPay() / Params.NUMBER_OF_MULTI_INOCME;
+                        player.getWork().setPay(normalIncome);
+                        income.setText(player.getWork().getPay() + "$");
+                        doubleEarn.setEnabled(true);
+                        doubleEarn.setText(getString(R.string.doubleEarn));
+                        loadRewardAd();
+
+                        doubleEarnWorking=false;
+                    }
+                });
+
+
+            }
+        });
+
+
+
+        minusTime.start();
+    }
+
+
+
+    public void startWorkThread(){
+
+        Thread thread =new Thread(new Runnable() {
+
+            @Override
+           public void run() {
                  remainingMinutes =player.getWorkMinutes();
                 while (remainingMinutes>0) {
 
@@ -481,12 +579,10 @@ public class GameScene extends AppCompatActivity
 
                     try {
 
-
-
-
                         Thread.sleep(speed);
 
-                        handler.post(new Runnable(){
+                        runOnUiThread(new Runnable()
+                                {
 
                             @Override
                             public void run() {
@@ -507,8 +603,6 @@ public class GameScene extends AppCompatActivity
 
                                 ignore=false;
                                 if(remainingMinutes % 60 == 0) {
-
-
 
 
                                     //increment player balance with work pay
@@ -588,7 +682,7 @@ public class GameScene extends AppCompatActivity
         });
 
         thread.start();
-    }
+   }
 
     public void initialiseProgressBars(){
 
@@ -633,16 +727,13 @@ public class GameScene extends AppCompatActivity
     }
 
 
-
     //To execute tasks from fragments
     @Override
     public void deliverWork(Work work) {
 
 
-        workType=findViewById(R.id.workType);
-        workType.setText(work.getName());
         income=findViewById(R.id.income);
-        income.setText(work.getPay()+"$/Day");
+        income.setText(work.getPay()+"$/"+getString(R.string.day));
 
         choosenWork =new Work(
                  work.getName()
@@ -756,16 +847,11 @@ public class GameScene extends AppCompatActivity
             hour -= 24;
             day++;
             player.setBankDeposit(player.getBankDeposit()*1.01f);
-            player.setBalance(player.getBalance()+player.getStoreIncome());
-            balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
-                    mp.start();
-                    balance.setText(player.getBalance() + "$");
-                    balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                }
-            });
+            if(player.getStoreIncome() !=0) {
+
+                player.setBalance(player.getBalance() + player.getStoreIncome());
+                  balance.setText(player.getBalance() + "$");
+            }
         }
         switcher=findViewById(R.id.switcher);
 
@@ -964,7 +1050,14 @@ public class GameScene extends AppCompatActivity
         //save player things
         editor.putFloat("balance",player.getBalance());
         editor.putString("work",player.getWork().getName());
-        editor.putFloat("pay",player.getWork().getPay());
+
+
+        if(!doubleEarnWorking)
+            editor.putFloat("pay",player.getWork().getPay());
+
+        else
+            editor.putFloat("pay",player.getWork().getPay()/Params.NUMBER_OF_MULTI_INOCME);
+
         editor.putFloat("bankDeposit",player.getBankDeposit());
         editor.putFloat("storeIncome",player.getStoreIncome());
 
@@ -1163,6 +1256,65 @@ public class GameScene extends AppCompatActivity
     public void insertHouseFragment(){
         HouseFragment houseFragment=new HouseFragment();
         fragmentInsertionSecond(houseFragment);
+    }
+
+
+    private void loadRewardAd(){
+        mRewardVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+    }
+
+    private void loadRewardAdFirstTime(){
+        mRewardVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+
+        doubleEarn.setEnabled(true);
+
+    }
+
+    private void listenReward(){
+        mRewardVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+            @Override
+            public void onRewardedVideoAdLoaded() {
+                Toast.makeText(getApplicationContext(),"Load Complete",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdOpened() {
+
+            }
+
+            @Override
+            public void onRewardedVideoStarted() {
+
+            }
+
+            @Override
+            public void onRewardedVideoAdClosed() {
+
+            loadRewardAd();
+            }
+
+            @Override
+            public void onRewarded(RewardItem rewardItem) {
+                doubleEarnThread();
+            }
+
+            @Override
+            public void onRewardedVideoAdLeftApplication() {
+
+            }
+
+            @Override
+            public void onRewardedVideoAdFailedToLoad(int i) {
+                loadRewardAd();
+
+            }
+
+            @Override
+            public void onRewardedVideoCompleted() {
+
+            }
+        });
+
     }
 
 }

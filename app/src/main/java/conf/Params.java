@@ -34,5 +34,11 @@ public class Params {
     public final static int TIME_SPEED_SUPER_FAST =75;
 
 
+    // player earning
+
+    public final static int NUMBER_OF_MULTI_INOCME = 2 ;
+    public final static int NUMBER_OF_HOURS_BENEFIT = 5 ;
+
+
 
 }

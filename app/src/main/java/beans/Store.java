@@ -16,10 +16,12 @@ public class Store extends Buy {
 
 
     private float income ;
+    private  String uri ;
 
-    public Store(String name, float price,float income) {
+    public Store(String name, float price,float income,String uri) {
         super(name, price);
         this.income=income;
+        this.uri=uri;
     }
 
     public float getIncome() {
@@ -30,6 +32,14 @@ public class Store extends Buy {
         this.income = income;
     }
 
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     public static ArrayList<Store> initStore(Context context){
 
@@ -63,7 +73,8 @@ public class Store extends Buy {
                 String name =jsonObject.getString("name");
                 float price =jsonObject.getLong("price");
                 float income=jsonObject.getLong("income");
-                Store store =new Store(name,price,income);
+                String uri = jsonObject.getString("uri");
+                Store store =new Store(name,price,income,uri);
 
                 stores.add(store);
             }

@@ -2,6 +2,7 @@ package arrayAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.testsharedpreferences.R;
@@ -52,6 +54,7 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
         TextView price =storeView.findViewById(R.id.price);
         TextView benefit =storeView.findViewById(R.id.benefit);
         TextView owned =storeView.findViewById(R.id.owned);
+        ImageView comImage=storeView.findViewById(R.id.comImage);
 
 
 
@@ -66,6 +69,10 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
             price.setText(priceBenefit);
 
             benefit.setText(benefitString);
+
+            Uri uri = Uri.parse(store.getUri());
+
+            comImage.setImageURI(uri);
 
             boolean in = false;
             int i = 0;

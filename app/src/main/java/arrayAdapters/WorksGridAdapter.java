@@ -57,10 +57,9 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
         if(work != null) {
 
-
             String workTimeString =String.format(Locale.ENGLISH,"%s : %d hrs",getContext().getString(R.string.workTime),work.getTimeOfWork());
             String payString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.pay),(int)work.getPay());
-            String worklvlString =String.format(Locale.ENGLISH,"%s : %d %s",getContext().getString(R.string.required),(int)work.getLeveltoWork(),getContext().getString(R.string.level));
+            String worklvlString =String.format(Locale.ENGLISH,"%s : %s %d",getContext().getString(R.string.required),getContext().getString(R.string.level),(int)work.getLeveltoWork());
             String reqDegreeString = String.format(Locale.ENGLISH,"%s : %s ",getContext().getString(R.string.required),work.getReqDegree());
 
             workName.setText(work.getName());

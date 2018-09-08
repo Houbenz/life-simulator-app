@@ -1,17 +1,21 @@
 [
   {
-    "name":"Small Store","price":10000,"income":100
+    "name":"Small Store","price":10000,"income":100,
+    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/small_store"
   }
   ,
   {
-    "name":"Medium Store","price":50000,"income":600
+    "name":"Medium Store","price":50000,"income":600,
+    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/small_store"
   }
   ,
   {
-    "name":"Big Store","price":150000,"income":1300
+    "name":"Big Store","price":150000,"income":1300,
+    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/small_store"
   }
   ,
   {
-    "name":"Super Market","price":5000000,"income":170000
+    "name":"Super Market","price":5000000,"income":170000,
+    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/super_market"
   }
 ]
