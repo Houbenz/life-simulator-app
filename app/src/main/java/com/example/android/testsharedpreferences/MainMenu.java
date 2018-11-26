@@ -584,18 +584,18 @@ public class MainMenu extends AppCompatActivity{
 
 
 
-        animateView(newGame,3500);
-        animateView(loadGame,4000);
-        animateView(settings,4500);
-        animateView(credits,5000);
+        animateView(newGame,1500);
+        animateView(loadGame,2000);
+        animateView(settings,2500);
+        animateView(credits,3000);
 
 
 
 
-        animateTranslationImageX(imageView1,3500);
-        animateTranslationImageX(imageView2,4000);
-        animateTranslationImageX(imageView3,4500);
-        animateTranslationImageX(imageView4,5000);
+        animateTranslationImageX(imageView1,1500);
+        animateTranslationImageX(imageView2,2000);
+        animateTranslationImageX(imageView3,2500);
+        animateTranslationImageX(imageView4,3000);
 
 
 

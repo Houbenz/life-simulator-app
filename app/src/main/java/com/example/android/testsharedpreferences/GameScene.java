@@ -325,7 +325,7 @@ public class GameScene extends AppCompatActivity
 
         listenReward();
 
-        loadRewardAdFirstTime();
+       // loadRewardAdFirstTime();
 
 
 
@@ -751,6 +751,7 @@ public class GameScene extends AppCompatActivity
         startWorking.setEnabled(true);
         jobName.setText(work.getName());
 
+        loadRewardAdFirstTime();
 
     }
 
@@ -1274,7 +1275,7 @@ public class GameScene extends AppCompatActivity
         mRewardVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-                Toast.makeText(getApplicationContext(),"Load Complete",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),"Load Complete",Toast.LENGTH_LONG).show();
             }
 
             @Override
