@@ -502,6 +502,16 @@ public class GameScene extends AppCompatActivity
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+
+
+        if((! player.getWork().getName().equals(getString(R.string.none))))
+
+            loadRewardAdFirstTime();
+
+
+
+
+
     }
 
 
@@ -1087,7 +1097,7 @@ public class GameScene extends AppCompatActivity
 
 
         //put player houses
-        for (int i =0;i <player.getAcquiredHouses().size();i++){
+        for (int i =0;i < player.getAcquiredHouses().size();i++){
             editor.putString("house"+i,player.getAcquiredHouses().get(i));
         }
         editor.putInt("houseSize",player.getAcquiredHouses().size());
