@@ -40,5 +40,9 @@ public class Params {
     public final static int NUMBER_OF_HOURS_BENEFIT = 5 ;
 
 
+    public static final int HEALTH_VALUE=100;
+    public static final int HUNGER_VALUE=100;
+    public static final int ENERGY_VALUE=100;
+
 
 }

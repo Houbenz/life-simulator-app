@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sleepFragment"
-    android:layout_width="500dp"
-    android:layout_height="200dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="fragments.SleepFragment">
 
@@ -24,16 +24,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
         android:max="24" />
 
     <TextView
         android:id="@+id/selectedTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="16dp"
         android:fontFamily="casual"
         android:text="00H"
         android:textAlignment="viewEnd"
@@ -48,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
 
-        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
         android:fontFamily="casual"
         android:text="@string/confirmDialog"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"

@@ -38,7 +38,7 @@
     <string name="sumTitle">Sum</string>
     <string name="balanceTitle">Balance</string>
     <string name="doubleEarn">Watch ad Income x2!</string>
-
+    <string name="incomeTitle">Income</string>
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="workName">Name of work</string>
@@ -52,7 +52,7 @@
     <string name="fastSpeed">Fast Speed x2</string>
     <string name="ultraSpeed">Ultra Speed x3</string>
     <string name="superSpeed">Super Speed x4</string>
-
+    <string name="home">Home</string>
     <string name="onWork">On Work ...</string>
     <string name="level">lvl</string>
     <string name="startwork">Start Working</string>

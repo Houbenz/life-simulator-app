@@ -22,10 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
+
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
 
 import java.util.Calendar;
 
@@ -70,7 +68,7 @@ public class MainMenu extends AppCompatActivity{
         setContentView(R.layout.activity_main_menu);
 
 
-        MobileAds.initialize(this,"ca-app-pub-3940256099942544/5224354917");
+        MobileAds.initialize(this,"ca-app-pub-3940256099942544~5224354917");
 
 
 

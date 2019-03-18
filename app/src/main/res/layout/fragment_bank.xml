@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bankFragment"
-    android:layout_width="500dp"
-    android:layout_height="200dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="fragments.BankFragment">
 
 
@@ -15,9 +15,9 @@
             android:id="@+id/opTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="143dp"
             android:layout_marginStart="144dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="143dp"
             android:fontFamily="casual"
             android:text="@string/bankOpt"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -31,27 +31,29 @@
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="44dp"
             android:layout_marginStart="120dp"
+            android:layout_marginTop="32dp"
             android:fontFamily="casual"
             android:text="@string/deposit"
             android:textAllCaps="false"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/opTitle" />
 
         <Button
             android:id="@+id/withdrawOpt"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="44dp"
             android:layout_marginStart="60dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="casual"
             android:text="@string/withdraw"
             android:textAllCaps="false"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/depositOpt" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/depositOpt"
+            app:layout_constraintTop_toBottomOf="@+id/opTitle" />
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>

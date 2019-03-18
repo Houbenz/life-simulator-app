@@ -49,8 +49,8 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
         TextView fournitureType=fournitureRes.findViewById(R.id.fournitureType);
         ImageView fournitureImg = fournitureRes.findViewById(R.id.fournitureImg);
 
-        Uri uri =Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv");
-
+        //Uri uri =Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv");
+        Uri uri = Uri.parse(fourniture.getUrl());
         fournitureImg.setImageURI(uri);
 
         if(fourniture != null) {

@@ -19,6 +19,8 @@
     <string name="fastSpeed">Vitesse rapide x2</string>
     <string name="hintCaracterName">Nom de caractère</string>
     <string name="incomeTitle">Revenu</string>
+    <string name="home">Maison</string>
+    <string name="doubleEarn">Regarder ad Revenu x2!</string>
     <string name="intro">Presser sur commencer travail ou choisissez un travail depuis la  section de travail</string>
     <string name="level">niv</string>
     <string name="nameInputTitle">Choisissez le nom de votre Caractère</string>

@@ -1,5 +1,6 @@
 package com.example.android.testsharedpreferences;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,13 +9,11 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +33,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import beans.Food;
 import beans.Furniture;
@@ -43,7 +41,6 @@ import beans.Learn;
 import beans.Level;
 import beans.Medicine;
 import beans.Player;
-import beans.Sleep;
 import beans.Store;
 import beans.Work;
 import conf.Params;
@@ -53,19 +50,20 @@ import fragments.DepositFragment;
 import fragments.FoodFragment;
 import fragments.FournitureFragment;
 import fragments.HouseFragment;
-import fragments.IntroFragment;
+import fragments.HomeFragment;
 import fragments.LearnFragment;
 import fragments.PharmacyFragment;
 import fragments.SleepFragment;
 import fragments.StoreFragment;
 import fragments.WithdrawFragment;
 import fragments.WorkFragment;
+import viewmodels.ViewModelFourHome;
 
 
 public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnBuyClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
-        HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked,IntroFragment.OnStartWork
+        HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked, HomeFragment.homeShow
     , LearnFragment.OnLearnClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
 {
 
@@ -75,6 +73,7 @@ public class GameScene extends AppCompatActivity
     private Button sleep;
     private Button bank;
     private Button study;
+    private Button homeButton;
 
     private  boolean  threadRun=true;
     private ProgressBar healthbar;
@@ -126,7 +125,7 @@ public class GameScene extends AppCompatActivity
     private BankFragment bankFragment;
     private BuyFragment  buyFragment;
 
-    private IntroFragment introFragment;
+    private HomeFragment homeFragment;
 
     private  Player player;
     private Work choosenWork;
@@ -153,6 +152,8 @@ public class GameScene extends AppCompatActivity
 
     private boolean doubleEarnWorking =false ;
 
+
+    private ViewModelFourHome viewmodel;
 
     private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
@@ -290,6 +291,11 @@ public class GameScene extends AppCompatActivity
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+                    if(!threadRun)
+                        break;
+
+
                 }
             }
                   });
@@ -328,6 +334,9 @@ public class GameScene extends AppCompatActivity
        // loadRewardAdFirstTime();
 
 
+        viewmodel=ViewModelProviders.of(this).get(ViewModelFourHome.class);
+
+
 
 
         player = new Player(getApplicationContext());
@@ -339,8 +348,22 @@ public class GameScene extends AppCompatActivity
 
 
 
-         introFragment=new IntroFragment();
-         fragmentInsertionSecond(introFragment);
+
+
+        homeFragment =new HomeFragment();
+        fragmentInsertionSecond(homeFragment);
+
+         homeButton=findViewById(R.id.homeButton);
+
+         homeButton.setOnClickListener( event->{
+
+             homeFragment =new HomeFragment();
+             fragmentInsertionSecond(homeFragment);
+         });
+
+
+
+
 
          constraintLayout=findViewById(R.id.mainLayout);
 
@@ -609,8 +632,6 @@ public class GameScene extends AppCompatActivity
                                     fragmentManager.popBackStack();
                                 }
 
-                                introFragment.setTextView(remainingMinutes/60);
-
                                 ignore=false;
                                 if(remainingMinutes % 60 == 0) {
 
@@ -820,6 +841,14 @@ public class GameScene extends AppCompatActivity
                         }
                         showPurchaseDialog(message);
 
+                        //this is for the view model between homefragment and GameScene
+
+
+                        viewmodel.getFurniture().getValue().add(fourniture);
+
+
+
+                        onHomeShow(fourniture.getUrl());
                     }
                 })
                 .setNegativeButton("Nope", new DialogInterface.OnClickListener() {
@@ -958,7 +987,8 @@ public class GameScene extends AppCompatActivity
     }
 
     @Override
-    public void startDecHour() {
+    public void onHomeShow(String url) {
+
     }
 
     @Override
@@ -981,10 +1011,7 @@ public class GameScene extends AppCompatActivity
     public void depositAndWithdraw(String operation) {
 
 
-
-
         if(operation.equals("deposit")){
-
 
             Bundle bundle =new Bundle();
             bundle.putFloat("balance",(int)player.getBalance());
@@ -1011,8 +1038,6 @@ public class GameScene extends AppCompatActivity
     public void deliverDeposit(int deposit){
 
         int newBalance =(int)player.getBalance()-deposit;
-
-
 
         player.setBankDeposit(player.getBankDeposit()+deposit);
         player.setBalance(newBalance);
@@ -1047,7 +1072,6 @@ public class GameScene extends AppCompatActivity
     }
 
     public void saveProgress(){
-
 
         if(slot==1)
         sharedPreferences=getSharedPreferences(getString(R.string.prefSlot1),Context.MODE_PRIVATE);
@@ -1102,9 +1126,10 @@ public class GameScene extends AppCompatActivity
         }
         editor.putInt("houseSize",player.getAcquiredHouses().size());
 
-
-
-
+        for (int i =0;i<viewmodel.getFurniture().getValue().size();i++){
+            //todo
+            //insert type of furniture and the url of the furniture so the player get what he bought :p
+        }
 
         //save time
         editor.putInt("day", day);
@@ -1133,7 +1158,7 @@ public class GameScene extends AppCompatActivity
 
         //load player data
         player.setName(sharedPreferences.getString("PlayerName",getString(R.string.none)));
-        player.setBalance(sharedPreferences.getFloat("balance",50));
+        player.setBalance(sharedPreferences.getFloat("balance",5000000));
         player.getWork().setName(sharedPreferences.getString("work",getString(R.string.none)));
         player.getWork().setPay(sharedPreferences.getFloat("pay",0));
         player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
@@ -1203,9 +1228,9 @@ public class GameScene extends AppCompatActivity
         totalTime=(day*24)+(hour*60)+minute;
 
         //load progressbars
-        healthbar.setProgress(sharedPreferences.getInt("healthBar",100));
-        energyBar.setProgress(sharedPreferences.getInt("energyBar",100));
-        hungerBar.setProgress(sharedPreferences.getInt("hungerBar",100));
+        healthbar.setProgress(sharedPreferences.getInt("healthBar",Params.HEALTH_VALUE));
+        energyBar.setProgress(sharedPreferences.getInt("energyBar",Params.ENERGY_VALUE));
+        hungerBar.setProgress(sharedPreferences.getInt("hungerBar",Params.HUNGER_VALUE));
 
     }
 
@@ -1215,7 +1240,6 @@ public class GameScene extends AppCompatActivity
         fragmentManager.popBackStack();
         fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
         //fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.move,R.animator.move_out);
-
 
         fragmentTransaction.replace(R.id.placefragment, fragment);
         fragmentTransaction.addToBackStack(null);
@@ -1247,8 +1271,6 @@ public class GameScene extends AppCompatActivity
     }
 
     public void insertStudyFragment() {
-
-
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("arr", player.getAcquiredDegress());
         LearnFragment learnFragment = new LearnFragment();

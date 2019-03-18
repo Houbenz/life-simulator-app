@@ -1,55 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="210dp"
-    android:layout_height="100dp"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:orientation="horizontal"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/fournitureImg"
-        android:layout_width="50dp"
-        android:layout_height="72dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_medium_tv" />
+        android:scaleType="fitStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/table_laptop_chair" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+
+    <TextView
+        android:id="@+id/fournitureName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:fontFamily="casual"
+        android:text="fournitureName"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fournitureImg"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/fournitureName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:fontFamily="casual"
-            android:text="fournitureName"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/fourniturePrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:fontFamily="casual"
+        android:text="price"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fournitureImg"
+        app:layout_constraintTop_toBottomOf="@+id/fournitureName" />
 
-        <TextView
-            android:id="@+id/fourniturePrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="casual"
-            android:text="price"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/fournitureType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="casual"
-            android:text="type"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/fournitureType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:fontFamily="casual"
+        android:text="type"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fournitureImg"
+        app:layout_constraintTop_toBottomOf="@+id/fourniturePrice" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

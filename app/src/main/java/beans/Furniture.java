@@ -19,11 +19,12 @@ public class Furniture extends Buy {
 
 
     private String fournitureType ;
+    private String url ;
 
-
-    public Furniture(String name, float price, String fournitureType) {
+    public Furniture(String name, float price, String fournitureType,String  url) {
         super(name, price);
     this.fournitureType=fournitureType;
+    this.url=url;
     }
 
 
@@ -35,6 +36,13 @@ public class Furniture extends Buy {
         this.fournitureType = fournitureType;
     }
 
+    public String getUrl(){
+        return url;
+    }
+
+    public void setUrl(String url){
+        this.url=url;
+    }
 
 
     public static ArrayList<Furniture> initFourniture(Context context){
@@ -72,7 +80,8 @@ public class Furniture extends Buy {
                 String name =jsonObject.getString("name");
                 int price =jsonObject.getInt("price");
                 String fournitureType=jsonObject.getString("fournitureType");
-                Furniture fourniture =new Furniture(name,price,fournitureType);
+                String imageUrl  = jsonObject.getString("url");
+                Furniture fourniture =new Furniture(name,price,fournitureType,imageUrl);
 
                 fournitures.add(fourniture);
             }

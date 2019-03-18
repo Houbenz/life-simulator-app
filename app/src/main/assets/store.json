@@ -6,7 +6,7 @@
   ,
   {
     "name":"Medium Store","price":50000,"income":600,
-    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/small_store"
+    "uri" :"android.resource://com.example.android.testsharedpreferences/drawable/medium_store"
   }
   ,
   {

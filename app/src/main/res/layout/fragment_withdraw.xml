@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="500dp"
-    android:layout_height="200dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context="fragments.WithdrawFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/withdrawTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:fontFamily="casual"
             android:text="@string/bankTitleW"

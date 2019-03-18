@@ -1,6 +1,7 @@
 package fragments;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import arrayAdapters.FournitureGridAdapter;
 import beans.Furniture;
+import viewmodels.ViewModelFourHome;
 
 
 public class FournitureFragment extends Fragment {
@@ -23,6 +25,7 @@ public class FournitureFragment extends Fragment {
 
     private  OnFournitureClicked monFournitureClicked;
 
+    private ViewModelFourHome viewModel;
     public FournitureFragment() {
 
 
@@ -38,7 +41,9 @@ public class FournitureFragment extends Fragment {
 
 
         View fournitureFragment= inflater.inflate(R.layout.fragment_fourniture, container, false);
-/*
+
+
+        viewModel=ViewModelProviders.of(getActivity()).get(ViewModelFourHome.class);
 
         ArrayList<Furniture> furnitures = Furniture.initFourniture(getContext());
 
@@ -56,11 +61,12 @@ public class FournitureFragment extends Fragment {
 
                 monFournitureClicked.deliverFourniture(fourniture);
 
+                //viewModel.setFurniture(fourniture);
 
             }
         });
 
-*/
+
         return fournitureFragment;
     }
 

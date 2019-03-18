@@ -3,51 +3,78 @@
   {
     "name":"chair",
     "price":100,
-    "fournitureType":"chairs and tables"
+    "fournitureType":"chair",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/chair"
   }
-  ,
+,
   {
     "name":"table",
     "price":400,
-    "fournitureType":"chairs and tables"
+    "fournitureType":"table",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
   }
-  ,
+,
   {
     "name":"TV holder",
     "price":50,
-    "fournitureType":"chairs and tables"
+    "fournitureType":"tv_holder",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
   }
-  ,
+,
   {
-    "name":"Small TV",
+    "name":"Old TV",
     "price":250,
-    "fournitureType":"Electronics"
+    "fournitureType":"tv",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/old_tv"
   }
-  ,
+,
   {
     "name":"Medium TV",
     "price":300,
-    "fournitureType":"Electronics",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv"
+    "fournitureType":"tv",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/medium_tv"
   }
-  ,
+,
   {
     "name":"Flat Screen TV",
     "price":1000,
-    "fournitureType":"Electronics"
+    "fournitureType":"tv",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/medium_tv"
   }
-  ,
+,
   {
     "name":"LowEnd Computer",
     "price":1500,
-    "fournitureType":"Electronics"
+    "fournitureType":"computer",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
   }
-  ,
+,
+  {
+    "name":"Table with laptop",
+    "price":4500,
+    "fournitureType":"table",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+  }
+,
   {
     "name":"HighEnd Computer",
     "price":5000,
-    "fournitureType":"Electronics"
+    "fournitureType":"computer",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
   }
-
+,
+  {
+    "name":"Couch",
+    "price":300,
+    "fournitureType":"couch",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/couch_back"
+  }
+,
+  {
+    "name":"Salon Table",
+    "price":250,
+    "fournitureType":"salonTable",
+    "url":"android.resource://com.example.android.testsharedpreferences/drawable/salon_table"
+  }
 
 ]

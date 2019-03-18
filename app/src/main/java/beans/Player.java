@@ -115,7 +115,6 @@ public class Player {
         this.acquiredHouses = acquiredHouses;
     }
 
-
     public float getStoreIncome() {
         return storeIncome;
     }
@@ -151,4 +150,6 @@ public class Player {
     public void changeMaxProgress(){
         getLevel().setMaxProgress(getLevel().getLevel()*100);
     }
+
+
 }

@@ -24,6 +24,7 @@ public class Food extends Buy {
 
 
 
+
     public Food(String name, float price, String foodType, int benefit,String imagePath) {
         super(name, price);
         this.description=foodType;
