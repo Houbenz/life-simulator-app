@@ -13,14 +13,15 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.Medicine;
+import database.Medicine;
 
 
 public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
 
-    public PharmacyListAdapter(@NonNull Context context, ArrayList<Medicine> medicines) {
+    public PharmacyListAdapter(@NonNull Context context, List<Medicine> medicines) {
         super(context, R.layout.commun_buy_res,medicines);
     }
 

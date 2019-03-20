@@ -7,15 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import arrayAdapters.BuyGridAdapter;
-import beans.Buy;
+import database.MainFragments;
 
 
 /**
@@ -24,7 +24,7 @@ import beans.Buy;
 public class BuyFragment extends Fragment {
 
 
-    OnBuyClicked mBuySelected;
+    OnMainFragmentClicked mBuySelected;
 
 
 
@@ -45,31 +45,27 @@ public class BuyFragment extends Fragment {
         GridView gridView=(GridView)fragmentLay.findViewById(R.id.gridBuy);
 
 
-        ArrayList<Buy> buys =Buy.initBuy(getContext());
+        List<MainFragments> mainFragments =MainMenu.myAppDataBase.myDao().getMainFragments();
 
-        BuyGridAdapter buyGridAdapter =new BuyGridAdapter(getContext(),buys);
+        BuyGridAdapter buyGridAdapter =new BuyGridAdapter(getContext(),mainFragments);
 
         gridView.setAdapter(buyGridAdapter);
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
 
+            MainFragments mainFrag= (MainFragments) parent.getItemAtPosition(position);
 
-                Buy buy= (Buy)parent.getItemAtPosition(position);
+            mBuySelected.deliverMainFragment(mainFrag.getName());
 
-                mBuySelected.deliverBuy(buy.getName());
-
-            }
         });
 
         return fragmentLay;
     }
 
-    public interface OnBuyClicked{
+    public interface OnMainFragmentClicked {
 
-        void deliverBuy(String nameOfFragment);
+        void deliverMainFragment(String nameOfFragment);
 
     }
 
@@ -79,9 +75,9 @@ public class BuyFragment extends Fragment {
 
 
         try{
-            mBuySelected=(OnBuyClicked) context;
+            mBuySelected=(OnMainFragmentClicked) context;
         }catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+"must implement OnBuyClicked interface");
+            throw new ClassCastException(context.toString()+"must implement OnMainFragmentClicked interface");
         }
     }
 }

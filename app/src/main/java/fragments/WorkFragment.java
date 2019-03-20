@@ -5,29 +5,30 @@ package fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
-import java.util.ArrayList;
+import java.util.List;
+
 
 import arrayAdapters.WorksGridAdapter;
-import beans.Work;
+import database.Acquired_degree;
+import database.Degree;
+import database.Work;
 
 
 public class WorkFragment extends Fragment {
 
 
     onWorkSelected mWorkSelected;
-    private ArrayList<String> acquiredDegress;
 
     public WorkFragment() {
     }
@@ -39,33 +40,26 @@ public class WorkFragment extends Fragment {
 
         FrameLayout frameLayout= (FrameLayout)inflater.inflate(R.layout.fragment_work, container, false);
 
-        ArrayList<Work> works = instantiateWorks();
-
-
+        List<Work> works = MainMenu.myAppDataBase.myDao().getWorks();
 
         //The player Level (IMPORTANT)
         int playerLevel = getArguments().getInt("playerLevel");
 
 
-        acquiredDegress=getArguments().getStringArrayList("arr");
-
-        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel,acquiredDegress);
+        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel);
         GridView gridView =frameLayout.findViewById(R.id.workGrid);
 
         gridView.setAdapter(worksGridAdapter);
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
 
-                Work work = (Work) parent.getItemAtPosition(position);
+            Work work = (Work) parent.getItemAtPosition(position);
 
-                Toast.makeText( getContext(),"you're now a "+work.getName()+"", Toast.LENGTH_SHORT).show();
+            Toast.makeText( getContext(),"you're now a "+work.getName()+"", Toast.LENGTH_SHORT).show();
 
-                mWorkSelected.deliverWork(work);
+            mWorkSelected.deliverWork(work);
 
-            }
         });
 
         return frameLayout;
@@ -75,7 +69,7 @@ public class WorkFragment extends Fragment {
 
     public interface onWorkSelected
     {
-        public void deliverWork( Work work);
+         void deliverWork( Work work);
     }
 
 
@@ -83,21 +77,12 @@ public class WorkFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        try{
-            mWorkSelected=(onWorkSelected)context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+"must implement onWorkSelected interface");
+        try {
+            mWorkSelected = (onWorkSelected) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "must implement onWorkSelected interface");
         }
 
-
-
     }
-
-    public ArrayList<Work> instantiateWorks(){
-
-         return Work.workInit(getContext());
-
-    }
-
 
 }

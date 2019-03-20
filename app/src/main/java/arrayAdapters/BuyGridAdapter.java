@@ -13,21 +13,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import beans.Buy;
+import database.MainFragments;
 
 /**
  * Created by Houbenz on 31/07/2018.
  */
 
-public class BuyGridAdapter extends ArrayAdapter<Buy> {
+public class BuyGridAdapter extends ArrayAdapter<MainFragments> {
 
 
-    public BuyGridAdapter( Context context, ArrayList<Buy> buys) {
-        super(context, R.layout.buy_res ,buys);
+
+    public BuyGridAdapter( Context context,List<MainFragments> mainFragments) {
+        super(context, R.layout.buy_res,mainFragments);
     }
 
     @NonNull
@@ -40,18 +44,18 @@ public class BuyGridAdapter extends ArrayAdapter<Buy> {
        View buyView =inflater.inflate(R.layout.buy_res,parent,false);
 
 
-        Buy buy =getItem(position);
+        MainFragments mainFragments =getItem(position);
 
         TextView buyName = buyView.findViewById(R.id.buyName);
         ImageView buyImg = buyView.findViewById(R.id.buyImg);
 
-        if(buy != null) {
-            buyName.setText(buy.getName());
+        if(mainFragments != null) {
+            buyName.setText(mainFragments.getName());
 
 
-        buyView.setBackgroundColor(Color.parseColor(buy.getColor()));
+        buyView.setBackgroundColor(Color.parseColor(mainFragments.getColor()));
 
-        Uri imgURI = Uri.parse(buy.getImagePath());
+        Uri imgURI = Uri.parse(mainFragments.getImage_Uri());
         buyImg.setImageURI(imgURI);
 
         }

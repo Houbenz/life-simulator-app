@@ -55,11 +55,11 @@ public class Furniture extends Buy {
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("furniture.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("furniture-fr.json");
+           // if(Locale.getDefault().getLanguage().equals("fr"))
+            //    is =context.getAssets().open("furniture-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("furniture-ar.json");
+          //  if(Locale.getDefault().getLanguage().equals("ar"))
+          //      is =context.getAssets().open("furniture-ar.json");
 
             int size=is.available();
 

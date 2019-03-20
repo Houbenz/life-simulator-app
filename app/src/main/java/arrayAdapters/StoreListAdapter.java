@@ -15,13 +15,14 @@ import android.widget.TextView;
 
 import com.example.android.testsharedpreferences.R;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.House;
-import beans.Store;
+import database.Acquired_Stores;
+import database.Acquired_degree;
+import database.Store;
 
 /**
  * Created by Houbenz on 17/08/2018.
@@ -31,11 +32,11 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
 
 
 
-    private  ArrayList<String > stores;
-    public StoreListAdapter(@NonNull Context context, ArrayList<Store> stores,ArrayList<String> storesS) {
-        super(context, R.layout.commun_buy_res,stores);
+    private  List<Acquired_Stores> acquired_stores;
+    public StoreListAdapter(@NonNull Context context, List<Store> stores, List<Acquired_Stores> acquired_stores) {
+        super(context, R.layout.commun_buy_res, stores);
 
-        this.stores=storesS;
+        this.acquired_stores =acquired_stores;
     }
 
     @NonNull
@@ -47,7 +48,6 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
         @SuppressLint("viewHolder")
         View storeView =layoutInflater.inflate(R.layout.commun_buy_res,parent,false);
 
-
         Store store =getItem(position);
 
         TextView name =storeView.findViewById(R.id.name);
@@ -55,12 +55,6 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
         TextView benefit =storeView.findViewById(R.id.benefit);
         TextView owned =storeView.findViewById(R.id.owned);
         ImageView comImage=storeView.findViewById(R.id.comImage);
-
-
-
-
-
-
 
         if(store != null) {
             String benefitString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.incomePerDay),(int)store.getIncome());
@@ -70,20 +64,17 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
 
             benefit.setText(benefitString);
 
-            Uri uri = Uri.parse(store.getUri());
+            Uri uri = Uri.parse(store.getImgUrl());
 
             comImage.setImageURI(uri);
 
             boolean in = false;
             int i = 0;
 
-            while (!in && i < stores.size()) {
+            while (!in && i < acquired_stores.size()) {
 
-                if (stores.get(i).equals(store.getName()))
+                if (acquired_stores.get(i).getStore_id() == store.getId())
                     in = true;
-
-                Log.i("LOKIA", stores.get(i));
-
                 i++;
             }
 

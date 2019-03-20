@@ -52,11 +52,11 @@ public class Store extends Buy {
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("store.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("store-fr.json");
+            //if(Locale.getDefault().getLanguage().equals("fr"))
+            //    is =context.getAssets().open("store-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("store-ar.json");
+          //  if(Locale.getDefault().getLanguage().equals("ar"))
+           //     is =context.getAssets().open("store-ar.json");
 
             int size =is.available();
 

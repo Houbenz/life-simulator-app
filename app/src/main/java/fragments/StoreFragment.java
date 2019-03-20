@@ -10,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import arrayAdapters.StoreListAdapter;
-import beans.Store;
+import database.Store;
+import database.Acquired_Stores;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,24 +38,21 @@ public class StoreFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment= inflater.inflate(R.layout.fragment_store, container, false);
 
-        ArrayList<Store> stores =Store.initStore(getContext());
+        List<Store> stores =MainMenu.myAppDataBase.myDao().getStores();
 
         ListView storeView =fragment.findViewById(R.id.storeView);
 
-        ArrayList<String> storesNames = getArguments().getStringArrayList("stores");
+        List<Acquired_Stores> acquiredStores= MainMenu.myAppDataBase.myDao().getAcquiredStores();
 
 
-        StoreListAdapter storeListAdapter =new StoreListAdapter(getContext(),stores,storesNames);
+        StoreListAdapter storeListAdapter =new StoreListAdapter(getContext(),stores,acquiredStores);
 
         storeView.setAdapter(storeListAdapter);
 
-        storeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        storeView.setOnItemClickListener((parent, view, position, id) -> {
 
-                Store store = (Store)parent.getItemAtPosition(position);
-                monStoreClicked.deliverStore(store);
-            }
+            Store store = (Store)parent.getItemAtPosition(position);
+            monStoreClicked.deliverStore(store);
         });
 
 

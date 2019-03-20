@@ -66,11 +66,11 @@ public class Food extends Buy {
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("food.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("food-fr.json");
+         //   if(Locale.getDefault().getLanguage().equals("fr"))
+           //     is =context.getAssets().open("food-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("food-ar.json");
+          //  if(Locale.getDefault().getLanguage().equals("ar"))
+           //     is =context.getAssets().open("food-ar.json");
             int size =is.available();
 
 

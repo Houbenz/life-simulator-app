@@ -1,5 +1,6 @@
 package com.example.android.testsharedpreferences;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,17 +33,20 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import beans.Food;
-import beans.Furniture;
+import database.Acquired_Furnitures;
+import database.Food;
+import database.Furniture;
 import beans.House;
-import beans.Learn;
 import beans.Level;
-import beans.Medicine;
-import beans.Player;
-import beans.Store;
-import beans.Work;
+import database.Medicine;
+import database.Acquired_Stores;
+import database.Acquired_degree;
+import database.Degree;
+import database.Player;
+import database.Store;
+import database.Work;
 import conf.Params;
 import fragments.BankFragment;
 import fragments.BuyFragment;
@@ -51,7 +55,7 @@ import fragments.FoodFragment;
 import fragments.FournitureFragment;
 import fragments.HouseFragment;
 import fragments.HomeFragment;
-import fragments.LearnFragment;
+import fragments.DegreeFragment;
 import fragments.PharmacyFragment;
 import fragments.SleepFragment;
 import fragments.StoreFragment;
@@ -61,12 +65,11 @@ import viewmodels.ViewModelFourHome;
 
 
 public class GameScene extends AppCompatActivity
-        implements WorkFragment.onWorkSelected, BuyFragment.OnBuyClicked,FournitureFragment.OnFournitureClicked
+        implements WorkFragment.onWorkSelected, BuyFragment.OnMainFragmentClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked, HomeFragment.homeShow
-    , LearnFragment.OnLearnClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
+    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
 {
-
 
     private Button buy;
     private Button work;
@@ -88,7 +91,6 @@ public class GameScene extends AppCompatActivity
 
     private TextView levelNumber;
 
-
     private android.support.v4.app.FragmentManager fragmentManager;
     private android.support.v4.app.FragmentTransaction fragmentTransaction;
 
@@ -104,8 +106,6 @@ public class GameScene extends AppCompatActivity
     private TextView balance;
     private Button  startWorking;
     private Button doubleEarn;
-
-
 
     private  int doubleEarnMinutes ;
     private  int minute ;
@@ -130,8 +130,6 @@ public class GameScene extends AppCompatActivity
     private  Player player;
     private Work choosenWork;
 
-
-
     private ViewSwitcher switcher ;
 
     //for payment per hour
@@ -139,29 +137,22 @@ public class GameScene extends AppCompatActivity
 
     private int slot ;
 
-
     private boolean ignore=true;
-
-
 
     private RewardedVideoAd mRewardVideoAd;
 
-
     private ConstraintLayout constraintLayout;
-
 
     private boolean doubleEarnWorking =false ;
 
-
     private ViewModelFourHome viewmodel;
 
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
+    @SuppressLint("ClickableViewAccessibility")
+    private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
             hideSystemUI();
             return false;
-        }
+
     };
 
     @Override
@@ -172,133 +163,115 @@ public class GameScene extends AppCompatActivity
         }
     }
 
-
     public void runClockThread(){
 
-        final Thread thread =new Thread(new Runnable(){
+        final Thread thread =new Thread(() -> {
 
+            while (threadRun) {
 
-            @Override
-            public void run(){
+                try {
 
-                while (threadRun) {
+                    Thread.sleep(speed);
+                    runOnUiThread(() -> {
 
-                    try {
+                        //For GAME OVER
+                        if(healthbar.getProgress()<=0){
+                            threadRun=false;
+                            AlertDialog.Builder builder = new AlertDialog.Builder(GameScene.this);
 
-                        Thread.sleep(speed);
-                        runOnUiThread(new Runnable() {
+                            builder.setTitle("Game Over")
+                                    .setMessage("you died cuz your health is ZeRo , good luck next Time !");
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.setOnDismissListener(dialog -> {
+                                finish();
+                                dialog.dismiss();
+                            });
 
-                            @Override
-                            public void run() {
+                            alertDialog.show();
 
-                                //For GAME OVER
-                                if(healthbar.getProgress()<=0){
-                                    threadRun=false;
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(GameScene.this);
+                        }
 
-                                    builder.setTitle("Game Over")
-                                            .setMessage("you died cuz your health is ZeRo , good luck next Time !");
-                                    AlertDialog alertDialog = builder.create();
-                                    alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                        @Override
-                                        public void onDismiss(DialogInterface dialog) {
+                        String hourS = "" + hour;
+                        String minuteS = "" + minute;
+                        String dayS = "" + day;
 
-                                            clearPref();
-                                            finish();
-                                            dialog.dismiss();
-                                        }
-                                    });
+                        totalTime = (day * 24 * 60) + (hour * 60) + minute;
 
-                                    alertDialog.show();
+                        if (hour < 10)
+                            hourS = "0" + hour;
 
-                                }
+                        if (minute < 10)
+                            minuteS = "0" + minute;
 
-                                String hourS = "" + hour;
-                                String minuteS = "" + minute;
-                                String dayS = "" + day;
+                        if (day < 10)
+                            dayS = "0" + day;
 
-                                totalTime = (day * 24 * 60) + (hour * 60) + minute;
+                        minute++;
 
-                                if (hour < 10)
-                                    hourS = "0" + hour;
+                        if (minute == 60) {
+                            minute = 0;
+                            hour++;
+                            hungerBar.setProgress(hungerBar.getProgress()-Params.HUNGER_LOSS_PER_HOUR);
+                            hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
-                                if (minute < 10)
-                                    minuteS = "0" + minute;
+                            ///
 
-                                if (day < 10)
-                                    dayS = "0" + day;
+                            if(hungerBar.getProgress()==0 && energyBar.getProgress()==0){
 
-                                minute++;
+                                healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
+                                healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
 
-                                if (minute == 60) {
-                                    minute = 0;
-                                    hour++;
-                                    hungerBar.setProgress(hungerBar.getProgress()-Params.HUNGER_LOSS_PER_HOUR);
-                                    hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+                            }else {
+                                if(hungerBar.getProgress()==0 && energyBar.getProgress()>0){
 
-                                    ///
-
-                                    if(hungerBar.getProgress()==0 && energyBar.getProgress()==0){
-
-                                        healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
+                                    healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR );
+                                    healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                }else{
+                                    if(hungerBar.getProgress()>0 && energyBar.getProgress()==0){
+                                        healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                         healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
-
-                                    }else {
-                                        if(hungerBar.getProgress()==0 && energyBar.getProgress()>0){
-
-                                            healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR );
-                                            healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
-                                        }else{
-                                            if(hungerBar.getProgress()>0 && energyBar.getProgress()==0){
-                                                healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
-                                                healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
-                                            }
-                                        }
-                                    }
-
-
-
-
-                                }
-                                if (hour >= 24) {
-                                    hour = 0;
-                                    minute = 0;
-                                    day++;
-
-                                    player.setBankDeposit(player.getBankDeposit() * 1.01f);
-
-                                    if (player.getStoreIncome() != 0) {
-
-                                        player.setBalance(player.getBalance() + player.getStoreIncome());
-                                        balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
-                                                mp.start();
-                                                balance.setText(player.getBalance() + "$");
-                                                balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                                            }
-                                        });
                                     }
                                 }
-                                time.setText(hourS + ":" + minuteS);
-                                dayView.setText(getString(R.string.day)+" "+ dayS);
-
-
-
                             }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
 
-                    if(!threadRun)
-                        break;
+                        }
+                        if (hour >= 24) {
+                            hour = 0;
+                            minute = 0;
+                            day++;
+
+                            player.setBank_deposit(player.getBank_deposit() * 1.01f);
+
+                            if (player.getStore_income() != 0) {
+
+                                player.setBalance(player.getBalance() + player.getStore_income());
+                                balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
+                                        mp.start();
+                                        balance.setText(player.getBalance() + "$");
+                                        balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
+                                    }
+                                });
+                            }
+                        }
+                        time.setText(hourS + ":" + minuteS);
+                        dayView.setText(getString(R.string.day)+" "+ dayS);
 
 
+
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+
+                if(!threadRun)
+                    break;
+
+
             }
-                  });
+        });
         thread.start();
     }
 
@@ -324,45 +297,23 @@ public class GameScene extends AppCompatActivity
         caracterImg =findViewById(R.id.caracterImg);
         doubleEarn=findViewById(R.id.doubleEarn);
 
-
+        playerN =findViewById(R.id.playerN);
+        income=findViewById(R.id.income);
+        balance=findViewById(R.id.balance);
 
         MobileAds.initialize(this,"ca-app-pub-3940256099942544/5224354917");
         mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(this);
 
         listenReward();
 
-       // loadRewardAdFirstTime();
-
+        loadRewardAdFirstTime();
 
         viewmodel=ViewModelProviders.of(this).get(ViewModelFourHome.class);
-
-
-
-
-        player = new Player(getApplicationContext());
 
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
          runClockThread();
-
-
-
-
-
-        homeFragment =new HomeFragment();
-        fragmentInsertionSecond(homeFragment);
-
-         homeButton=findViewById(R.id.homeButton);
-
-         homeButton.setOnClickListener( event->{
-
-             homeFragment =new HomeFragment();
-             fragmentInsertionSecond(homeFragment);
-         });
-
-
-
 
 
          constraintLayout=findViewById(R.id.mainLayout);
@@ -384,77 +335,68 @@ public class GameScene extends AppCompatActivity
 
         loadProgress();
 
+
+        insertHomeFragment();
+
+
+        homeButton=findViewById(R.id.homeButton);
+
+        homeButton.setOnClickListener( event->{
+            insertHomeFragment();
+        });
+
         work=findViewById(R.id.work);
-        work.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                workFragment=new WorkFragment();
-                Bundle bundle =new Bundle();
-                bundle.putInt("playerLevel",player.getLevel().getLevel());
-                bundle.putStringArrayList("arr",player.getAcquiredDegress());
+        work.setOnClickListener(v -> {
 
-                workFragment.setArguments(bundle);
-                fragmentInsertion(workFragment);
+            workFragment=new WorkFragment();
+            Bundle bundle =new Bundle();
+            bundle.putInt("playerLevel",player.getLevel());
 
-            }
+            workFragment.setArguments(bundle);
+            fragmentInsertion(workFragment);
+
         });
 
 
-        bank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bankFragment=new BankFragment();
-                Bundle bundle =new Bundle();
-                bundle.putFloat("accountSum",player.getBankDeposit());
-                bundle.putFloat("balance",player.getBalance());
+        bank.setOnClickListener(v -> {
+            bankFragment=new BankFragment();
+            Bundle bundle =new Bundle();
+            bundle.putFloat("accountSum",(int)player.getBank_deposit());
+            bundle.putFloat("balance",(int)player.getBalance());
 
 
-                bankFragment.setArguments(bundle);
+            bankFragment.setArguments(bundle);
 
-                fragmentInsertion(bankFragment);
+            fragmentInsertion(bankFragment);
 
-            }
         });
 
-        buy=(Button)findViewById(R.id.buy);
-        buy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buy=findViewById(R.id.buy);
+        buy.setOnClickListener(v -> {
 
-                buyFragment =new BuyFragment();
-                fragmentInsertion(buyFragment);
+            buyFragment =new BuyFragment();
+            fragmentInsertion(buyFragment);
 
-            }
         });
 
         sleep=findViewById(R.id.sleep);
-        sleep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        sleep.setOnClickListener(v -> {
 
-                SleepFragment sleepFragment =new SleepFragment();
-                fragmentInsertion(sleepFragment);
-            }
+            SleepFragment sleepFragment =new SleepFragment();
+            fragmentInsertion(sleepFragment);
         });
 
         study=findViewById(R.id.study);
-        study.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertStudyFragment();
+        study.setOnClickListener(v -> insertStudyFragment());
 
-            }
-        });
 
-        playerN = (TextView)findViewById(R.id.playerN);
         playerN.setText(player.getName());
 
-        balance=findViewById(R.id.balance);
         balance.setText(player.getBalance()+"$");
 
 
-        income=findViewById(R.id.income);
-        income.setText(player.getWork().getPay()+"$/"+getString(R.string.day));
+
+        income.setText(player.getWork_income()+"$/"+getString(R.string.day));
 
 
         //Init of progress bars
@@ -463,36 +405,25 @@ public class GameScene extends AppCompatActivity
         // when the button start work is pressed
         startWorking=findViewById(R.id.startWorking);
 
-        if(player.getWork().getName().equals(getString(R.string.none))  )
+        if(player.getWork().equals(getString(R.string.none)))
             startWorking.setEnabled(false);
         else
             startWorking.setEnabled(true);
 
-        startWorking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                startWorkThread();
+        startWorking.setOnClickListener(v -> startWorkThread());
+
+
+
+        doubleEarn.setOnClickListener(v -> {
+            if(mRewardVideoAd.isLoaded()){
+
+                mRewardVideoAd.show();
+
+               doubleEarnThread();
             }
+
         });
-
-
-
-        doubleEarn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mRewardVideoAd.isLoaded()){
-
-                    mRewardVideoAd.show();
-
-                   //doubleEarnThread();
-
-
-                }
-
-            }
-        });
-
 
 
         speedSeekBar=(SeekBar)findViewById(R.id.speedSeekBar);
@@ -527,14 +458,9 @@ public class GameScene extends AppCompatActivity
 
 
 
-        if((! player.getWork().getName().equals(getString(R.string.none))))
+        if((! player.getName().equals(getString(R.string.none))))
 
             loadRewardAdFirstTime();
-
-
-
-
-
     }
 
 
@@ -542,70 +468,54 @@ public class GameScene extends AppCompatActivity
 
         doubleEarnWorking=true;
 
-        final float rewardIncome=player.getWork().getPay() * Params.NUMBER_OF_MULTI_INOCME;
-        player.getWork().setPay(rewardIncome);
+        final double rewardIncome=player.getWork_income() * Params.NUMBER_OF_MULTI_INOCME;
+        player.setWork_income(rewardIncome);
         doubleEarn.setEnabled(false);
-        income.setText(player.getWork().getPay() + "$");
+        income.setText(player.getWork_income() + "$");
 
-        Thread minusTime =new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread minusTime =new Thread(() -> {
 
-               final Handler handler =new Handler(getMainLooper());
+           final Handler handler =new Handler(getMainLooper());
 
 
-                int hours = Params.NUMBER_OF_HOURS_BENEFIT;
-                doubleEarnMinutes = hours * 60;
+            int hours = Params.NUMBER_OF_HOURS_BENEFIT;
+            doubleEarnMinutes = hours * 60;
 
-                while (doubleEarnMinutes >= 0) {
-                    try {
-                        Thread.sleep(speed);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
+            while (doubleEarnMinutes >= 0) {
+                try {
+                    Thread.sleep(speed);
+                    handler.post(() -> {
 
-                                doubleEarnMinutes--;
-                                doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
-                            }
-                        });
+                        doubleEarnMinutes--;
+                        doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
+                    });
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        float normalIncome = player.getWork().getPay() / Params.NUMBER_OF_MULTI_INOCME;
-                        player.getWork().setPay(normalIncome);
-                        income.setText(player.getWork().getPay() + "$");
-                        doubleEarn.setEnabled(true);
-                        doubleEarn.setText(getString(R.string.doubleEarn));
-                        loadRewardAd();
-
-                        doubleEarnWorking=false;
-                    }
-                });
-
 
             }
+            handler.post(() -> {
+                double normalIncome = player.getWork_income() / Params.NUMBER_OF_MULTI_INOCME;
+                player.setWork_income(normalIncome);
+                income.setText(player.getWork_income() + "$");
+                doubleEarn.setEnabled(true);
+                doubleEarn.setText(getString(R.string.doubleEarn));
+                loadRewardAd();
+
+                doubleEarnWorking=false;
+            });
+
+
         });
-
-
 
         minusTime.start();
     }
 
-
-
     public void startWorkThread(){
 
-        Thread thread =new Thread(new Runnable() {
-
-            @Override
-           public void run() {
-                 remainingMinutes =player.getWorkMinutes();
+        Thread thread =new Thread(() ->{
+                 remainingMinutes =player.getWork_time()*60;
                 while (remainingMinutes>0) {
 
                     balance = findViewById(R.id.balance);
@@ -614,11 +524,8 @@ public class GameScene extends AppCompatActivity
 
                         Thread.sleep(speed);
 
-                        runOnUiThread(new Runnable()
+                        runOnUiThread(() ->
                                 {
-
-                            @Override
-                            public void run() {
                                 if(ignore) {
                                     startWorking.setEnabled(false);
                                     startWorking.setText(getString(R.string.onWork));
@@ -637,56 +544,48 @@ public class GameScene extends AppCompatActivity
 
 
                                     //increment player balance with work pay
-                                    player.setBalance(player.getWork().getPay() + player.getBalance());
+                                    player.setBalance((int)player.getWork_income() + player.getBalance());
 
-                                    balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
-                                            mp.start();
-                                            balance.setText(player.getBalance() + "$");
-                                            balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                                        }
+                                    balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(() -> {
+                                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.money_gain);
+                                        mp.start();
+                                        balance.setText(player.getBalance() + "$");
+                                        balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
                                     });
-
-
 
                                     //reduce player energy
                                     energyBar.setProgress(energyBar.getProgress()-Params.ENERGY_LOSS);
                                     energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
 
                                     //increment player progress for a level
-                                    player.getLevel().setProgressLevel(player.getLevel().getProgressLevel()+Params.XP_GAIN);
-                                    levelBar.setProgress(player.getLevel().getProgressLevel());
+                                    player.getLevel_object().setProgressLevel(player.getLevel_object().getProgressLevel()+Params.XP_GAIN);
+                                    levelBar.setProgress(player.getLevel_object().getProgressLevel());
                                 }
 
-                                if(player.getLevel().getMaxProgress()<=player.getLevel().getProgressLevel()) {
+                                if(player.getLevel_object().getMaxProgress()<=player.getLevel_object().getProgressLevel()) {
 
                                     //when the player level_up !
-                                    int actualProgress =player.getLevel().getProgressLevel()-player.getLevel().getMaxProgress();
+                                    int actualProgress =player.getLevel_object().getProgressLevel()-player.getLevel_object().getMaxProgress();
                                     player.upgradeLevel();
 
-                                    levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                    levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(() -> {
 
 
-                                            MediaPlayer mp =MediaPlayer.create(getApplicationContext(),R.raw.level_up);
+                                        MediaPlayer mp =MediaPlayer.create(getApplicationContext(),R.raw.level_up);
 
 
-                                            if(player.getLevel().getLevel()<10)
-                                                levelNumber.setText(getString(R.string.level) +": 0"+ player.getLevel().getLevel());
-                                            else
-                                                levelNumber.setText(getString(R.string.level) +": "+ player.getLevel().getLevel());
+                                        if(player.getLevel_object().getLevel()<10)
+                                            levelNumber.setText(getString(R.string.level) +": 0"+ player.getLevel_object().getLevel());
+                                        else
+                                            levelNumber.setText(getString(R.string.level) +": "+ player.getLevel_object().getLevel());
 
 
-                                            levelNumber.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                                            mp.start();
-                                        }
+                                        levelNumber.animate().scaleX(1f).scaleY(1f).setDuration(300);
+                                        mp.start();
                                     });
 
-                                    levelBar.setMax(player.getLevel().getMaxProgress());
-                                    levelBar.setProgress(player.getLevel().getProgressLevel()+actualProgress);
+                                    levelBar.setMax(player.getLevel_object().getMaxProgress());
+                                    levelBar.setProgress(player.getLevel_object().getProgressLevel()+actualProgress);
 
                                 }
                                 if(remainingMinutes==0){
@@ -702,14 +601,12 @@ public class GameScene extends AppCompatActivity
 
                                     ignore=true;
                                 }
-                            }
                         });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     remainingMinutes-=1;
                 }
-            }
         });
 
         thread.start();
@@ -732,14 +629,16 @@ public class GameScene extends AppCompatActivity
 
         hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
-        levelBar.setMax(player.getLevel().getMaxProgress());
-        levelBar.setProgress(player.getLevel().getProgressLevel());
 
-        if(player.getLevel().getLevel()<10)
-            levelNumber.setText(getString(R.string.level)+": 0"+player.getLevel().getLevel());
+        levelBar.setMax(player.getLevel_object().getMaxProgress());
+
+        levelBar.setProgress(player.getLevel_object().getProgressLevel());
+
+        if(player.getLevel_object().getLevel()<10)
+            levelNumber.setText(getString(R.string.level)+": 0"+player.getLevel_object().getLevel());
 
         else
-            levelNumber.setText(getString(R.string.level)+": "+player.getLevel().getLevel());
+            levelNumber.setText(getString(R.string.level)+": "+player.getLevel_object().getLevel());
 
     };
 
@@ -764,30 +663,29 @@ public class GameScene extends AppCompatActivity
 
 
         income=findViewById(R.id.income);
-        income.setText(work.getPay()+"$/"+getString(R.string.day));
+        income.setText(work.getIncome()+"$/"+getString(R.string.day));
 
-        choosenWork =new Work(
-                 work.getName()
-                ,work.getPay()
-                ,work.getLeveltoWork()
-                ,work.getTimeOfWork()
-                ,work.getReqDegree()
-                ,work.getImagePath());
+        choosenWork =work;
 
-        player.setWork(choosenWork);
-        player.setWorkMinutes(choosenWork.getTimeOfWork()*60);
-        Uri imgURI = Uri.parse(work.getImagePath());
+        player.setWork(choosenWork.getName());
+        player.setWork_time(choosenWork.getWork_time());
+        player.setWork_image_path(work.getImgPath());
+        player.setWork_income(work.getIncome());
+
+
+        Uri imgURI = Uri.parse(work.getImgPath());
         caracterImg.setImageURI(imgURI);
             saveProgress();
         startWorking.setEnabled(true);
         jobName.setText(work.getName());
+
 
         loadRewardAdFirstTime();
 
     }
 
     @Override
-    public void deliverBuy(String nameOfFragment) {
+    public void deliverMainFragment(String nameOfFragment) {
 
 
         if(nameOfFragment.equals("Food") ||nameOfFragment.equals("Nourriture") ){
@@ -821,47 +719,75 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverFourniture(final Furniture fourniture) {
 
+        Acquired_Furnitures acquired_furnitures1 =MainMenu.myAppDataBase.myDao().getAcqFurn(fourniture.getId(),player.getId());
+        // test if is the furniture is already bought
+        if(acquired_furnitures1 == null){
+
         AlertDialog.Builder builder =new AlertDialog.Builder(GameScene.this);
 
         builder.setTitle("Purchase")
                 .setMessage("Would you like to purchase this item ?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton("Yes", (dialog, which) -> {
 
-                        float newBalance=player.getBalance()-fourniture.getPrice();
+                    double newBalance=player.getBalance()-fourniture.getPrice();
 
-                        String message;
-                        if(newBalance>=0) {
-                            player.setBalance(newBalance);
-                            balance.setText(newBalance + "$");
-                            message=" you purchased a "+fourniture.getName()+" for "+fourniture.getPrice()+"$ !";
-                        }else{
-                            message =" insufficiant funds to purchase "+fourniture.getName();
-                        }
-                        showPurchaseDialog(message);
+                    String message;
+                    if(newBalance>=0) {
+                        player.setBalance(newBalance);
+                        balance.setText(newBalance + "$");
+                        message=" you purchased a "+fourniture.getName()+" for "+fourniture.getPrice()+"$ !";
 
-                        //this is for the view model between homefragment and GameScene
+                        Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
+                        acquired_furnitures.setAvailable("true");
+                        acquired_furnitures.setFurn_id(fourniture.getId());
+                        acquired_furnitures.setPlayer_id(player.getId());
+                        acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
+                        acquired_furnitures.setImgurl(fourniture.getImgUrl());
 
+                        MainMenu.myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
 
-                        viewmodel.getFurniture().getValue().add(fourniture);
+                       // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
 
-
-
-                        onHomeShow(fourniture.getUrl());
+                    }else{
+                        message =" insufficiant funds to purchase "+fourniture.getName();
                     }
+                    showPurchaseDialog(message);
+
+                    //this is for the view model between homefragment and GameScene
+
+                    insertFurnitureFragment();
+
+
+                    onHomeShow(fourniture.getImgUrl());
                 })
-                .setNegativeButton("Nope", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        dialog.cancel();
-                    }
+                .setNegativeButton("Nope", (dialog, which) -> {
+                    dialog.dismiss();
+                    dialog.cancel();
                 });
 
         AlertDialog alertDialog =builder.create();
         alertDialog.show();
 
+        }else {
+
+          List <Acquired_Furnitures> acquired_furnitures = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
+
+          for(Acquired_Furnitures furn : acquired_furnitures) {
+              if(furn.getFurnitureType().equals(fourniture.getFurnitureType()))
+              furn.setAvailable("false");
+              MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(furn);
+          }
+
+
+            Toast.makeText(getApplicationContext(), fourniture.getName() + " is now used", Toast.LENGTH_SHORT).show();
+
+            acquired_furnitures1.setAvailable("true");
+
+            MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(acquired_furnitures1);
+
+            //viewmodel.getAcquired_furn().getValue().add(acquired_furnitures1);
+
+        }
     }
 
     @Override
@@ -886,10 +812,10 @@ public class GameScene extends AppCompatActivity
         if(hour>=24) {
             hour -= 24;
             day++;
-            player.setBankDeposit(player.getBankDeposit()*1.01f);
-            if(player.getStoreIncome() !=0) {
+            player.setBank_deposit(player.getBank_deposit()*1.01f);
+            if(player.getStore_income() !=0) {
 
-                player.setBalance(player.getBalance() + player.getStoreIncome());
+                player.setBalance(player.getBalance() + player.getStore_income());
                   balance.setText(player.getBalance() + "$");
             }
         }
@@ -927,7 +853,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverFood(Food food){
 
-        float newBalance =player.getBalance()-food.getPrice();
+        double newBalance =player.getBalance()-food.getPrice();
         if(newBalance>=0) {
             player.setBalance(newBalance);
             balance.setText(player.getBalance() + "$");
@@ -946,7 +872,7 @@ public class GameScene extends AppCompatActivity
         healthbar.setProgress(healthbar.getProgress()+medicine.getBenefit());
         healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
 
-        float newBalance=player.getBalance()-medicine.getPrice();
+        double newBalance=player.getBalance()-medicine.getPrice();
         if(newBalance>=0) {
             player.setBalance(newBalance);
             balance.setText(player.getBalance() + "$");
@@ -958,7 +884,7 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void deliverHouse(House house) {
-        float newBalance = player.getBalance()-house.getPrice();
+        float newBalance = (int)player.getBalance()-house.getPrice();
 
         if(newBalance>=0){
             player.setBalance(newBalance);
@@ -970,14 +896,18 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverStore(Store store) {
 
-        float newBalance = player.getBalance()-store.getPrice();
+        double newBalance = player.getBalance()-store.getPrice();
 
 
         if(newBalance>=0){
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
-            player.getAcquiredStores().add(store.getName());
-            player.setStoreIncome(player.getStoreIncome()+store.getIncome());
+            Acquired_Stores acquired_stores = new Acquired_Stores();
+            acquired_stores.setStore_id(store.getId());
+            acquired_stores.setPlayer_id(player.getId());
+
+            MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
+
             Toast.makeText(getApplicationContext(),"congratulation you purchased"+store.getName()+" !",Toast.LENGTH_SHORT).show();
 
             insertStoreFragment();
@@ -992,18 +922,25 @@ public class GameScene extends AppCompatActivity
     }
 
     @Override
-    public void deliverLearn(Learn learn) {
-        float newBalance =player.getBalance()-learn.getPrice();
+    public void deliverDegree(Degree degree) {
+        double newBalance =player.getBalance()-degree.getPrice();
 
         if(newBalance>=0){
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
-            Toast.makeText(getApplicationContext(),"purchase of "+learn.getName()+" done succesfully",Toast.LENGTH_SHORT).show();
-            player.getAcquiredDegress().add(learn.getName());
+            Toast.makeText(getApplicationContext(),"purchase of "+degree.getName()+" done succesfully",Toast.LENGTH_SHORT).show();
+            //player.getAcquiredDegress().add(learn.getName());
+
+            Acquired_degree acquired_degree = new Acquired_degree();
+            acquired_degree.setPlayer_id(player.getId());
+            acquired_degree.setDegree_id(degree.getId());
+            acquired_degree.setDegree_Name(degree.getName());
+            MainMenu.myAppDataBase.myDao().addAcquired_degree(acquired_degree);
+
             insertStudyFragment();
         }
         else
-            Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+learn.getName(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+degree.getName(),Toast.LENGTH_SHORT).show();
 
     }
 
@@ -1015,7 +952,7 @@ public class GameScene extends AppCompatActivity
 
             Bundle bundle =new Bundle();
             bundle.putFloat("balance",(int)player.getBalance());
-            bundle.putFloat("balanceInBank",player.getBankDeposit());
+            bundle.putFloat("balanceInBank",(int)player.getBank_deposit());
 
             DepositFragment depositFragment =new DepositFragment();
             depositFragment.setArguments(bundle);
@@ -1026,7 +963,7 @@ public class GameScene extends AppCompatActivity
             WithdrawFragment withdrawFragment =new WithdrawFragment();
 
             Bundle bundle =new Bundle();
-            bundle.putFloat("balanceInBank",player.getBankDeposit());
+            bundle.putFloat("balanceInBank",(int)player.getBank_deposit());
             withdrawFragment.setArguments(bundle);
 
             fragmentInsertion(withdrawFragment);
@@ -1039,7 +976,7 @@ public class GameScene extends AppCompatActivity
 
         int newBalance =(int)player.getBalance()-deposit;
 
-        player.setBankDeposit(player.getBankDeposit()+deposit);
+        player.setBank_deposit(player.getBank_deposit()+deposit);
         player.setBalance(newBalance);
         balance.setText(newBalance+"$");
 
@@ -1049,7 +986,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverWithdraw(int withdraw) {
 
-        player.setBankDeposit(player.getBankDeposit()-withdraw);
+        player.setBank_deposit(player.getBank_deposit()-withdraw);
 
         player.setBalance(player.getBalance()+withdraw);
 
@@ -1071,168 +1008,6 @@ public class GameScene extends AppCompatActivity
 
     }
 
-    public void saveProgress(){
-
-        if(slot==1)
-        sharedPreferences=getSharedPreferences(getString(R.string.prefSlot1),Context.MODE_PRIVATE);
-        if(slot==2)
-        sharedPreferences=getSharedPreferences(getString(R.string.prefSlot2),Context.MODE_PRIVATE);
-        if(slot==3)
-        sharedPreferences=getSharedPreferences(getString(R.string.prefSlot3),Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        //save player things
-        editor.putFloat("balance",player.getBalance());
-        editor.putString("work",player.getWork().getName());
-
-
-        if(!doubleEarnWorking)
-            editor.putFloat("pay",player.getWork().getPay());
-
-        else
-            editor.putFloat("pay",player.getWork().getPay()/Params.NUMBER_OF_MULTI_INOCME);
-
-        editor.putFloat("bankDeposit",player.getBankDeposit());
-        editor.putFloat("storeIncome",player.getStoreIncome());
-
-        if(choosenWork!=null)
-        editor.putString("imagePath",choosenWork.getImagePath());
-
-        editor.putInt("workTimeMinute",player.getWorkMinutes());
-        editor.putInt("level",player.getLevel().getLevel());
-        editor.putInt("maxProgress",player.getLevel().getMaxProgress());
-        editor.putInt("progressLevel",player.getLevel().getProgressLevel());
-
-        //put player degress
-        for(int i=0;i< player.getAcquiredDegress().size();i++){
-
-            editor.putString("degree"+i,player.getAcquiredDegress().get(i));
-        }
-        editor.putInt("degreeSize",player.getAcquiredDegress().size());
-
-
-        //put player stores
-        for(int i=0;i<player.getAcquiredStores().size();i++){
-            editor.putString("store"+i,player.getAcquiredStores().get(i));
-
-        }
-        editor.putInt("storeSize",player.getAcquiredStores().size());
-
-
-        //put player houses
-        for (int i =0;i < player.getAcquiredHouses().size();i++){
-            editor.putString("house"+i,player.getAcquiredHouses().get(i));
-        }
-        editor.putInt("houseSize",player.getAcquiredHouses().size());
-
-        for (int i =0;i<viewmodel.getFurniture().getValue().size();i++){
-            //todo
-            //insert type of furniture and the url of the furniture so the player get what he bought :p
-        }
-
-        //save time
-        editor.putInt("day", day);
-        editor.putInt("hour", hour);
-        editor.putInt("minute", minute);
-        editor.putInt("totalTime", totalTime);
-
-        //saveProgressBars
-        editor.putInt("healthBar",healthbar.getProgress());
-        editor.putInt("energyBar",energyBar.getProgress());
-        editor.putInt("hungerBar",hungerBar.getProgress());
-
-        editor.apply();
-
-    }
-
-    public void loadProgress(){
-
-        if(slot==1)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot1),Context.MODE_PRIVATE);
-        if(slot==2)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot2),Context.MODE_PRIVATE);
-        if(slot==3)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot3),Context.MODE_PRIVATE);
-
-
-        //load player data
-        player.setName(sharedPreferences.getString("PlayerName",getString(R.string.none)));
-        player.setBalance(sharedPreferences.getFloat("balance",5000000));
-        player.getWork().setName(sharedPreferences.getString("work",getString(R.string.none)));
-        player.getWork().setPay(sharedPreferences.getFloat("pay",0));
-        player.setWorkMinutes(sharedPreferences.getInt("workTimeMinute",0));
-        player.setBankDeposit(sharedPreferences.getFloat("bankDeposit",0));
-        player.setStoreIncome(sharedPreferences.getFloat("storeIncome",0));
-
-        //load player degress
-        int degreeSize =sharedPreferences.getInt("degreeSize",0);
-
-        ArrayList<String > degrees = new ArrayList<>();
-        for (int i=0 ; i< degreeSize;i++){
-
-            String degree =sharedPreferences.getString("degree"+i,null);
-
-            degrees.add(degree);
-
-        }
-
-        degrees.add(getString(R.string.none));
-        player.setAcquiredDegress(degrees);
-
-
-        //load player stores
-        int storeSize=sharedPreferences.getInt("storeSize",0);
-
-        ArrayList<String> stores =new ArrayList<>();
-
-        for (int i =0 ; i<storeSize;i++){
-            String store =sharedPreferences.getString("store"+i,null);
-            stores.add(store);
-        }
-
-        player.setAcquiredStores(stores);
-
-
-        //load player houses
-        int houseSize=sharedPreferences.getInt("houseSize",0);
-        ArrayList<String> houses =new ArrayList<>();
-        for(int i=0;i<houseSize;i++){
-            String house = sharedPreferences.getString("house"+i,null);
-
-            houses.add(house);
-        }
-
-        player.setAcquiredHouses(houses);
-
-
-
-
-        Uri imgURI = Uri.parse(sharedPreferences.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty"));
-        caracterImg.setImageURI(imgURI);
-        jobName.setText(player.getWork().getName());
-
-
-        Level level =new Level();
-        level.setLevel(sharedPreferences.getInt("level",0));
-        level.setMaxProgress(sharedPreferences.getInt("maxProgress",100));
-        level.setProgressLevel(sharedPreferences.getInt("progressLevel",0));
-
-        player.setLevel(level);
-        //load time of game
-        minute= sharedPreferences.getInt("minute",0);
-        hour=sharedPreferences.getInt("hour",0);
-        day=sharedPreferences.getInt("day",0);
-
-        totalTime=(day*24)+(hour*60)+minute;
-
-        //load progressbars
-        healthbar.setProgress(sharedPreferences.getInt("healthBar",Params.HEALTH_VALUE));
-        energyBar.setProgress(sharedPreferences.getInt("energyBar",Params.ENERGY_VALUE));
-        hungerBar.setProgress(sharedPreferences.getInt("hungerBar",Params.HUNGER_VALUE));
-
-    }
 
     public void fragmentInsertion(Fragment fragment){
 
@@ -1254,35 +1029,33 @@ public class GameScene extends AppCompatActivity
         fragmentManager.popBackStack();
         fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
 
+        Bundle bundle = new Bundle();
+        bundle.putInt("slot",player.getId());
+        fragment.setArguments(bundle);
+
         fragmentTransaction.replace(R.id.placefragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    public void clearPref(){
-        if(slot==1)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot1),Context.MODE_PRIVATE);
-        if(slot==2)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot2),Context.MODE_PRIVATE);
-        if(slot==3)
-            sharedPreferences=getSharedPreferences(getString(R.string.prefSlot3),Context.MODE_PRIVATE);
-        sharedPreferences.edit().clear().apply();
+    public void insertFurnitureFragment(){
+        FournitureFragment fournitureFragment = new FournitureFragment();
+        fragmentInsertionSecond(fournitureFragment);
+    }
 
+    public void insertHomeFragment(){
+
+        homeFragment =new HomeFragment();
+        fragmentInsertionSecond(homeFragment);
     }
 
     public void insertStudyFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("arr", player.getAcquiredDegress());
-        LearnFragment learnFragment = new LearnFragment();
-        learnFragment.setArguments(bundle);
-        fragmentInsertion(learnFragment);
+        DegreeFragment degreeFragment = new DegreeFragment();
+        fragmentInsertion(degreeFragment);
     }
 
     public void insertStoreFragment() {
         StoreFragment storeFragment = new StoreFragment();
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("stores", player.getAcquiredStores());
-        storeFragment.setArguments(bundle);
         fragmentInsertionSecond(storeFragment);
     }
 
@@ -1350,4 +1123,52 @@ public class GameScene extends AppCompatActivity
 
     }
 
+    public void loadProgress(){
+        database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+        jobName.setText(loaded_player.getWork());
+        Log.i("YOO",loaded_player.getWork_image_path());
+        caracterImg.setImageURI(Uri.parse(loaded_player.getWork_image_path()));
+        balance.setText(loaded_player.getBalance()+"$");
+        //income.setText((int)loaded_player.getWork_income());
+        levelNumber.setText("lvl"+loaded_player.getLevel());
+        hour=loaded_player.getHour();
+        minute=loaded_player.getMinute();
+        day=loaded_player.getDay();
+
+        totalTime= day * 24 + hour * 60 + minute;
+
+        player=loaded_player;
+
+
+        Level level = new Level(player.getLevel(),player.getLevel_progress(),player.getMax_progress());
+        player.setLevel_object(level);
+
+
+        healthbar.setProgress(loaded_player.getHealthbar());
+        energyBar.setProgress(loaded_player.getEnergybar());
+        hungerBar.setProgress(loaded_player.getHungerbar());
+
+
+    }
+
+
+    public void saveProgress(){
+
+        player.setHour(hour);
+        player.setMinute(minute);
+        player.setDay(day);
+
+        player.setHealthbar(healthbar.getProgress());
+        player.setHungerbar(hungerBar.getProgress());
+        player.setEnergybar(energyBar.getProgress());
+
+        player.setLevel(player.getLevel_object().getLevel());
+        player.setLevel_progress(player.getLevel_object().getProgressLevel());
+        player.setMax_progress(player.getLevel_object().getMaxProgress());
+
+
+        MainMenu.myAppDataBase.myDao().updatePlayer(player);
+
+
+    }
 }

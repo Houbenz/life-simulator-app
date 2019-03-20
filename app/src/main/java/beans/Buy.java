@@ -88,11 +88,11 @@ public class Buy {
             if(Locale.getDefault().getLanguage().equals("en"))
             is =context.getAssets().open("buy.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("buy-fr.json");
+           // if(Locale.getDefault().getLanguage().equals("fr"))
+             //   is =context.getAssets().open("buy-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("buy-ar.json");
+           // if(Locale.getDefault().getLanguage().equals("ar"))
+             //   is =context.getAssets().open("buy-ar.json");
 
             int size =is.available();
 

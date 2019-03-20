@@ -1,9 +1,7 @@
 package arrayAdapters;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,23 +13,26 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.Work;
+import database.Acquired_degree;
+import database.Degree;
+import database.Work;
 
 public class WorksGridAdapter extends ArrayAdapter<Work> {
 
 
     private int level ;
-    private  ArrayList<String > acquiredDegrees;
-    public WorksGridAdapter(@NonNull Context context, ArrayList<Work> works, int level,ArrayList<String > acquiredDegrees){
+    private  List<Acquired_degree> acquiredDegrees;
+    public WorksGridAdapter(@NonNull Context context, List<Work> works, int level ){
         super(context, R.layout.work_res,works);
         this.level=level;
-        this.acquiredDegrees=acquiredDegrees;
+        acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees();
     }
 
     @NonNull
@@ -57,10 +58,10 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
         if(work != null) {
 
-            String workTimeString =String.format(Locale.ENGLISH,"%s : %d hrs",getContext().getString(R.string.workTime),work.getTimeOfWork());
-            String payString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.pay),(int)work.getPay());
-            String worklvlString =String.format(Locale.ENGLISH,"%s : %s %d",getContext().getString(R.string.required),getContext().getString(R.string.level),(int)work.getLeveltoWork());
-            String reqDegreeString = String.format(Locale.ENGLISH,"%s : %s ",getContext().getString(R.string.required),work.getReqDegree());
+            String workTimeString =String.format(Locale.ENGLISH,"%s : %d hrs",getContext().getString(R.string.workTime),work.getWork_time());
+            String payString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.pay),(int)work.getIncome());
+            String worklvlString =String.format(Locale.ENGLISH,"%s : %s %d",getContext().getString(R.string.required),getContext().getString(R.string.level),(int)work.getLvlToWork());
+            String reqDegreeString = String.format(Locale.ENGLISH,"%s : %s ",getContext().getString(R.string.required),work.getDegree_required());
 
             workName.setText(work.getName());
             workPay.setText(payString);
@@ -69,7 +70,7 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
             reqDegree.setText(reqDegreeString);
 
 
-        Uri imageURI =Uri.parse(work.getImagePath());
+        Uri imageURI =Uri.parse(work.getImgPath());
 
         imageView.setImageURI(imageURI);
 
@@ -77,26 +78,32 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
         boolean in =false ;
         int i=0;
 
-        while (!in && i<acquiredDegrees.size()){
 
-            if(acquiredDegrees.get(i).equals(work.getReqDegree()))
-                in=true;
+        while (!in && i<acquiredDegrees.size()) {
+
+            if (acquiredDegrees.get(i).getDegree_Name().equals(work.getDegree_required()))
+            in = true;
+
             i++;
         }
 
 
-        if(work.getLeveltoWork()>level && !in){
+        if(work.getDegree_required().equals(getContext().getString(R.string.none)))
+            in=true;
+
+
+        if(work.getLvlToWork()>level && !in){
             reqDegree.setTextColor(getContext().getResources().getColor(R.color.red));
             workLevel.setTextColor(getContext().getResources().getColor(R.color.red));
             workView.setClickable(true);
 
         }else{
-            if(work.getLeveltoWork()>level && in){
+            if(work.getLvlToWork()>level && in){
                 reqDegree.setTextColor(getContext().getResources().getColor(R.color.green));
                 workLevel.setTextColor(getContext().getResources().getColor(R.color.red));
                 workView.setClickable(true);
             }else{
-                if(work.getLeveltoWork()<=level && !in){
+                if(work.getLvlToWork()<=level && !in){
 
                     reqDegree.setTextColor(getContext().getResources().getColor(R.color.red));
                     workLevel.setTextColor(getContext().getResources().getColor(R.color.green));

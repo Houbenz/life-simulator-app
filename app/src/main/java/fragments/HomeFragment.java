@@ -1,6 +1,7 @@
 package fragments;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
@@ -11,9 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
-import beans.Furniture;
+import java.util.List;
+
+import database.Acquired_Furnitures;
+import database.Furniture;
 import viewmodels.ViewModelFourHome;
 
 /**
@@ -48,57 +53,69 @@ public class HomeFragment extends Fragment {
 
         View fragment =inflater.inflate(R.layout.fragment_home, container, false);
 
-       // room=fragment.findViewById(R.id.room);
         salonTable=fragment.findViewById(R.id.salontable);
         tablePlace=fragment.findViewById(R.id.tablePlace);
         tvPlace=fragment.findViewById(R.id.tvPlace);
         couch=fragment.findViewById(R.id.couch);
 
 
-        viewModel.getFurniture().observe(this,list -> {
+        int slot = getArguments().getInt("slot");
 
-            for(Furniture furniture : list){
+        //get all acquired furnitures
+        List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
 
-                Uri uri;
-                switch (furniture.getFournitureType()){
+        for (Acquired_Furnitures furniture : acquired_furnituresList ){
+            Uri uri;
+            switch (furniture.getFurnitureType()){
 
-                    case "table" :
-                        uri = Uri.parse(furniture.getUrl());
+                case "table" :
+                    if(furniture.getAvailable().equals("true")) {
+                        uri = Uri.parse(furniture.getImgurl());
                         tablePlace.setImageURI(uri);
-                        break;
+                    }
+                    break;
 
-                    case "tv"    :
-                        uri = Uri.parse(furniture.getUrl());
-                        tvPlace.setImageURI(uri);
-                        break;
+                case "tv"    :
+                    if(furniture.getAvailable().equals("true")) {
+                    uri = Uri.parse(furniture.getImgurl());
+                    tvPlace.setImageURI(uri);
+                    }
+                    break;
 
-                    case "chair" :
-                        uri = Uri.parse(furniture.getUrl());
-                        tvPlace.setImageURI(uri);
-                        break;
+              /*  case "chair" :
+                    if(furniture.getAvailable().equals("true")) {
+                    uri = Uri.parse(furniture.getImgurl());
+                    tvPlace.setImageURI(uri);
+                    }
+                    break;*/
 
-                    case "computer" :
-                        uri = Uri.parse(furniture.getUrl());
-                        tablePlace.setImageURI(uri);
-                        break;
-
-
-                    case "couch" :
-                        uri = Uri.parse(furniture.getUrl());
-                        couch.setImageURI(uri);
-                        break;
-
-                    case "salonTable" :
-                        uri = Uri.parse(furniture.getUrl());
-                        salonTable.setImageURI(uri);
-                        break;
-                    default: ;
+                case "computer" :
+                    if(furniture.getAvailable().equals("true")) {
+                    uri = Uri.parse(furniture.getImgurl());
+                    tablePlace.setImageURI(uri);
+                    }
+                    break;
 
 
-                }
+                case "couch" :
+                    if(furniture.getAvailable().equals("true")) {
+                    uri = Uri.parse(furniture.getImgurl());
+                    couch.setImageURI(uri);
+                    }
+                    break;
+
+                case "salonTable" :
+                    if(furniture.getAvailable().equals("true")) {
+                    uri = Uri.parse(furniture.getImgurl());
+                    salonTable.setImageURI(uri);
+                    }
+                    break;
+                default: ;
+
+
             }
-        });
 
+        }
 
         return fragment;
     }

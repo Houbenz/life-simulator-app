@@ -12,12 +12,14 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import arrayAdapters.FoodListAdapter;
-import beans.Food;
+import database.Food;
 
 
 public class FoodFragment extends Fragment {
@@ -36,7 +38,7 @@ public class FoodFragment extends Fragment {
 
         FrameLayout frameLayout =(FrameLayout) inflater.inflate(R.layout.fragment_food, container, false);
 
-        ArrayList<Food> foods = Food.initFood(getContext());
+        List<Food> foods = MainMenu.myAppDataBase.myDao().getFoods();
 
         FoodListAdapter foodListAdapter =new FoodListAdapter(getContext(),foods);
 

@@ -44,7 +44,7 @@
             android:layout_above="@+id/slotDate1"
             android:layout_toEndOf="@id/slotImage1"
             android:fontFamily="casual"
-            android:text="@string/slotTitle1"
+            android:text="@string/none"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold" />
 
@@ -85,7 +85,7 @@
             android:layout_above="@+id/slotDate2"
             android:layout_toEndOf="@id/slotImage2"
             android:fontFamily="casual"
-            android:text="@string/slotTitle1"
+            android:text="@string/none"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold" />
 
@@ -125,7 +125,7 @@
             android:layout_above="@+id/slotDate3"
             android:layout_toEndOf="@id/slotImage3"
             android:fontFamily="casual"
-            android:text="@string/slotTitle1"
+            android:text="@string/none"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold" />
 

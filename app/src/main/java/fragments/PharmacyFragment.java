@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
-
-import java.util.ArrayList;
+import java.util.List;
 
 import arrayAdapters.PharmacyListAdapter;
-import beans.Medicine;
+import database.Medicine;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +36,7 @@ public class PharmacyFragment extends Fragment {
 
         View fragment = inflater.inflate(R.layout.fragment_pharmacy, container, false);
 
-        ArrayList<Medicine> medicines =Medicine.initMedicine(getContext());
+        List<Medicine> medicines =MainMenu.myAppDataBase.myDao().getMedicines();
 
         ListView pharmacyView =fragment.findViewById(R.id.pharmacyView);
 
@@ -62,7 +62,7 @@ public class PharmacyFragment extends Fragment {
     }
 
     public interface OnMedicineClicked{
-        public void deliverMedicine(Medicine medicine);
+         void deliverMedicine(Medicine medicine);
     }
 
     @Override

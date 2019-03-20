@@ -11,24 +11,27 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.Learn;
+import database.Acquired_degree;
+import database.Degree;
 
 /**
  * Created by Houbenz on 20/08/2018.
  */
 
-public class LearnListAdapter extends ArrayAdapter<Learn> {
+public class DegreeListAdapter extends ArrayAdapter<Degree> {
 
 
-    private  ArrayList<String> acquiredDegrees;
-    public LearnListAdapter(@NonNull Context context, ArrayList<Learn> learns,ArrayList<String > acquiredDegrees) {
-        super(context, R.layout.learn_res,learns);
-        this.acquiredDegrees=acquiredDegrees;
+    private  List<Acquired_degree> acquiredDegrees;
+    public DegreeListAdapter(@NonNull Context context, List<Degree> degrees) {
+        super(context, R.layout.learn_res,degrees);
+        this.acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees();
     }
 
     @NonNull
@@ -40,16 +43,17 @@ public class LearnListAdapter extends ArrayAdapter<Learn> {
         @SuppressLint("viewHolder")
         View learnView = layoutInflater.inflate(R.layout.learn_res,parent,false);
 
-        Learn learn=getItem(position);
+        //Learn learn=getItem(position);
+           Degree degree = getItem(position) ;
 
         TextView name=learnView.findViewById(R.id.nameLearn);
         TextView price=learnView.findViewById(R.id.priceLearn);
         TextView acquired=learnView.findViewById(R.id.acqLearn);
 
-            if(learn != null) {
+            if(degree != null) {
 
-                String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)learn.getPrice());
-                name.setText(learn.getName());
+                String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)degree.getPrice());
+                name.setText(degree.getName());
                 price.setText(priceString);
 
 
@@ -58,7 +62,7 @@ public class LearnListAdapter extends ArrayAdapter<Learn> {
 
                 while (!in && i < acquiredDegrees.size()) {
 
-                    if (acquiredDegrees.get(i).equals(learn.getName()))
+                    if (acquiredDegrees.get(i).getDegree_id() == degree.getId())
                         in = true;
                     i++;
 

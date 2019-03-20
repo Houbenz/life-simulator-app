@@ -51,13 +51,7 @@ public class SleepFragment extends Fragment {
 
         Button confirmSleep= sleepFragment.findViewById(R.id.confirmSleep);
 
-        confirmSleep.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                monSleepClicked.deliverSleep(hoursNumber);
-            }
-        });
+        confirmSleep.setOnClickListener(v -> monSleepClicked.deliverSleep(hoursNumber));
 
         return sleepFragment;
     }

@@ -3,7 +3,7 @@ package beans;
 import android.content.Context;
 
 import com.example.android.testsharedpreferences.R;
-
+import database.Work;
 import java.util.ArrayList;
 
 /**
@@ -45,7 +45,7 @@ public class Player {
         this.name = name;
         this.balance = balance;
         this.work = work;
-        workMinutes=getWork().getTimeOfWork()*60;
+        workMinutes=getWork().getWork_time()*60;
         acquiredDegress=new ArrayList<>();
         this.bankDeposit=bankDeposit;
     }

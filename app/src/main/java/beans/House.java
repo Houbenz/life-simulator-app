@@ -52,11 +52,11 @@ public class House extends Buy {
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("house.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("house-fr.json");
+          //  if(Locale.getDefault().getLanguage().equals("fr"))
+            //    is =context.getAssets().open("house-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("house-ar.json");
+          //  if(Locale.getDefault().getLanguage().equals("ar"))
+            //    is =context.getAssets().open("house-ar.json");
 
 
             int size = is.available();

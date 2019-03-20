@@ -16,16 +16,17 @@ import android.widget.TextView;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.Food;
+import database.Food;
 
 
 public class FoodListAdapter extends ArrayAdapter<Food> {
 
 
 
-    public FoodListAdapter(@NonNull Context context, ArrayList<Food> foods) {
+    public FoodListAdapter(@NonNull Context context, List<Food> foods) {
         super(context, R.layout.food_res,foods);
     }
 
@@ -60,7 +61,7 @@ public class FoodListAdapter extends ArrayAdapter<Food> {
                 benefit.setText(benefitString);
                 description.setText(descriptionString);
 
-                Uri imgURI = Uri.parse(food.getImagePath());
+                Uri imgURI = Uri.parse(food.getImgUrl());
                 foodImg.setImageURI(imgURI);
 
 

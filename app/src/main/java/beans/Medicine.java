@@ -48,11 +48,11 @@ public class Medicine extends  Buy{
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("medicine.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("medicine-fr.json");
+           // if(Locale.getDefault().getLanguage().equals("fr"))
+           //     is =context.getAssets().open("medicine-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("medicine-ar.json");
+            //if(Locale.getDefault().getLanguage().equals("ar"))
+            //    is =context.getAssets().open("medicine-ar.json");
 
             int size =is.available();
 

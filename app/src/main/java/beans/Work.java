@@ -101,11 +101,11 @@ public class Work {
             if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("jobs.json");
 
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is =context.getAssets().open("jobs-fr.json");
+            //if(Locale.getDefault().getLanguage().equals("fr"))
+              //  is =context.getAssets().open("jobs-fr.json");
 
-            if(Locale.getDefault().getLanguage().equals("ar"))
-                is =context.getAssets().open("jobs-ar.json");
+          //  if(Locale.getDefault().getLanguage().equals("ar"))
+            //    is =context.getAssets().open("jobs-ar.json");
 
             int size = is.available();
 

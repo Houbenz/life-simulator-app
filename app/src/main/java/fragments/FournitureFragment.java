@@ -8,15 +8,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import arrayAdapters.FournitureGridAdapter;
-import beans.Furniture;
+import database.Furniture;
 import viewmodels.ViewModelFourHome;
 
 
@@ -39,31 +39,29 @@ public class FournitureFragment extends Fragment {
 
 
 
+        int slot = getArguments().getInt("slot");
 
         View fournitureFragment= inflater.inflate(R.layout.fragment_fourniture, container, false);
 
 
         viewModel=ViewModelProviders.of(getActivity()).get(ViewModelFourHome.class);
 
-        ArrayList<Furniture> furnitures = Furniture.initFourniture(getContext());
+        List<Furniture> furnitures =MainMenu.myAppDataBase.myDao().getFurnitures();
 
-        FournitureGridAdapter fournitureGridAdapter =new FournitureGridAdapter(getContext(), furnitures);
+        FournitureGridAdapter fournitureGridAdapter =new FournitureGridAdapter(getContext(),furnitures,slot);
 
         GridView gridFourniture =fournitureFragment.findViewById(R.id.gridFourniture);
 
         gridFourniture.setAdapter(fournitureGridAdapter);
 
-        gridFourniture.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridFourniture.setOnItemClickListener((parent, view, position, id) -> {
 
-                Furniture fourniture =(Furniture)parent.getItemAtPosition(position);
+            Furniture fourniture =(Furniture)parent.getItemAtPosition(position);
 
-                monFournitureClicked.deliverFourniture(fourniture);
+            monFournitureClicked.deliverFourniture(fourniture);
 
-                //viewModel.setFurniture(fourniture);
+            //viewModel.setFurniture(fourniture);
 
-            }
         });
 
 

@@ -5,26 +5,18 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import beans.Furniture;
+import database.Acquired_Furnitures;
+import database.Furniture;
 
 public class ViewModelFourHome extends ViewModel {
 
-    private MutableLiveData<ArrayList<Furniture>> furniture = new MutableLiveData<ArrayList<Furniture>>();
+    private MutableLiveData<List<Acquired_Furnitures>> acquired_furn = new MutableLiveData<List<Acquired_Furnitures>>();
 
 
-    public ViewModelFourHome(){
+    public void setAcquired_furn(List<Acquired_Furnitures> item){acquired_furn.setValue(item);}
 
-        furniture.setValue( new ArrayList<Furniture>());
-    }
+    public LiveData<List<Acquired_Furnitures>> getAcquired_furn(){ return acquired_furn;}
 
-
-
-    public void setFurniture(ArrayList<Furniture> item){
-        furniture.setValue(item);
-    }
-
-    public LiveData<ArrayList<Furniture>> getFurniture(){
-        return furniture;
-    }
 }

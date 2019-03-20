@@ -12,12 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.testsharedpreferences.MainMenu;
 import com.example.android.testsharedpreferences.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import beans.Furniture;
+import database.Acquired_Furnitures;
+import database.Furniture;
 
 /**
  * Created by Houbenz on 01/08/2018.
@@ -25,10 +28,12 @@ import beans.Furniture;
 
 public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
 
-    public FournitureGridAdapter(@NonNull Context context, ArrayList<Furniture> fournitures) {
+    private  int slot;
+    public FournitureGridAdapter(@NonNull Context context, List<Furniture> fournitures,int slot) {
 
 
         super(context, R.layout.fourniture_res,fournitures);
+        this.slot=slot;
     }
 
 
@@ -42,6 +47,7 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
         View fournitureRes=layoutInflater.inflate(R.layout.fourniture_res,parent, false);
 
 
+
         Furniture fourniture =getItem(position);
 
         TextView name=fournitureRes.findViewById(R.id.fournitureName);
@@ -49,15 +55,30 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
         TextView fournitureType=fournitureRes.findViewById(R.id.fournitureType);
         ImageView fournitureImg = fournitureRes.findViewById(R.id.fournitureImg);
 
-        //Uri uri =Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_medium_tv");
-        Uri uri = Uri.parse(fourniture.getUrl());
+        List<Acquired_Furnitures> acquired_furnitures = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
+
+
+        boolean in = false;
+
+        for(Acquired_Furnitures acq : acquired_furnitures){
+            if( acq.getFurn_id() == fourniture.getId())
+                in=true;
+        }
+
+        Uri uri = Uri.parse(fourniture.getImgUrl());
         fournitureImg.setImageURI(uri);
 
         if(fourniture != null) {
             String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)fourniture.getPrice());
-            String fournitureTypeString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.type),fourniture.getFournitureType());
+            String fournitureTypeString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.type),fourniture.getFurnitureType());
 
-            name.setText(fourniture.getName());
+            if(in) {
+                name.setText(fourniture.getName());
+                name.setTextColor(getContext().getResources().getColor(R.color.green));
+            }
+            else {
+                name.setText(fourniture.getName());
+            }
             price.setText(priceString);
             fournitureType.setText(fournitureTypeString);
 

@@ -40,12 +40,9 @@ public class WithdrawFragment extends Fragment {
 
 
         seekBarMuch=frameLayout.findViewById(R.id.seekbarMuch);
-        seekBarWithdraw=(SeekBar)frameLayout.findViewById(R.id.seekBarDeposit);
+        seekBarWithdraw=frameLayout.findViewById(R.id.seekBarDeposit);
         withdraw=frameLayout.findViewById(R.id.withdraw);
         bankBalanceW=frameLayout.findViewById(R.id.bankBalanceW);
-
-
-
 
         float balanceInBank=getArguments().getFloat("balanceInBank");
 
@@ -65,26 +62,14 @@ public class WithdrawFragment extends Fragment {
         });
 
 
-        withdraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                monWithdraw.deliverWithdraw(seekBarWithdraw.getProgress());
-
-            }
-        });
-
-
-
-
-
+        withdraw.setOnClickListener(v -> monWithdraw.deliverWithdraw(seekBarWithdraw.getProgress()));
 
         return  frameLayout;
     }
 
 
     public interface OnWithdraw{
-        public void deliverWithdraw(int withdraw);
+         void deliverWithdraw(int withdraw);
     }
 
 

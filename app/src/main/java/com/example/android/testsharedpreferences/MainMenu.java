@@ -1,31 +1,45 @@
 package com.example.android.testsharedpreferences;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
 import com.google.android.gms.ads.MobileAds;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import beans.Buy;
+import beans.Food;
+import beans.Furniture;
+import beans.Learn;
+import beans.Medicine;
+import beans.Store;
+import conf.Params;
+import database.Acquired_degree;
+import database.Degree;
+import database.MainFragments;
+import database.MyAppDataBase;
+import database.Player;
 
 public class MainMenu extends AppCompatActivity{
 
@@ -34,9 +48,8 @@ public class MainMenu extends AppCompatActivity{
     private Button loadGame;
     private Button settings;
     private Button credits;
-    private SharedPreferences sharedPreferences1 ;
-    private SharedPreferences sharedPreferences2 ;
-    private SharedPreferences sharedPreferences3 ;
+
+    public static MyAppDataBase myAppDataBase;
 
 
     private ImageView imageView1;
@@ -48,15 +61,15 @@ public class MainMenu extends AppCompatActivity{
 
     private ConstraintLayout mainLayout;
 
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
+    private SharedPreferences sharedPreferences;
 
-            //delayedHide();
+    @SuppressLint("ClickableViewAccessibility")
+    private View.OnTouchListener mOnTouchListener = (v, event) -> {
 
-            hideSystemUI();
-            return false;
-        }
+        //delayedHide();
+
+        hideSystemUI();
+        return false;
     };
 
 
@@ -68,11 +81,28 @@ public class MainMenu extends AppCompatActivity{
         setContentView(R.layout.activity_main_menu);
 
 
+        myAppDataBase=Room.databaseBuilder(getApplicationContext(),MyAppDataBase.class,"life_simulatordb")
+                .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
+        sharedPreferences= getApplicationContext().getSharedPreferences("myShared",Context.MODE_PRIVATE);
+
+
+        String entry =sharedPreferences.getString("entry","none");
+
+        if(entry.equals("none")){
+            initWorkRows();
+            initDegreeRows();
+            initFragments();
+            initFood();
+            initStores();
+            initFurnitures();
+            initMedicine();
+
+            sharedPreferences.edit().putString("entry","available").apply();
+        }
+
+
         MobileAds.initialize(this,"ca-app-pub-3940256099942544~5224354917");
-
-
-
-
 
         newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
@@ -92,37 +122,22 @@ public class MainMenu extends AppCompatActivity{
 
 
 
-        credits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        credits.setOnClickListener(view ->{
 
-                }
+
         });
 
 
-        sharedPreferences1 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot1), Context.MODE_PRIVATE);
-        sharedPreferences2 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot2), Context.MODE_PRIVATE);
-        sharedPreferences3 = getApplicationContext().getSharedPreferences(getString(R.string.prefSlot3), Context.MODE_PRIVATE);
-
-        //resetAll();
-
-        newGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        newGame.setOnClickListener(view ->{
 
                 dialogueCreatorNewGame();
-            }
         });
 
-        loadGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        loadGame.setOnClickListener(view ->{
+
                 dialogueCreatorLoadGame();
-            }
+
         });
-
-
-
 
 
         /*
@@ -141,55 +156,51 @@ public class MainMenu extends AppCompatActivity{
 
         firsttime  =4000;
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread thread = new Thread(() -> {
+
+            while (!isDestroyed()){
+
+                try {
 
 
-                while (!isDestroyed()){
+                    Thread.sleep(firsttime);
+                    firsttime=1500;
+                   runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           animateInThread(imageView3);
+                       }
+                   });
 
-                    try {
+                   Thread.sleep(1500);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateInThread(imageView4);
+                        }
+                    });
 
+                    Thread.sleep(2000);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateInThread(imageView1);
+                        }
+                    });
 
-                        Thread.sleep(firsttime);
-                        firsttime=1500;
-                       runOnUiThread(new Runnable() {
-                           @Override
-                           public void run() {
-                               animateInThread(imageView3);
-                           }
-                       });
+                    Thread.sleep(1500);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateInThread(imageView2);
+                        }
+                    });
 
-                       Thread.sleep(1500);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                animateInThread(imageView4);
-                            }
-                        });
-
-                        Thread.sleep(2000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                animateInThread(imageView1);
-                            }
-                        });
-
-                        Thread.sleep(1500);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                animateInThread(imageView2);
-                            }
-                        });
-
-                    }catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
-
-
+                }catch (InterruptedException e){
+                    e.printStackTrace();
                 }
+
+
             }
         });
 
@@ -233,29 +244,21 @@ public class MainMenu extends AppCompatActivity{
 
 
     //pour ecraser une partie lorsque le joueur utilise une slot deja prise
-    public void overwriteSlotDilaog (final SharedPreferences.Editor editor , final int slotNumber){
+    public void overwriteSlotDilaog (final int slotNumber){
 
         final AlertDialog.Builder overwriteDialog = new AlertDialog.Builder(MainMenu.this);
 
 
 
         overwriteDialog.setMessage(getString(R.string.overwriteTitle))
-                .setPositiveButton(getString(R.string.overwrite), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton(getString(R.string.overwrite), (dialog,which) -> {
+                    myAppDataBase.myDao().deletePlayer(myAppDataBase.myDao().getPlayer(slotNumber));
+                        dialogInputCreate(slotNumber);
 
-
-                        dialogInputCreate(editor , slotNumber);
-
-
-                    }
                 })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton(getString(R.string.no), (dialog,which) -> {
                             dialog.cancel();
                             dialog.dismiss();
-                    }
                 });
 
         AlertDialog alertDialog= overwriteDialog.create();
@@ -265,128 +268,132 @@ public class MainMenu extends AppCompatActivity{
     }
 
 
-
-
     //Affiche les slots pour charger une partie
 
-    public void dialogueCreatorLoadGame(){
+    public void dialogueCreatorLoadGame() {
 
         final Dialog loadSlot = new Dialog(MainMenu.this);
         loadSlot.setTitle("Slot Load Game");
         loadSlot.setContentView(R.layout.choose_slot_newgame);
 
+        TextView slotTitle1 = (TextView) loadSlot.findViewById(R.id.slotTitle1);
+        TextView slotTitle2 = (TextView) loadSlot.findViewById(R.id.slotTitle2);
+        TextView slotTitle3 = (TextView) loadSlot.findViewById(R.id.slotTitle3);
 
-        String title1=sharedPreferences1.getString("PlayerName","none");
-        String title2=sharedPreferences2.getString("PlayerName","none");
-        String title3=sharedPreferences3.getString("PlayerName","none");
-
-        String date1=sharedPreferences1.getString("PlayerTime","none");
-        String date2=sharedPreferences2.getString("PlayerTime","none");
-        String date3=sharedPreferences3.getString("PlayerTime","none");
-
+        TextView slotDate1 = (TextView) loadSlot.findViewById(R.id.slotDate1);
+        TextView slotDate2 = (TextView) loadSlot.findViewById(R.id.slotDate2);
+        TextView slotDate3 = (TextView) loadSlot.findViewById(R.id.slotDate3);
 
 
-        TextView slotTitle1=(TextView)loadSlot.findViewById(R.id.slotTitle1);
-        TextView slotTitle2=(TextView)loadSlot.findViewById(R.id.slotTitle2);
-        TextView slotTitle3=(TextView)loadSlot.findViewById(R.id.slotTitle3);
 
-        TextView slotDate1=(TextView)loadSlot.findViewById(R.id.slotDate1);
-        TextView slotDate2=(TextView)loadSlot.findViewById(R.id.slotDate2);
-        TextView slotDate3=(TextView)loadSlot.findViewById(R.id.slotDate3);
-
-
-        slotTitle1.setText(title1);
-        slotTitle2.setText(title2);
-        slotTitle3.setText(title3);
-
-        slotDate1.setText(date1);
-        slotDate2.setText(date2);
-        slotDate3.setText(date3);
-
-        //
-        String imagePath1=sharedPreferences1.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty");
-        String imagePath2=sharedPreferences2.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty");
-        String imagePath3=sharedPreferences3.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty");
-
-        Uri imgUri1=Uri.parse(imagePath1);
-        Uri imgUri2=Uri.parse(imagePath2);
-        Uri imgUri3=Uri.parse(imagePath3);
-
-
-        ImageView slotImage1=(ImageView)loadSlot.findViewById(R.id.slotImage1);
-        ImageView slotImage2=(ImageView)loadSlot.findViewById(R.id.slotImage2);
-        ImageView slotImage3=(ImageView)loadSlot.findViewById(R.id.slotImage3);
-
-        slotImage1.setImageURI(imgUri1);
-        slotImage2.setImageURI(imgUri2);
-        slotImage3.setImageURI(imgUri3);
+        ImageView slotImage1 = (ImageView) loadSlot.findViewById(R.id.slotImage1);
+        ImageView slotImage2 = (ImageView) loadSlot.findViewById(R.id.slotImage2);
+        ImageView slotImage3 = (ImageView) loadSlot.findViewById(R.id.slotImage3);
 
         RelativeLayout slot1 = loadSlot.findViewById(R.id.slotId1);
         RelativeLayout slot2 = loadSlot.findViewById(R.id.slotId2);
         RelativeLayout slot3 = loadSlot.findViewById(R.id.slotId3);
 
 
-        if(title1.equals("none"))
+        //Player Slot 1
+        Player player = myAppDataBase.myDao().getPlayer(1);
+        if(player != null) {
+
+            Uri imgUri1;
+            if (!(player.getWork_image_path() == null))
+                imgUri1 = Uri.parse(player.getWork_image_path());
+            else
+                imgUri1 = Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_empty");
+
+            slotImage1.setImageURI(imgUri1);
+            slotTitle1.setText(player.getName());
+            slotDate1.setText(player.getCreation_date());
+
+        }
+
+        else
+
             slot1.setEnabled(false);
 
-        if(title2.equals("none"))
-            slot2.setEnabled(false );
+        //Player Slot 2
 
+        player =myAppDataBase.myDao().getPlayer(2);
+        if(player != null) {
 
-        if(title3.equals("none"))
+        Uri imgUri2 ;
+        if (!(player.getWork_image_path() == null ))
+            imgUri2 = Uri.parse(player.getWork_image_path());
+        else
+            imgUri2 = Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_empty");
+
+        slotImage2.setImageURI(imgUri2);
+        slotTitle2.setText(player.getName());
+        slotDate2.setText(player.getCreation_date());
+
+        }
+
+         else
+            slot2.setEnabled(false);
+
+        //Player Slot 3
+        player=myAppDataBase.myDao().getPlayer(3);
+        if(player != null) {
+
+        Uri imgUri3;
+        if (!(player.getWork_image_path() == null ))
+            imgUri3 = Uri.parse(player.getWork_image_path());
+        else
+            imgUri3 = Uri.parse("android.resource://com.example.android.testsharedpreferences/drawable/ic_empty");
+
+        slotImage3.setImageURI(imgUri3);
+        slotTitle3.setText(player.getName());
+        slotDate3.setText(player.getCreation_date());
+
+        }
+
+         else
             slot3.setEnabled(false);
 
-            slot1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Intent intent = new Intent(MainMenu.this,GameScene.class);
+        //Events on click for slots 1 2 3
 
-                intent.putExtra("slotNumber",1);
+            slot1.setOnClickListener(view -> {
 
-                startActivity(intent);
+                Intent intent = new Intent(MainMenu.this, GameScene.class);
 
-                loadSlot.dismiss();
-            }
-        });
-
-        slot2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainMenu.this,GameScene.class);
-
-                intent.putExtra("slotNumber",2);
+                intent.putExtra("slotNumber", 1);
 
                 startActivity(intent);
 
                 loadSlot.dismiss();
+            });
 
+            slot2.setOnClickListener(view -> {
 
-            }
-        });
+                Intent intent = new Intent(MainMenu.this, GameScene.class);
 
-        slot3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainMenu.this,GameScene.class);
-
-                intent.putExtra("slotNumber",3);
+                intent.putExtra("slotNumber", 2);
 
                 startActivity(intent);
+
                 loadSlot.dismiss();
+            });
 
+            slot3.setOnClickListener(view -> {
 
-            }
-        });
+                Intent intent = new Intent(MainMenu.this, GameScene.class);
 
-        loadSlot.show();
+                intent.putExtra("slotNumber", 3);
 
-    }
+                startActivity(intent);
+
+                loadSlot.dismiss();
+            });
+
+            loadSlot.show();
+
+        }
+
 
 
     //Affiche les slots pour un nouveau joueur
@@ -395,33 +402,9 @@ public class MainMenu extends AppCompatActivity{
         choose.setTitle("Slot New Game");
         choose.setContentView(R.layout.choose_slot_newgame);
 
-        final String title1=sharedPreferences1.getString("PlayerName","none");
-        final String title2=sharedPreferences2.getString("PlayerName","none");
-        final String title3=sharedPreferences3.getString("PlayerName","none");
-
-        String date1=sharedPreferences1.getString("PlayerTime","none");
-        String date2=sharedPreferences2.getString("PlayerTime","none");
-        String date3=sharedPreferences3.getString("PlayerTime","none");
-
-        String imagePath1=sharedPreferences1.getString("imagePath","android.resource://com.example.android." +
-        "testsharedpreferences/drawable/ic_empty");
-        String imagePath2=sharedPreferences2.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty");
-        String imagePath3=sharedPreferences3.getString("imagePath","android.resource://com.example.android." +
-                "testsharedpreferences/drawable/ic_empty");
-
-        Uri imgUri1=Uri.parse(imagePath1);
-        Uri imgUri2=Uri.parse(imagePath2);
-        Uri imgUri3=Uri.parse(imagePath3);
-
-
         ImageView slotImage1=(ImageView)choose.findViewById(R.id.slotImage1);
         ImageView slotImage2=(ImageView)choose.findViewById(R.id.slotImage2);
         ImageView slotImage3=(ImageView)choose.findViewById(R.id.slotImage3);
-
-        slotImage1.setImageURI(imgUri1);
-        slotImage2.setImageURI(imgUri2);
-        slotImage3.setImageURI(imgUri3);
 
         TextView slotTitle1=(TextView)choose.findViewById(R.id.slotTitle1);
         TextView slotTitle2=(TextView)choose.findViewById(R.id.slotTitle2);
@@ -431,76 +414,104 @@ public class MainMenu extends AppCompatActivity{
         TextView slotDate2=(TextView)choose.findViewById(R.id.slotDate2);
         TextView slotDate3=(TextView)choose.findViewById(R.id.slotDate3);
 
-
-
-        slotTitle1.setText(title1);
-        slotTitle2.setText(title2);
-        slotTitle3.setText(title3);
-
-        slotDate1.setText(date1);
-        slotDate2.setText(date2);
-        slotDate3.setText(date3);
-
         RelativeLayout slot1 = choose.findViewById(R.id.slotId1);
         RelativeLayout slot2 = choose.findViewById(R.id.slotId2);
         RelativeLayout slot3 = choose.findViewById(R.id.slotId3);
 
 
-       final SharedPreferences.Editor shaprefEditor1 = sharedPreferences1.edit();
-       final SharedPreferences.Editor shaprefEditor2 = sharedPreferences2.edit();
-       final SharedPreferences.Editor shaprefEditor3 = sharedPreferences3.edit();
+        List<Player> playerList =myAppDataBase.myDao().getPlayers();
+
+        for( Player player : playerList){
 
 
+                //First Slot
+                if (player.getId() == 1) {
+                    Uri imgUri1;
+                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
+                        imgUri1 = Uri.parse(player.getWork_image_path());
+                    else
+                        imgUri1 = Uri.parse("android.resource://com.example.android." +
+                                "testsharedpreferences/drawable/ic_empty");
 
-        slot1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    slotImage1.setImageURI(imgUri1);
+                    slotTitle1.setText(player.getName());
+                    slotDate1.setText(player.getCreation_date());
 
 
-                if(title1.equals("none")) {
-                    dialogInputCreate(shaprefEditor1, 1);
-                    choose.dismiss();
                 }
-                else
-                {
-                    overwriteSlotDilaog(shaprefEditor1,1);
-                    choose.dismiss();
+
+
+                //Second Slot
+                if (player.getId() == 2) {
+                    Uri imgUri2 = null;
+
+                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
+                        imgUri2 = Uri.parse(player.getWork_image_path());
+                    else
+                        imgUri2 = Uri.parse("android.resource://com.example.android." +
+                                "testsharedpreferences/drawable/ic_empty");
+
+                    slotImage2.setImageURI(imgUri2);
+                    slotTitle2.setText(player.getName());
+                    slotDate2.setText(player.getCreation_date());
+
+
+                }
+
+                //Third Slot
+                if (player.getId() == 3) {
+                    Uri imgUri3 = null;
+
+                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
+                        imgUri3 = Uri.parse(player.getWork_image_path());
+                    else
+                        imgUri3 = Uri.parse("android.resource://com.example.android." +
+                                "testsharedpreferences/drawable/ic_empty");
+
+                    slotImage3.setImageURI(imgUri3);
+                    slotTitle3.setText(player.getName());
+                    slotDate3.setText(player.getCreation_date());
                 }
             }
-        });
 
-        slot2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        slot1.setOnClickListener(view ->{
 
-
-                if(title2.equals("none")) {
-                    dialogInputCreate(shaprefEditor2, 2);
-                    choose.dismiss();
-                }else {
-                    overwriteSlotDilaog(shaprefEditor2,2);
-                    choose.dismiss();
-                }
-            }
-
-        });
-
-        slot3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if(title3.equals("none")){
-                dialogInputCreate(shaprefEditor3, 3);
+            if(slotTitle1.getText().equals(getString(R.string.none))) {
+                dialogInputCreate( 1);
                 choose.dismiss();
-                 }
-                 else
-                {
-                    overwriteSlotDilaog(shaprefEditor3,3);
-                    choose.dismiss();
-                }
+            }
+            else
+            {
+                overwriteSlotDilaog(1);
+                choose.dismiss();
             }
         });
+        slot2.setOnClickListener(view ->{
+
+            if(slotTitle2.getText().equals(getString(R.string.none))) {
+                dialogInputCreate( 2);
+                choose.dismiss();
+            }
+            else
+            {
+                overwriteSlotDilaog(2);
+                choose.dismiss();
+            }
+        });
+        slot3.setOnClickListener(view ->{
+
+            if(slotTitle3.getText().equals(getString(R.string.none))) {
+                dialogInputCreate( 3);
+                choose.dismiss();
+            }
+            else
+            {
+                overwriteSlotDilaog(3);
+                choose.dismiss();
+            }
+        });
+
+
         choose.show();
     }
 
@@ -508,73 +519,70 @@ public class MainMenu extends AppCompatActivity{
 
     //Pour entrer le nom du joueur puis sauvgarder la premiere session
 
-    public void dialogInputCreate(final SharedPreferences.Editor editor , final int slotNumber){
+    public void dialogInputCreate(final int slotNumber){
 
         final Dialog putText = new Dialog(MainMenu.this);
 
         putText.setTitle("put your name");
-        //TODO
+
         putText.setContentView(R.layout.caracter_name);
 
         final TextInputLayout caracterName = putText.findViewById(R.id.nameInput);
 
-
-
         Button closeDialog =putText.findViewById(R.id.closeDialog);
 
-        closeDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        closeDialog.setOnClickListener(view -> {
+
                 putText.dismiss();
-            }
         });
 
         Button confirmDialog =putText.findViewById(R.id.confirm);
 
-        confirmDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        confirmDialog.setOnClickListener(view -> {
 
 
                 if(caracterName.getEditText().getText().toString().equals("")) {
-                    caracterName.setError("you must write at least 1 caracter");
+                    caracterName.setError("you must write at least 1 character");
                 }
                 else
                 {
-                    editor.clear().apply();
 
-                    editor.putString("PlayerName", caracterName.getEditText().getText().toString());
-
+                    Player player = new Player();
+                    player.setName(caracterName.getEditText().getText().toString());
                     Calendar cal = Calendar.getInstance();
-                    editor.putString("PlayerTime", cal.get(Calendar.DATE) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR)
-                            + " at " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
+                    String creationDate =cal.get(Calendar.DATE) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR)
+                            + " at " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+                    player.setCreation_date(creationDate);
 
-                    editor.commit();
+                    player.setId(slotNumber);
+
+                    player.setWork_image_path("android.resource://com.example.android." +
+                            "testsharedpreferences/drawable/ic_empty");
+                    player.setWork(getString(R.string.none));
+                    player.setBalance(50);
+                    player.setBank_deposit(0);
+                    player.setWork_time(0);
+                    player.setWork_income(0);
+
+                    player.setMax_progress(100);
+                    player.setHealthbar(Params.HEALTH_VALUE);
+                    player.setEnergybar(Params.ENERGY_VALUE);
+                    player.setHungerbar(Params.HUNGER_VALUE);
+
+                    myAppDataBase.myDao().addPlayer(player);
 
                     putText.dismiss();
 
                     Intent intent = new Intent(MainMenu.this, GameScene.class);
-
                     intent.putExtra("slotNumber", slotNumber);
-
-                    startActivity(intent);
+                     startActivity(intent);
 
                 }
-
-            }
         });
 
         putText.show();
     }
 
-
-
-    public void resetAll(){
-        sharedPreferences1.edit().clear().apply();
-        sharedPreferences2.edit().clear().apply();
-        sharedPreferences3.edit().clear().apply();
-    }
 
     public void animateButton(){
 
@@ -646,6 +654,123 @@ public class MainMenu extends AppCompatActivity{
         arrayImage[8]=R.drawable.ic_food;
         arrayImage[9]=R.drawable.ic_pilot;
         return arrayImage;
+    }
+
+
+    public void initWorkRows(){
+       ArrayList<beans.Work> worksBeans = beans.Work.workInit(getApplicationContext()) ;
+
+       for(beans.Work bean : worksBeans){
+           database.Work work = new database.Work();
+
+           work.setDegree_required(bean.getReqDegree());
+           work.setImgPath(bean.getImagePath());
+           work.setIncome(bean.getPay());
+           work.setLvlToWork(bean.getLeveltoWork());
+           work.setName(bean.getName());
+           work.setWork_time(bean.getTimeOfWork());
+
+           myAppDataBase.myDao().addWork(work);
+       }
+
+    }
+
+    public void initDegreeRows(){
+        ArrayList<Learn> learns = Learn.initLearn(getApplicationContext());
+
+        for(Learn learn : learns){
+            Degree degree = new Degree();
+
+            degree.setName(learn.getName());
+            degree.setPrice(learn.getPrice());
+            myAppDataBase.myDao().addDegree(degree);
+        }
+
+
+    }
+
+
+    public void initFood(){
+        ArrayList<Food>  foods= Food.initFood(getApplicationContext());
+
+        for(Food food : foods){
+            database.Food foodDb = new database.Food();
+
+            foodDb.setName(food.getName());
+            foodDb.setPrice(food.getPrice());
+            foodDb.setBenefit(food.getBenefit());
+            foodDb.setDescription(food.getDescription());
+            foodDb.setImgUrl(food.getImagePath());
+
+            myAppDataBase.myDao().addFood(foodDb);
+        }
+
+
+    }
+
+    public void initMedicine(){
+        ArrayList<Medicine> medicines = Medicine.initMedicine(getApplicationContext());
+
+
+        for(Medicine medicine : medicines){
+            database.Medicine medicineDb = new database.Medicine();
+
+            medicineDb.setName(medicine.getName());
+            medicineDb.setPrice(medicine.getPrice());
+            medicineDb.setBenefit(medicine.getBenefit());
+            medicineDb.setImgUrl(medicine.getImagePath());
+
+            myAppDataBase.myDao().addMedicine(medicineDb);
+        }
+    }
+
+    public  void initFragments(){
+        ArrayList<Buy> buys = Buy.initBuy(getApplicationContext());
+
+
+        for (Buy buy : buys){
+            MainFragments mainFragments = new MainFragments();
+            mainFragments.setName(buy.getName());
+            mainFragments.setColor(buy.getColor());
+            mainFragments.setImage_Uri(buy.getImagePath());
+
+            myAppDataBase.myDao().addMainFragment(mainFragments);
+
+
+        }
+    }
+
+    public void initStores(){
+        ArrayList<Store> stores = Store.initStore(getApplicationContext());
+
+        for (Store store : stores){
+            database.Store storeDb = new database.Store();
+            storeDb.setName(store.getName());
+            storeDb.setPrice(store.getPrice());
+            storeDb.setImgUrl(store.getUri());
+            storeDb.setIncome(store.getIncome());
+
+            myAppDataBase.myDao().addStore(storeDb);
+
+        }
+
+
+    }
+
+    public  void initFurnitures(){
+        ArrayList<Furniture> furnitures = Furniture.initFourniture(getApplicationContext());
+
+        for (Furniture furniture : furnitures){
+            database.Furniture furnitureDb = new database.Furniture();
+            furnitureDb.setName(furniture.getName());
+            furnitureDb.setPrice(furniture.getPrice());
+            furnitureDb.setImgUrl(furniture.getUrl());
+            furnitureDb.setFurnitureType(furniture.getFournitureType());
+
+            myAppDataBase.myDao().addFurnitures(furnitureDb);
+        }
+
+
     }
 
 }
