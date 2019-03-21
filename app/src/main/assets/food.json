@@ -2,7 +2,7 @@
 
   {
      "name":"Noodles"
-    ,"price":15
+    ,"price":5
     ,"benefit":5
     ,"description":"nasty"
     ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_noodles"
@@ -10,8 +10,8 @@
 ,
   {
     "name":"Chicken Dinner"
-  ,"price":25
-  ,"benefit":23
+  ,"price":15
+  ,"benefit":25
   ,"description":"tremendous"
   ,  "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_chicken"
   }
@@ -21,7 +21,7 @@
   {
     "name":"steak"
   ,"price":30
-  ,"benefit":25
+  ,"benefit":50
   ,"description":"Delicious"
   , "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_steak"
   }

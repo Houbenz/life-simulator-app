@@ -2,7 +2,7 @@
 
   {
     "name":"Nouilles"
-  ,"price":15
+  ,"price":5
   ,"benefit":5
   ,"description":"Mauvais"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_noodles"
@@ -10,8 +10,8 @@
 ,
   {
     "name":"Poulet grillé"
-  ,"price":25
-  ,"benefit":23
+  ,"price":15
+  ,"benefit":25
   ,"description":"Enorme"
   ,  "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_chicken"
   }
@@ -21,7 +21,7 @@
   {
     "name":"Steak"
   ,"price":30
-  ,"benefit":25
+  ,"benefit":50
   ,"description":"Délicieux"
   , "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_steak"
   }

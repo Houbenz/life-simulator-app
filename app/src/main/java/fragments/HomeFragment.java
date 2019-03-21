@@ -31,6 +31,7 @@ public class HomeFragment extends Fragment {
     private ImageView tablePlace;
     private ImageView tvPlace;
     private ImageView couch;
+    private ImageView chair;
     private ViewModelFourHome viewModel;
     private homeShow monStartWork;
     public HomeFragment() {
@@ -55,6 +56,7 @@ public class HomeFragment extends Fragment {
         tablePlace=fragment.findViewById(R.id.tablePlace);
         tvPlace=fragment.findViewById(R.id.tvPlace);
         couch=fragment.findViewById(R.id.couch);
+        chair=fragment.findViewById(R.id.chair);
 
 
         int slot = getArguments().getInt("slot");
@@ -80,12 +82,12 @@ public class HomeFragment extends Fragment {
                     }
                     break;
 
-              /*  case "chair" :
+                case "chair" :
                     if(furniture.getAvailable().equals("true")) {
                     uri = Uri.parse(furniture.getImgurl());
-                    tvPlace.setImageURI(uri);
+                    chair.setImageURI(uri);
                     }
-                    break;*/
+                    break;
 
                 case "computer" :
                     if(furniture.getAvailable().equals("true")) {

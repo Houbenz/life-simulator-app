@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name"
-        app:srcCompat="@drawable/super_market" />
+        app:srcCompat="@drawable/health_img" />
 
     <TextView
         android:id="@+id/name"

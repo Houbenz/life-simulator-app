@@ -4,10 +4,10 @@
   }
   ,
   {
-    "name":"Mediocre pills","price":15, "benefit":10
+    "name":"Mediocre pills","price":15, "benefit":20
   }
   ,
   {
-    "name":"High quality pills","price":50, "benefit":30
+    "name":"High quality pills","price":30, "benefit":40
   }
 ]
