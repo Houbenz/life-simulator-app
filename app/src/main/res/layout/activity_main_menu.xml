@@ -12,14 +12,16 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
-        android:layout_height="361dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="20dp"
         android:gravity="right"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context="com.example.android.testsharedpreferences.MainMenu">
 
 
@@ -28,7 +30,7 @@
             style="@style/MainMenuButtons"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:fontFamily="casual"
             android:gravity="center"
@@ -58,20 +60,22 @@
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/buttonSettings"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/credits"
             style="@style/MainMenuButtons"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/credit"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -80,10 +84,10 @@
         android:id="@+id/gameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="34dp"
-        android:layout_marginEnd="240dp"
-        android:layout_marginStart="201dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="240dp"
+        android:layout_marginBottom="34dp"
         android:layout_weight="1"
         android:fontFamily="casual"
         android:gravity="center"

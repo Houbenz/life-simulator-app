@@ -68,7 +68,7 @@ public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnMainFragmentClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked, HomeFragment.homeShow
-    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
+    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit,RewardedVideoAdListener
 {
 
     private Button buy;
@@ -143,10 +143,10 @@ public class GameScene extends AppCompatActivity
 
     private ConstraintLayout constraintLayout;
 
-    private boolean doubleEarnWorking =false ;
-
     private ViewModelFourHome viewmodel;
 
+    private final static  String AD_VIDEO_ID = "ca-app-pub-5859725902066144~3681738021";
+    
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
@@ -281,6 +281,19 @@ public class GameScene extends AppCompatActivity
         saveProgress();
     }
 
+
+    @Override
+    protected void onResume() {
+        mRewardVideoAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mRewardVideoAd.destroy(this);
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -301,12 +314,14 @@ public class GameScene extends AppCompatActivity
         income=findViewById(R.id.income);
         balance=findViewById(R.id.balance);
 
-        MobileAds.initialize(this,"ca-app-pub-3940256099942544/5224354917");
+        MobileAds.initialize(this,AD_VIDEO_ID);
+
         mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(this);
+        mRewardVideoAd.setRewardedVideoAdListener(this);
+        loadRewardAd();
+        //listenReward();
 
-        listenReward();
 
-        loadRewardAdFirstTime();
 
         viewmodel=ViewModelProviders.of(this).get(ViewModelFourHome.class);
 
@@ -405,22 +420,22 @@ public class GameScene extends AppCompatActivity
         // when the button start work is pressed
         startWorking=findViewById(R.id.startWorking);
 
-        if(player.getWork().equals(getString(R.string.none)))
+        if(player.getWork().equals(getString(R.string.none))) {
             startWorking.setEnabled(false);
-        else
+            doubleEarn.setEnabled(false);
+        }
+        else {
             startWorking.setEnabled(true);
+            doubleEarn.setEnabled(true);
+        }
 
 
         startWorking.setOnClickListener(v -> startWorkThread());
 
 
-
         doubleEarn.setOnClickListener(v -> {
             if(mRewardVideoAd.isLoaded()){
-
                 mRewardVideoAd.show();
-
-               doubleEarnThread();
             }
 
         });
@@ -455,18 +470,11 @@ public class GameScene extends AppCompatActivity
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-
-
-
-        if((! player.getName().equals(getString(R.string.none))))
-
-            loadRewardAdFirstTime();
     }
 
 
     public void doubleEarnThread(){
 
-        doubleEarnWorking=true;
 
         final double rewardIncome=player.getWork_income() * Params.NUMBER_OF_MULTI_INOCME;
         player.setWork_income(rewardIncome);
@@ -475,17 +483,13 @@ public class GameScene extends AppCompatActivity
 
         Thread minusTime =new Thread(() -> {
 
-           final Handler handler =new Handler(getMainLooper());
-
-
             int hours = Params.NUMBER_OF_HOURS_BENEFIT;
             doubleEarnMinutes = hours * 60;
 
             while (doubleEarnMinutes >= 0) {
                 try {
                     Thread.sleep(speed);
-                    handler.post(() -> {
-
+                        runOnUiThread(() ->{
                         doubleEarnMinutes--;
                         doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
                     });
@@ -493,9 +497,8 @@ public class GameScene extends AppCompatActivity
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
-            handler.post(() -> {
+            runOnUiThread(() ->{
                 double normalIncome = player.getWork_income() / Params.NUMBER_OF_MULTI_INOCME;
                 player.setWork_income(normalIncome);
                 income.setText(player.getWork_income() + "$");
@@ -503,9 +506,7 @@ public class GameScene extends AppCompatActivity
                 doubleEarn.setText(getString(R.string.doubleEarn));
                 loadRewardAd();
 
-                doubleEarnWorking=false;
             });
-
 
         });
 
@@ -672,15 +673,12 @@ public class GameScene extends AppCompatActivity
         player.setWork_image_path(work.getImgPath());
         player.setWork_income(work.getIncome());
 
-
         Uri imgURI = Uri.parse(work.getImgPath());
         caracterImg.setImageURI(imgURI);
             saveProgress();
         startWorking.setEnabled(true);
+        doubleEarn.setEnabled(true);
         jobName.setText(work.getName());
-
-
-        loadRewardAdFirstTime();
 
     }
 
@@ -1066,60 +1064,46 @@ public class GameScene extends AppCompatActivity
 
 
     private void loadRewardAd(){
-        mRewardVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+        mRewardVideoAd.loadAd(AD_VIDEO_ID, new AdRequest.Builder().build());
     }
 
-    private void loadRewardAdFirstTime(){
-        mRewardVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
-
-        doubleEarn.setEnabled(true);
+    @Override
+    public void onRewardedVideoAdLoaded() {
 
     }
 
-    private void listenReward(){
-        mRewardVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-                //Toast.makeText(getApplicationContext(),"Load Complete",Toast.LENGTH_LONG).show();
-            }
+    @Override
+    public void onRewardedVideoAdOpened() {
 
-            @Override
-            public void onRewardedVideoAdOpened() {
+    }
 
-            }
+    @Override
+    public void onRewardedVideoStarted() {
 
-            @Override
-            public void onRewardedVideoStarted() {
+    }
 
-            }
+    @Override
+    public void onRewardedVideoAdClosed() {
+        loadRewardAd();
+    }
 
-            @Override
-            public void onRewardedVideoAdClosed() {
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        doubleEarnThread();
+    }
 
-            loadRewardAd();
-            }
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
 
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                doubleEarnThread();
-            }
+    }
 
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        loadRewardAd();
+    }
 
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-                loadRewardAd();
-
-            }
-
-            @Override
-            public void onRewardedVideoCompleted() {
-
-            }
-        });
+    @Override
+    public void onRewardedVideoCompleted() {
 
     }
 

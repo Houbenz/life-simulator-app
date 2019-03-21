@@ -8,7 +8,6 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
@@ -19,15 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-
-import com.google.android.gms.ads.MobileAds;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-
 import beans.Buy;
 import beans.Food;
 import beans.Furniture;
@@ -35,7 +28,6 @@ import beans.Learn;
 import beans.Medicine;
 import beans.Store;
 import conf.Params;
-import database.Acquired_degree;
 import database.Degree;
 import database.MainFragments;
 import database.MyAppDataBase;
@@ -73,8 +65,6 @@ public class MainMenu extends AppCompatActivity{
     };
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +92,7 @@ public class MainMenu extends AppCompatActivity{
         }
 
 
-        MobileAds.initialize(this,"ca-app-pub-3940256099942544~5224354917");
+
 
         newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
@@ -165,36 +155,16 @@ public class MainMenu extends AppCompatActivity{
 
                     Thread.sleep(firsttime);
                     firsttime=1500;
-                   runOnUiThread(new Runnable() {
-                       @Override
-                       public void run() {
-                           animateInThread(imageView3);
-                       }
-                   });
-
-                   Thread.sleep(1500);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            animateInThread(imageView4);
-                        }
-                    });
-
-                    Thread.sleep(2000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            animateInThread(imageView1);
-                        }
-                    });
+                   runOnUiThread(() -> animateInThread(imageView3));
 
                     Thread.sleep(1500);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            animateInThread(imageView2);
-                        }
-                    });
+                    runOnUiThread(() -> animateInThread(imageView4));
+
+                    Thread.sleep(2000);
+                    runOnUiThread(() -> animateInThread(imageView1));
+
+                    Thread.sleep(1500);
+                    runOnUiThread(() -> animateInThread(imageView2));
 
                 }catch (InterruptedException e){
                     e.printStackTrace();
@@ -559,7 +529,7 @@ public class MainMenu extends AppCompatActivity{
                     player.setWork_image_path("android.resource://com.example.android." +
                             "testsharedpreferences/drawable/ic_empty");
                     player.setWork(getString(R.string.none));
-                    player.setBalance(50);
+                    player.setBalance(Params.START_BALANCE);
                     player.setBank_deposit(0);
                     player.setWork_time(0);
                     player.setWork_income(0);

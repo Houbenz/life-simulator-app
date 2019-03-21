@@ -233,6 +233,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:fontFamily="casual"
+                    android:enabled="false"
                     android:gravity="center"
                     android:text="@string/doubleEarn"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
