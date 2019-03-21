@@ -1,7 +1,6 @@
 package fragments;
 
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
@@ -12,13 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.android.testsharedpreferences.MainMenu;
-import com.example.android.testsharedpreferences.R;
+import com.houbenz.lifesimulator.MainMenu;
+import com.android.houbenz.lifesimulator.R;
 
 import java.util.List;
 
 import database.Acquired_Furnitures;
-import database.Furniture;
 import viewmodels.ViewModelFourHome;
 
 /**

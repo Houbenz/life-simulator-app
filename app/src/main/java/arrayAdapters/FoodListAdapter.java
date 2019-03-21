@@ -2,7 +2,6 @@ package arrayAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

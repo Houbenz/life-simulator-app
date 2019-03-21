@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

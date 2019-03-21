@@ -4,77 +4,77 @@
     "name":"chair",
     "price":100,
     "fournitureType":"chair",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/chair"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/chair"
   }
 ,
   {
     "name":"table",
     "price":400,
     "fournitureType":"table",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
     "name":"TV holder",
     "price":50,
     "fournitureType":"tv_holder",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
     "name":"Old TV",
     "price":250,
     "fournitureType":"tv",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/old_tv"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/old_tv"
   }
 ,
   {
     "name":"Medium TV",
     "price":300,
     "fournitureType":"tv",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/medium_tv"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/medium_tv"
   }
 ,
   {
     "name":"Flat Screen TV",
     "price":1000,
     "fournitureType":"tv",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/medium_tv"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/medium_tv"
   }
 ,
   {
     "name":"LowEnd Computer",
     "price":1500,
     "fournitureType":"computer",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
     "name":"Table with laptop",
     "price":4500,
     "fournitureType":"table",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
     "name":"HighEnd Computer",
     "price":5000,
     "fournitureType":"computer",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
     "name":"Couch",
     "price":300,
     "fournitureType":"couch",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/couch_back"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
   }
 ,
   {
     "name":"Salon Table",
     "price":250,
     "fournitureType":"salonTable",
-    "url":"android.resource://com.example.android.testsharedpreferences/drawable/salon_table"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/salon_table"
   }
 
 ]

@@ -8,20 +8,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.android.testsharedpreferences.MainMenu;
-import com.example.android.testsharedpreferences.R;
+import com.houbenz.lifesimulator.MainMenu;
+import com.android.houbenz.lifesimulator.R;
 
 import java.util.List;
 
 
 import arrayAdapters.WorksGridAdapter;
-import database.Acquired_degree;
-import database.Degree;
 import database.Work;
 
 

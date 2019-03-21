@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import com.example.android.testsharedpreferences.MainMenu;
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
+
+
 
 import java.util.List;
 

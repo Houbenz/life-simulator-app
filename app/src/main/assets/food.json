@@ -5,7 +5,7 @@
     ,"price":15
     ,"benefit":5
     ,"description":"nasty"
-    ,"uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_noodles"
+    ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_noodles"
   }
 ,
   {
@@ -13,7 +13,7 @@
   ,"price":25
   ,"benefit":23
   ,"description":"tremendous"
-  ,  "uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_chicken"
+  ,  "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_chicken"
   }
 
 ,
@@ -23,6 +23,6 @@
   ,"price":30
   ,"benefit":25
   ,"description":"Delicious"
-  , "uri":"android.resource://com.example.android.testsharedpreferences/drawable/ic_steak"
+  , "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_steak"
   }
 ]

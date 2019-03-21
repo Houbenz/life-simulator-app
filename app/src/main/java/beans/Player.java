@@ -2,7 +2,7 @@ package beans;
 
 import android.content.Context;
 
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
 import database.Work;
 import java.util.ArrayList;
 

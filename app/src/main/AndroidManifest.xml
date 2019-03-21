@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.testsharedpreferences">
+    package="com.android.houbenz.lifesimulator">
 
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
 
         android:allowBackup="true"
@@ -15,7 +16,7 @@
         android:permission="">
         <activity
 
-            android:name=".MainMenu"
+            android:name="com.houbenz.lifesimulator.MainMenu"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,11 +26,11 @@
         </activity>
 
         <activity
-            android:name=".GameScene"
+            android:name="com.houbenz.lifesimulator.GameScene"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"/>
 
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name="com.houbenz.lifesimulator.SettingsActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

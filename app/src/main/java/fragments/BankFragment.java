@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
 
 public class BankFragment extends Fragment {
 

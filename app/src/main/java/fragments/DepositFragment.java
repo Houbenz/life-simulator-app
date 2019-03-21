@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.android.testsharedpreferences.R;
+import com.android.houbenz.lifesimulator.R;
 
 /**
  * A simple {@link Fragment} subclass.

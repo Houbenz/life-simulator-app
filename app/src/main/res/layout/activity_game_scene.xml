@@ -23,7 +23,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.example.android.testsharedpreferences.GameScene">
+            tools:context="com.android.houbenz.lifesimulator.com.example.android.lifesimulator.GameScene">
 
 
             <RelativeLayout
