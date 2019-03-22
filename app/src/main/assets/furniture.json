@@ -6,15 +6,14 @@
     "fournitureType":"chair",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/chair"
   }
-,
-
+  ,
   {
     "name":"Salon Table",
     "price":250,
     "fournitureType":"salonTable",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/salon_table"
   }
-  ,
+,
   {
     "name":"Table",
     "price":400,
@@ -27,8 +26,7 @@
     "price":250,
     "fournitureType":"tv",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/old_tv"
-  }
-,
+  },
   {
     "name":"Medium TV",
     "price":300,
@@ -49,5 +47,6 @@
     "fournitureType":"couch",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
   }
+
 
 ]

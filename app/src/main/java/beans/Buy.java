@@ -85,7 +85,7 @@ public class Buy {
         InputStream is=null;
         try{
 
-            if(Locale.getDefault().getLanguage().equals("en"))
+            //if(Locale.getDefault().getLanguage().equals("en"))
             is =context.getAssets().open("buy.json");
 
            // if(Locale.getDefault().getLanguage().equals("fr"))

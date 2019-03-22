@@ -45,7 +45,7 @@ public class Medicine extends  Buy{
 
         try{
 
-            if(Locale.getDefault().getLanguage().equals("en"))
+          //  if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("medicine.json");
 
            // if(Locale.getDefault().getLanguage().equals("fr"))

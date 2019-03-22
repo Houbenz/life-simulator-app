@@ -52,7 +52,7 @@ public class Furniture extends Buy {
         String json ;       InputStream is=null;
         try{
 
-            if(Locale.getDefault().getLanguage().equals("en"))
+           // if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("furniture.json");
 
            // if(Locale.getDefault().getLanguage().equals("fr"))

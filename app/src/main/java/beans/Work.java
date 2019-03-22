@@ -98,7 +98,7 @@ public class Work {
 
         try{
 
-            if(Locale.getDefault().getLanguage().equals("en"))
+            //if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("jobs.json");
 
             //if(Locale.getDefault().getLanguage().equals("fr"))

@@ -63,7 +63,7 @@ public class Food extends Buy {
         String json ;       InputStream is=null;
         try{
 
-            if(Locale.getDefault().getLanguage().equals("en"))
+            //if(Locale.getDefault().getLanguage().equals("en"))
                 is =context.getAssets().open("food.json");
 
          //   if(Locale.getDefault().getLanguage().equals("fr"))
