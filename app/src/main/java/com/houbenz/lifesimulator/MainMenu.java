@@ -21,6 +21,11 @@ import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,6 +40,7 @@ import database.Degree;
 import database.MainFragments;
 import database.MyAppDataBase;
 import database.Player;
+import database.VersionDB;
 
 public class MainMenu extends AppCompatActivity{
 
@@ -74,24 +80,53 @@ public class MainMenu extends AppCompatActivity{
         setContentView(R.layout.activity_main_menu);
 
 
-        myAppDataBase=Room.databaseBuilder(getApplicationContext(),MyAppDataBase.class,"life_simulatordb")
-                .fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
+        try {
+            myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
+                    .allowMainThreadQueries().build();
+
+        }catch (IllegalStateException e){
+
+            myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
+                    .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        }
         sharedPreferences= getApplicationContext().getSharedPreferences("myShared",Context.MODE_PRIVATE);
 
 
         String entry =sharedPreferences.getString("entry","none");
 
+
         if(entry.equals("none")){
-            initWorkRows();
-            initDegreeRows();
-            initFragments();
-            initFood();
-            initStores();
-            initFurnitures();
-            initMedicine();
+            initWorkRows(false);
+            initDegreeRows(false);
+            initFragments(false);
+            initFood(false);
+            initStores(false);
+            initFurnitures(false);
+            initMedicine(false);
+            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion()));
 
             sharedPreferences.edit().putString("entry","available").apply();
+        }
+        else {
+
+            String actualversion =getDatabaseVersion();
+            VersionDB versionDB = myAppDataBase.myDao().getVersionDB();
+
+            if(! versionDB.getVersion().equals(actualversion)){
+
+                initWorkRows(true);
+                initDegreeRows(true);
+                initFragments(true);
+                initFood(true);
+                initStores(true);
+                initFurnitures(true);
+                initMedicine(true);
+
+                versionDB.setVersion(actualversion);
+                myAppDataBase.myDao().updateVerionDB(versionDB);
+            }
+
         }
 
 
@@ -629,7 +664,7 @@ public class MainMenu extends AppCompatActivity{
     }
 
 
-    public void initWorkRows(){
+    public void initWorkRows(boolean isUpdate){
        ArrayList<beans.Work> worksBeans = beans.Work.workInit(getApplicationContext()) ;
 
        for(beans.Work bean : worksBeans){
@@ -642,12 +677,36 @@ public class MainMenu extends AppCompatActivity{
            work.setName(bean.getName());
            work.setWork_time(bean.getTimeOfWork());
 
-           myAppDataBase.myDao().addWork(work);
+           if(!isUpdate)
+                myAppDataBase.myDao().addWork(work);
+           else
+               myAppDataBase.myDao().updateWork(work);
        }
+
+       int oldRows =myAppDataBase.myDao().workNumber();
+
+       int newRows = worksBeans.size() - oldRows;
+
+       if(newRows >0) {
+           for(int i =oldRows  ; i<worksBeans.size();i++){
+
+               database.Work work = new database.Work();
+
+               work.setDegree_required(worksBeans.get(i).getReqDegree());
+               work.setImgPath(worksBeans.get(i).getImagePath());
+               work.setIncome(worksBeans.get(i).getPay());
+               work.setLvlToWork(worksBeans.get(i).getLeveltoWork());
+               work.setName(worksBeans.get(i).getName());
+               work.setWork_time(worksBeans.get(i).getTimeOfWork());
+
+               myAppDataBase.myDao().addWork(work);
+           }
+       }
+
 
     }
 
-    public void initDegreeRows(){
+    public void initDegreeRows(boolean isUpdate){
         ArrayList<Learn> learns = Learn.initLearn(getApplicationContext());
 
         for(Learn learn : learns){
@@ -655,14 +714,31 @@ public class MainMenu extends AppCompatActivity{
 
             degree.setName(learn.getName());
             degree.setPrice(learn.getPrice());
-            myAppDataBase.myDao().addDegree(degree);
+
+            if(!isUpdate)
+                myAppDataBase.myDao().addDegree(degree);
+            else
+                myAppDataBase.myDao().updateDegree(degree);
         }
 
+        int oldRows =myAppDataBase.myDao().degreeNumber();
 
+        int newRows =learns.size() - oldRows;
+        if (newRows > 0){
+            for (int i = oldRows;i<learns.size();i++){
+
+                Degree degree = new Degree();
+
+                degree.setName(learns.get(i).getName());
+                degree.setPrice(learns.get(i).getPrice());
+
+                myAppDataBase.myDao().addDegree(degree);
+            }
+        }
     }
 
 
-    public void initFood(){
+    public void initFood(boolean isUpdate){
         ArrayList<Food>  foods= Food.initFood(getApplicationContext());
 
         for(Food food : foods){
@@ -673,30 +749,71 @@ public class MainMenu extends AppCompatActivity{
             foodDb.setBenefit(food.getBenefit());
             foodDb.setDescription(food.getDescription());
             foodDb.setImgUrl(food.getImagePath());
+            if(!isUpdate)
+                myAppDataBase.myDao().addFood(foodDb);
+            else
+                myAppDataBase.myDao().updateFood(foodDb);
+        }
 
-            myAppDataBase.myDao().addFood(foodDb);
+        int oldRows =myAppDataBase.myDao().foodNumber();
+
+        int newRows = foods.size()-oldRows;
+
+        if (newRows > 0){
+            for(int i = oldRows;i<foods.size();i++){
+
+                database.Food foodDb = new database.Food();
+
+                foodDb.setName(foods.get(i).getName());
+                foodDb.setPrice(foods.get(i).getPrice());
+                foodDb.setBenefit(foods.get(i).getBenefit());
+                foodDb.setDescription(foods.get(i).getDescription());
+                foodDb.setImgUrl(foods.get(i).getImagePath());
+
+                myAppDataBase.myDao().addFood(foodDb);
+            }
+
         }
 
 
     }
 
-    public void initMedicine(){
+    public void initMedicine(boolean isUpdate){
         ArrayList<Medicine> medicines = Medicine.initMedicine(getApplicationContext());
 
 
-        for(Medicine medicine : medicines){
+        for(Medicine medicine : medicines) {
             database.Medicine medicineDb = new database.Medicine();
 
             medicineDb.setName(medicine.getName());
             medicineDb.setPrice(medicine.getPrice());
             medicineDb.setBenefit(medicine.getBenefit());
             medicineDb.setImgUrl(medicine.getImagePath());
-
-            myAppDataBase.myDao().addMedicine(medicineDb);
+            if (!isUpdate)
+                myAppDataBase.myDao().addMedicine(medicineDb);
+            else
+                myAppDataBase.myDao().updateMedicine(medicineDb);
         }
+            int oldRows =myAppDataBase.myDao().medicineNumber();
+            int newRows = medicines.size()-oldRows;
+
+            if(newRows > 0){
+                for (int i=oldRows;i <medicines.size();i++){
+
+                    database.Medicine medicineDb = new database.Medicine();
+
+                    medicineDb.setName(medicines.get(i).getName());
+                    medicineDb.setPrice(medicines.get(i).getPrice());
+                    medicineDb.setBenefit(medicines.get(i).getBenefit());
+                    medicineDb.setImgUrl(medicines.get(i).getImagePath());
+
+                    myAppDataBase.myDao().addMedicine(medicineDb);
+                }
+            }
+
     }
 
-    public  void initFragments(){
+    public  void initFragments(boolean isUpdate){
         ArrayList<Buy> buys = Buy.initBuy(getApplicationContext());
 
 
@@ -712,24 +829,46 @@ public class MainMenu extends AppCompatActivity{
         }
     }
 
-    public void initStores(){
+    public void initStores(boolean isUpdate){
         ArrayList<Store> stores = Store.initStore(getApplicationContext());
 
-        for (Store store : stores){
+        for (Store store : stores) {
             database.Store storeDb = new database.Store();
             storeDb.setName(store.getName());
             storeDb.setPrice(store.getPrice());
             storeDb.setImgUrl(store.getUri());
             storeDb.setIncome(store.getIncome());
+            if (!isUpdate)
+                myAppDataBase.myDao().addStore(storeDb);
+            else
+                myAppDataBase.myDao().updateStore(storeDb);
 
-            myAppDataBase.myDao().addStore(storeDb);
 
         }
 
 
+            int oldRows =myAppDataBase.myDao().storeNumber();
+            int newRows = stores.size() - oldRows;
+
+            if(newRows > 0 ){
+              for(int i = oldRows;i<stores.size(); i++){
+
+                  database.Store storeDb = new database.Store();
+                  storeDb.setName(stores.get(i).getName());
+                  storeDb.setPrice(stores.get(i).getPrice());
+                  storeDb.setImgUrl(stores.get(i).getUri());
+                  storeDb.setIncome(stores.get(i).getIncome());
+
+                  myAppDataBase.myDao().addStore(storeDb);
+              }
+            }
+
+
+
+
     }
 
-    public  void initFurnitures(){
+    public  void initFurnitures(boolean isUpdate){
         ArrayList<Furniture> furnitures = Furniture.initFourniture(getApplicationContext());
 
         for (Furniture furniture : furnitures){
@@ -739,10 +878,63 @@ public class MainMenu extends AppCompatActivity{
             furnitureDb.setImgUrl(furniture.getUrl());
             furnitureDb.setFurnitureType(furniture.getFournitureType());
 
+            if(!isUpdate)
             myAppDataBase.myDao().addFurnitures(furnitureDb);
+            else
+                myAppDataBase.myDao().updateFurniture(furnitureDb);
+        }
+
+        int oldRows =myAppDataBase.myDao().furnitureNumber();
+        int newRows = furnitures.size() - oldRows;
+
+        if(newRows > 0) {
+            for(int i =oldRows ; i<furnitures.size() ; i++){
+
+                database.Furniture furnitureDb = new database.Furniture();
+                furnitureDb.setName(furnitures.get(i).getName());
+                furnitureDb.setPrice(furnitures.get(i).getPrice());
+                furnitureDb.setImgUrl(furnitures.get(i).getUrl());
+                furnitureDb.setFurnitureType(furnitures.get(i).getFournitureType());
+
+                myAppDataBase.myDao().addFurnitures(furnitureDb);
+            }
         }
 
 
+    }
+
+    public String getDatabaseVersion(){
+
+        InputStream is=null ;
+        String db_version= "";
+        String json ;
+
+        try {
+           is = getApplicationContext().getAssets().open("database-version.json");
+
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+            is.close();
+
+            json=new String(buffer,"UTF-8");
+
+            JSONObject jsonObject = new JSONObject(json);
+
+             db_version =jsonObject.getString("version");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return db_version;
     }
 
 }

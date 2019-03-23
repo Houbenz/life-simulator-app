@@ -105,6 +105,7 @@
     <string name="langTtile">Choose the language</string>
     <string name="adjustSound">Adjust Sound</string>
     <string name="adjustMusic">Adjust Music</string>
+    <string name="confirm">Confirm</string>
 
 
 </resources>

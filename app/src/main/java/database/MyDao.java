@@ -45,6 +45,8 @@ public interface MyDao {
     @Insert
     void addFurnitures(Furniture furniture);
 
+    @Insert
+    void initDBVersion(VersionDB version);
 
     @Query("select * from acquired_furnitures where player_id = :id")
     List<Acquired_Furnitures> getAcquiredFurnitures(int id);
@@ -67,6 +69,9 @@ public interface MyDao {
     @Query("select * from Work")
     List<Work> getWorks();
 
+    @Query("select income from Work where name like :name")
+    double work_incorme(String name);
+
     @Query("select * from MainFragments")
     List<MainFragments> getMainFragments();
 
@@ -85,6 +90,9 @@ public interface MyDao {
     @Query("select * from Player where id = :id")
     Player getPlayer(int id);
 
+    @Query("select * from VersionDB")
+    VersionDB getVersionDB();
+
     @Query("select * from Acquired_Furnitures where furn_id=:id and player_id=:playerid")
     Acquired_Furnitures getAcqFurn(int id, int playerid);
 
@@ -92,10 +100,50 @@ public interface MyDao {
     void updateAcquired_Furnitures(Acquired_Furnitures acquired_furnitures);
 
     @Update
+    void updateWork(Work work);
+
+    @Update
+    void updateFurniture(Furniture furniture);
+
+    @Update
+    void updateFood(Food food);
+
+    @Update
+    void updateStore(Store store);
+
+    @Update
+    void updateMedicine(Medicine medicine);
+
+    @Update
+    void updateDegree(Degree degree);
+
+    @Update
     void updatePlayer(Player player);
+
+    @Update
+    void updateVerionDB(VersionDB version);
 
     @Delete
     void deletePlayer(Player player);
 
+
+    //Counts
+    @Query("select count(*) from Work")
+    int workNumber();
+
+    @Query("select count(*) from store")
+    int storeNumber();
+
+    @Query("select count(*) from Furniture")
+    int furnitureNumber();
+
+    @Query("select count(*) from Food")
+    int foodNumber();
+
+    @Query("select count(*) from Degree")
+    int degreeNumber();
+
+    @Query("select count(*) from Medicine")
+    int medicineNumber();
 
 }

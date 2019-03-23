@@ -60,7 +60,8 @@ public class Food extends Buy {
 
         ArrayList<Food> foods =new ArrayList<Food>();
 
-        String json ;       InputStream is=null;
+        String json ;
+        InputStream is;
         try{
 
             //if(Locale.getDefault().getLanguage().equals("en"))

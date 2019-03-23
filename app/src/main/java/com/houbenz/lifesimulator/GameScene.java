@@ -1,6 +1,7 @@
 package com.houbenz.lifesimulator;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -141,9 +142,17 @@ public class GameScene extends AppCompatActivity
 
     private ViewModelFourHome viewmodel;
 
+    //this is the original app ad id
     private final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
-    private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
+    //this is test app ad id
+    //private final static  String APP_ADS_ID = "ca-app-pub-3940256099942544~3347511713";
+
+     //this is the original video ad id
+     private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
+
+    //this is for test video ad
+   // private final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
 
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
@@ -312,8 +321,12 @@ public class GameScene extends AppCompatActivity
         income=findViewById(R.id.income);
         balance=findViewById(R.id.balance);
 
-        MobileAds.initialize(this, APP_ADS_ID);
+        try {
+            MobileAds.initialize(this, APP_ADS_ID);
 
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),"not loading :/",Toast.LENGTH_LONG).show();
+        }
         mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(this);
         mRewardVideoAd.setRewardedVideoAdListener(this);
         loadRewardAd();
@@ -420,11 +433,9 @@ public class GameScene extends AppCompatActivity
 
         if(player.getWork().equals(getString(R.string.none))) {
             startWorking.setEnabled(false);
-            doubleEarn.setEnabled(false);
         }
         else {
             startWorking.setEnabled(true);
-            doubleEarn.setEnabled(true);
         }
 
 
@@ -490,6 +501,7 @@ public class GameScene extends AppCompatActivity
                         runOnUiThread(() ->{
                         doubleEarnMinutes--;
                         doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
+
                     });
 
                 } catch (InterruptedException e) {
@@ -675,7 +687,6 @@ public class GameScene extends AppCompatActivity
         caracterImg.setImageURI(imgURI);
             saveProgress();
         startWorking.setEnabled(true);
-        doubleEarn.setEnabled(true);
         jobName.setText(work.getName());
 
     }
@@ -719,51 +730,62 @@ public class GameScene extends AppCompatActivity
         // test if is the furniture is already bought
         if(acquired_furnitures1 == null){
 
-        AlertDialog.Builder builder =new AlertDialog.Builder(GameScene.this);
 
-        builder.setTitle("Purchase")
-                .setMessage("Would you like to purchase this item ?")
-                .setPositiveButton("Yes", (dialog, which) -> {
+            Dialog dialog = new Dialog(GameScene.this);
 
-                    double newBalance=player.getBalance()-fourniture.getPrice();
+            dialog.setContentView(R.layout.dialog);
 
-                    String message;
-                    if(newBalance>=0) {
-                        player.setBalance(newBalance);
-                        balance.setText(newBalance + "$");
-                        message=" you purchased a "+fourniture.getName()+" for "+fourniture.getPrice()+"$ !";
-
-                        Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
-                        acquired_furnitures.setAvailable("true");
-                        acquired_furnitures.setFurn_id(fourniture.getId());
-                        acquired_furnitures.setPlayer_id(player.getId());
-                        acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
-                        acquired_furnitures.setImgurl(fourniture.getImgUrl());
-
-                        MainMenu.myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
-
-                       // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
-
-                    }else{
-                        message =" insufficiant funds to purchase "+fourniture.getName();
-                    }
-                    showPurchaseDialog(message);
-
-                    //this is for the view model between homefragment and GameScene
-
-                    insertFurnitureFragment();
+            TextView title = dialog.findViewById(R.id.dialogTitle);
+            Button confirm=dialog.findViewById(R.id.confirm);
+            Button decline =dialog.findViewById(R.id.decline);
 
 
-                    onHomeShow(fourniture.getImgUrl());
-                })
-                .setNegativeButton("Nope", (dialog, which) -> {
+            title.setText("Would you like to purchase this item ?");
+
+            confirm.setOnClickListener(view ->{
+                double newBalance=player.getBalance()-fourniture.getPrice();
+
+                String message;
+                if(newBalance>=0) {
+                    player.setBalance(newBalance);
+                    balance.setText(newBalance + "$");
+                    message=" you purchased a "+fourniture.getName()+" for "+fourniture.getPrice()+"$ !";
+
+                    Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
+                    acquired_furnitures.setAvailable("true");
+                    acquired_furnitures.setFurn_id(fourniture.getId());
+                    acquired_furnitures.setPlayer_id(player.getId());
+                    acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
+                    acquired_furnitures.setImgurl(fourniture.getImgUrl());
+
+                    MainMenu.myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
+
+                    // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
                     dialog.dismiss();
                     dialog.cancel();
-                });
 
-        AlertDialog alertDialog =builder.create();
-        alertDialog.show();
+                }else{
+                    message =" insufficiant funds to purchase "+fourniture.getName();
+                    dialog.dismiss();
+                    dialog.cancel();
+                }
+               // showPurchaseDialog(message);
 
+                Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+
+                //this is for the view model between homefragment and GameScene
+
+                insertFurnitureFragment();
+
+                onHomeShow(fourniture.getImgUrl());
+            });
+
+            decline.setOnClickListener(view ->{
+                dialog.dismiss();
+                dialog.cancel();
+            });
+
+            dialog.show();
         }else {
 
           List <Acquired_Furnitures> acquired_furnitures = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
@@ -773,7 +795,6 @@ public class GameScene extends AppCompatActivity
               furn.setAvailable("false");
               MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(furn);
           }
-
 
             Toast.makeText(getApplicationContext(), fourniture.getName() + " is now used", Toast.LENGTH_SHORT).show();
 
@@ -1068,6 +1089,8 @@ public class GameScene extends AppCompatActivity
     @Override
     public void onRewardedVideoAdLoaded() {
         //Toast.makeText(getApplicationContext(),"AD Loaded",Toast.LENGTH_LONG).show();
+
+        doubleEarn.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1082,6 +1105,8 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void onRewardedVideoAdClosed() {
+
+
         loadRewardAd();
     }
 
@@ -1147,6 +1172,9 @@ public class GameScene extends AppCompatActivity
         player.setLevel_progress(player.getLevel_object().getProgressLevel());
         player.setMax_progress(player.getLevel_object().getMaxProgress());
 
+        double workincome = MainMenu.myAppDataBase.myDao().work_incorme(player.getWork());
+
+        player.setWork_income(workincome);
 
         MainMenu.myAppDataBase.myDao().updatePlayer(player);
 

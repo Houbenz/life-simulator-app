@@ -47,6 +47,13 @@
     "fournitureType":"couch",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
   }
+,
 
+  {
+    "name":"simple chair",
+    "price":100,
+    "fournitureType":"chair",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/chair"
+  }
 
 ]
