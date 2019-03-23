@@ -27,9 +27,9 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
 
 
     private  List<Acquired_degree> acquiredDegrees;
-    public DegreeListAdapter(@NonNull Context context, List<Degree> degrees) {
+    public DegreeListAdapter(@NonNull Context context, List<Degree> degrees, int slot) {
         super(context, R.layout.learn_res,degrees);
-        this.acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees();
+        this.acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees(slot);
     }
 
     @NonNull

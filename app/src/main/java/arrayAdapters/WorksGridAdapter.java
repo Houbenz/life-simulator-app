@@ -25,11 +25,12 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
 
     private int level ;
+    private int slot ;
     private  List<Acquired_degree> acquiredDegrees;
-    public WorksGridAdapter(@NonNull Context context, List<Work> works, int level ){
+    public WorksGridAdapter(@NonNull Context context, List<Work> works, int level ,int slot){
         super(context, R.layout.work_res,works);
         this.level=level;
-        acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees();
+        acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees(slot);
     }
 
     @NonNull

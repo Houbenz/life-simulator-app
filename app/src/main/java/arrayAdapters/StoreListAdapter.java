@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
 
 
 import java.util.List;
@@ -29,11 +31,14 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
 
 
 
+    private int slot;
     private  List<Acquired_Stores> acquired_stores;
-    public StoreListAdapter(@NonNull Context context, List<Store> stores, List<Acquired_Stores> acquired_stores) {
+    public StoreListAdapter(@NonNull Context context, List<Store> stores,int slot) {
         super(context, R.layout.commun_buy_res, stores);
 
-        this.acquired_stores =acquired_stores;
+        this.slot=slot;
+        this.acquired_stores =MainMenu.myAppDataBase.myDao().getAcquiredStores(slot);
+
     }
 
     @NonNull
@@ -54,8 +59,8 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
         ImageView comImage=storeView.findViewById(R.id.comImage);
 
         if(store != null) {
-            String benefitString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.incomePerDay),(int)store.getIncome());
-            String priceBenefit= String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)store.getPrice());
+            String benefitString =String.format(Locale.ENGLISH,"%s  %d$",getContext().getString(R.string.incomePerDay),(int)store.getIncome());
+            String priceBenefit= String.format(Locale.ENGLISH,"%s  %d$",getContext().getString(R.string.price),(int)store.getPrice());
             name.setText(store.getName());
             price.setText(priceBenefit);
 
@@ -64,6 +69,8 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
             Uri uri = Uri.parse(store.getImgUrl());
 
             comImage.setImageURI(uri);
+
+            acquired_stores=MainMenu.myAppDataBase.myDao().getAcquiredStores(slot);
 
             boolean in = false;
             int i = 0;
@@ -77,11 +84,13 @@ public class StoreListAdapter extends ArrayAdapter<Store> {
 
             if (in) {
                 owned.setText(getContext().getString(R.string.acquiredYes));
+
                 owned.setTextColor(getContext().getResources().getColor(R.color.green));
                 storeView.setClickable(true);
 
             } else {
                 owned.setText(getContext().getString(R.string.acquiredNo));
+
                 owned.setTextColor(getContext().getResources().getColor(R.color.red));
             }
 

@@ -375,11 +375,7 @@ public class GameScene extends AppCompatActivity
         work.setOnClickListener(v -> {
 
             workFragment=new WorkFragment();
-            Bundle bundle =new Bundle();
-            bundle.putInt("playerLevel",player.getLevel_object().getLevel());
-
-            workFragment.setArguments(bundle);
-            fragmentInsertion(workFragment);
+            fragmentInsertionSecond(workFragment);
 
         });
 
@@ -393,7 +389,7 @@ public class GameScene extends AppCompatActivity
 
             bankFragment.setArguments(bundle);
 
-            fragmentInsertion(bankFragment);
+            fragmentInsertionSecond(bankFragment);
 
         });
 
@@ -401,7 +397,7 @@ public class GameScene extends AppCompatActivity
         buy.setOnClickListener(v -> {
 
             buyFragment =new BuyFragment();
-            fragmentInsertion(buyFragment);
+            fragmentInsertionSecond(buyFragment);
 
         });
 
@@ -409,7 +405,7 @@ public class GameScene extends AppCompatActivity
         sleep.setOnClickListener(v -> {
 
             SleepFragment sleepFragment =new SleepFragment();
-            fragmentInsertion(sleepFragment);
+            fragmentInsertionSecond(sleepFragment);
         });
 
         study=findViewById(R.id.study);
@@ -710,11 +706,12 @@ public class GameScene extends AppCompatActivity
         if(nameOfFragment.equals("House") ||nameOfFragment.equals("Maison")) {
 
             HouseFragment houseFragment =new HouseFragment();
-            fragmentInsertion(houseFragment);
+            fragmentInsertionSecond(houseFragment);
         }
 
         if(nameOfFragment.equals("Store") ||nameOfFragment.equals("Magasin")){
-            insertStoreFragment();
+            StoreFragment storeFragment = new StoreFragment();
+            fragmentInsertionSecond(storeFragment);
         }
 
         if(nameOfFragment.equals("Pharmacy") || nameOfFragment.equals("Pharmacie")){
@@ -910,27 +907,77 @@ public class GameScene extends AppCompatActivity
             Toast.makeText(getApplicationContext(),"insuficient funds to buy "+house.getName(),Toast.LENGTH_SHORT).show();
     }
 
+
+    public  double getIncomeFromStore(){
+
+        List<Acquired_Stores> acquired_stores =MainMenu.myAppDataBase.myDao().getAcquiredStores(player.getId());
+        double income =0;
+
+        if(!acquired_stores.isEmpty()){
+            for (Acquired_Stores acq : acquired_stores){
+                income += MainMenu.myAppDataBase.myDao().getStoreIncome(acq.getStore_id());
+            }
+        }
+
+        return  income;
+    }
+
+
+
     @Override
     public void deliverStore(Store store) {
 
         double newBalance = player.getBalance()-store.getPrice();
 
 
+
+        Dialog dialog = new Dialog(GameScene.this);
+
+        dialog.setContentView(R.layout.dialog);
+
+        TextView title = dialog.findViewById(R.id.dialogTitle);
+        Button confirm=dialog.findViewById(R.id.confirm);
+        Button decline =dialog.findViewById(R.id.decline);
+
+
         if(newBalance>=0){
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
-            Acquired_Stores acquired_stores = new Acquired_Stores();
-            acquired_stores.setStore_id(store.getId());
-            acquired_stores.setPlayer_id(player.getId());
 
-            MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
+            confirm.setOnClickListener(view ->{
 
-            Toast.makeText(getApplicationContext(),"congratulation you purchased"+store.getName()+" !",Toast.LENGTH_SHORT).show();
+                Acquired_Stores acquired_stores = new Acquired_Stores();
+                acquired_stores.setStore_id(store.getId());
+                acquired_stores.setPlayer_id(player.getId());
+                dialog.dismiss();
+                dialog.cancel();
 
-            insertStoreFragment();
+                MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
+
+                player.setStore_income(getIncomeFromStore());
+
+
+                Toast.makeText(getApplicationContext(),"congratulation you purchased "+store.getName()+" !",Toast.LENGTH_SHORT).show();
+
+                insertStoreFragment();
+
+            });
+            decline.setOnClickListener(view ->{
+                dialog.dismiss();
+                dialog.cancel();
+            });
+
+            //income from all stores
+            dialog.show();
+
         }else {
             Toast.makeText(getApplicationContext(),"insufficient funds to purchase "+store.getName(),Toast.LENGTH_SHORT).show();
+
+            dialog.dismiss();
+            dialog.cancel();
         }
+
+
     }
 
     @Override
@@ -974,7 +1021,7 @@ public class GameScene extends AppCompatActivity
             DepositFragment depositFragment =new DepositFragment();
             depositFragment.setArguments(bundle);
 
-            fragmentInsertion(depositFragment);
+            fragmentInsertionSecond(depositFragment);
 
         }else {
             WithdrawFragment withdrawFragment =new WithdrawFragment();
@@ -983,7 +1030,7 @@ public class GameScene extends AppCompatActivity
             bundle.putFloat("balanceInBank",(int)player.getBank_deposit());
             withdrawFragment.setArguments(bundle);
 
-            fragmentInsertion(withdrawFragment);
+            fragmentInsertionSecond(withdrawFragment);
         }
 
     }
@@ -997,7 +1044,7 @@ public class GameScene extends AppCompatActivity
         player.setBalance(newBalance);
         balance.setText(newBalance+"$");
 
-        fragmentInsertion(bankFragment);
+        fragmentInsertionSecond(bankFragment);
     }
 
     @Override
@@ -1009,7 +1056,7 @@ public class GameScene extends AppCompatActivity
 
         balance.setText(player.getBalance()+"$");
 
-        fragmentInsertion(bankFragment);
+        fragmentInsertionSecond(bankFragment);
     }
 
     public void showPurchaseDialog(String msg){
@@ -1026,7 +1073,7 @@ public class GameScene extends AppCompatActivity
     }
 
 
-    public void fragmentInsertion(Fragment fragment){
+ /*   public void fragmentInsertion(Fragment fragment){
 
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
@@ -1038,7 +1085,7 @@ public class GameScene extends AppCompatActivity
         fragmentTransaction.commit();
 
 
-    }
+    }/*/
 
     public void fragmentInsertionSecond(Fragment fragment){
 
@@ -1047,6 +1094,8 @@ public class GameScene extends AppCompatActivity
         fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
 
         Bundle bundle = new Bundle();
+
+        bundle.putInt("playerLevel",player.getLevel_object().getLevel());
         bundle.putInt("slot",player.getId());
         fragment.setArguments(bundle);
 
@@ -1068,7 +1117,7 @@ public class GameScene extends AppCompatActivity
 
     public void insertStudyFragment() {
         DegreeFragment degreeFragment = new DegreeFragment();
-        fragmentInsertion(degreeFragment);
+        fragmentInsertionSecond(degreeFragment);
     }
 
     public void insertStoreFragment() {

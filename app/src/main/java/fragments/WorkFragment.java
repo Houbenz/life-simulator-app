@@ -41,9 +41,9 @@ public class WorkFragment extends Fragment {
 
         //The player Level (IMPORTANT)
         int playerLevel = getArguments().getInt("playerLevel");
+        int slot = getArguments().getInt("slot");
 
-
-        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel);
+        WorksGridAdapter worksGridAdapter = new WorksGridAdapter(getContext(),works,playerLevel,slot);
         GridView gridView =frameLayout.findViewById(R.id.workGrid);
 
         gridView.setAdapter(worksGridAdapter);

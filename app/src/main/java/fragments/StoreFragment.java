@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.houbenz.lifesimulator.MainMenu;
 import com.android.houbenz.lifesimulator.R;
@@ -36,14 +37,14 @@ public class StoreFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment= inflater.inflate(R.layout.fragment_store, container, false);
 
+
+        int slot =getArguments().getInt("slot");
         List<Store> stores =MainMenu.myAppDataBase.myDao().getStores();
 
         ListView storeView =fragment.findViewById(R.id.storeView);
 
-        List<Acquired_Stores> acquiredStores= MainMenu.myAppDataBase.myDao().getAcquiredStores();
 
-
-        StoreListAdapter storeListAdapter =new StoreListAdapter(getContext(),stores,acquiredStores);
+        StoreListAdapter storeListAdapter =new StoreListAdapter(getContext(),stores,slot);
 
         storeView.setAdapter(storeListAdapter);
 

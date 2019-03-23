@@ -32,11 +32,14 @@ public class DegreeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_degree, container, false);
 
+
+        int slot = getArguments().getInt("slot");
+
         ListView learnList =fragment.findViewById(R.id.learnView);
 
         List<Degree> degrees = MainMenu.myAppDataBase.myDao().getDegrees();
 
-        DegreeListAdapter degreeListAdapter =new DegreeListAdapter(getContext(),degrees);
+        DegreeListAdapter degreeListAdapter =new DegreeListAdapter(getContext(),degrees,slot);
 
         learnList.setAdapter(degreeListAdapter);
 
