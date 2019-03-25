@@ -2,12 +2,14 @@ package arrayAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
@@ -42,6 +44,7 @@ public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
         TextView price =medicineView.findViewById(R.id.price);
         TextView benefit =medicineView.findViewById(R.id.benefit);
         TextView owned =medicineView.findViewById(R.id.owned);
+        ImageView comImage = medicineView.findViewById(R.id.comImage);
 
         if(medicine != null) {
             String priceString =String.format(Locale.ENGLISH,"%d$",(int)medicine.getPrice());
@@ -52,6 +55,7 @@ public class PharmacyListAdapter extends ArrayAdapter<Medicine> {
             owned.setText("");
             price.setText(priceString);
             benefit.setText(benefitString);
+            comImage.setImageURI(Uri.parse(medicine.getImgUrl()));
 
 
         }

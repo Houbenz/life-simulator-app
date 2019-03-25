@@ -649,7 +649,7 @@ public class MainMenu extends AppCompatActivity{
 
     public int[] imagesResources(){
 
-        int[] arrayImage =new int[10];
+        int[] arrayImage =new int[13];
         arrayImage[0]=R.drawable.ic_empty;
         arrayImage[1]=R.drawable.ic_firefighter;
         arrayImage[2]=R.drawable.ic_waiter;
@@ -660,6 +660,9 @@ public class MainMenu extends AppCompatActivity{
         arrayImage[7]=R.drawable.ic_professor;
         arrayImage[8]=R.drawable.ic_food;
         arrayImage[9]=R.drawable.ic_pilot;
+        arrayImage[10]=R.drawable.syrup;
+        arrayImage[11]=R.drawable.grass;
+        arrayImage[12]=R.drawable.pills;
         return arrayImage;
     }
 

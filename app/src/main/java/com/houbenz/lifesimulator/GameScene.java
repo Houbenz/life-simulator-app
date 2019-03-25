@@ -24,7 +24,9 @@ import android.widget.ViewSwitcher;
 
 
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -135,6 +137,8 @@ public class GameScene extends AppCompatActivity
     private int slot ;
 
     private boolean ignore=true;
+
+    private AdView adView;
 
     private RewardedVideoAd mRewardVideoAd;
 
@@ -320,6 +324,16 @@ public class GameScene extends AppCompatActivity
         playerN =findViewById(R.id.playerN);
         income=findViewById(R.id.income);
         balance=findViewById(R.id.balance);
+
+
+
+
+        adView=findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        adView.setAdListener(adViewListener);
+
+
 
         try {
             MobileAds.initialize(this, APP_ADS_ID);
@@ -1178,6 +1192,46 @@ public class GameScene extends AppCompatActivity
     public void onRewardedVideoCompleted() {
 
     }
+
+
+    AdListener adViewListener= new AdListener(){
+        @Override
+        public void onAdClosed() {
+            super.onAdClosed();
+        }
+
+        @Override
+        public void onAdFailedToLoad(int i) {
+            super.onAdFailedToLoad(i);
+        }
+
+        @Override
+        public void onAdLeftApplication() {
+            super.onAdLeftApplication();
+        }
+
+        @Override
+        public void onAdOpened() {
+            super.onAdOpened();
+        }
+
+        @Override
+        public void onAdLoaded() {
+
+            adView.setVisibility(View.VISIBLE);
+            super.onAdLoaded();
+        }
+
+        @Override
+        public void onAdClicked() {
+            super.onAdClicked();
+        }
+
+        @Override
+        public void onAdImpression() {
+            super.onAdImpression();
+        }
+    };
 
     public void loadProgress(){
         database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);

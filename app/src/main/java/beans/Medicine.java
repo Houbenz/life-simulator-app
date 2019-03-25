@@ -30,6 +30,7 @@ public class Medicine extends  Buy{
     public void setId(int id) {
         this.id = id;
     }
+
     public Medicine(String name, float price,int benefit) {
         super(name,price);
         this.benefit=benefit;
@@ -44,12 +45,13 @@ public class Medicine extends  Buy{
         this.benefit = benefit;
     }
 
+
     public static ArrayList<Medicine> initMedicine(Context context){
 
         ArrayList<Medicine> medicines =new ArrayList<>();
 
         String json ;
-        InputStream is=null;
+        InputStream is;
 
         try{
 
@@ -81,7 +83,10 @@ public class Medicine extends  Buy{
                 Medicine medicine=new Medicine(name,price,benefit);
 
                 medicine.setId(jsonObject.getInt("id"));
+                medicine.setImagePath(jsonObject.getString("uri"));
+
                 medicines.add(medicine);
+
             }
 
         }catch (IOException|JSONException e){

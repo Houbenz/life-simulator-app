@@ -1,16 +1,19 @@
 [
   {
     "id":1 ,
-    "name":"grass","price":1, "benefit":1
+    "name":"Grass","price":1, "benefit":1
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/grass"
   }
   ,
   {
     "id":2 ,
-    "name":"Mediocre pills","price":15, "benefit":20
+    "name":"Pills","price":15, "benefit":20
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/pills"
   }
   ,
   {
     "id":3 ,
-    "name":"High quality pills","price":30, "benefit":40
+    "name":"Syrup","price":30, "benefit":40
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/syrup"
   }
 ]
