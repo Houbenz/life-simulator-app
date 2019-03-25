@@ -124,6 +124,9 @@ public interface MyDao {
     void updatePlayer(Player player);
 
     @Update
+    void updateMainFragment(MainFragments mainFragments);
+
+    @Update
     void updateVerionDB(VersionDB version);
 
     @Delete

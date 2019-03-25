@@ -23,6 +23,15 @@ public class Work {
     private int leveltoWork;
     private String imagePath;
     private String reqDegree;
+    private int id ;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Work (){
 
@@ -131,6 +140,10 @@ public class Work {
                 String reqDegree = jsonObject.getString("degree");
 
                 Work work =new Work(name,pay,leveltoWork,timeOfWork,reqDegree,imagePath);
+
+                //
+                work.setId(jsonObject.getInt("id"));
+
                 works.add(work);
 
             }

@@ -21,7 +21,15 @@ public class Medicine extends  Buy{
 
 
     private  int benefit ;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public Medicine(String name, float price,int benefit) {
         super(name,price);
         this.benefit=benefit;
@@ -72,6 +80,7 @@ public class Medicine extends  Buy{
 
                 Medicine medicine=new Medicine(name,price,benefit);
 
+                medicine.setId(jsonObject.getInt("id"));
                 medicines.add(medicine);
             }
 

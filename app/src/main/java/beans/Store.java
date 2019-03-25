@@ -17,7 +17,15 @@ public class Store extends Buy {
 
     private float income ;
     private  String uri ;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public Store(String name, float price,float income,String uri) {
         super(name, price);
         this.income=income;
@@ -76,6 +84,7 @@ public class Store extends Buy {
                 String uri = jsonObject.getString("uri");
                 Store store =new Store(name,price,income,uri);
 
+                store.setId(jsonObject.getInt("id"));
                 stores.add(store);
             }
 

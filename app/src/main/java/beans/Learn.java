@@ -19,7 +19,15 @@ public class Learn {
 
     private String name;
     private float price;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public Learn(String name ,float price){
         this.name=name;
         this.price=price;
@@ -74,6 +82,7 @@ public class Learn {
                 String name =jsonObject.getString("name");
                 float price =jsonObject.getLong("price");
                 Learn learn =new Learn(name,price);
+                learn.setId(jsonObject.getInt("id"));
                 learns.add(learn);
             }
 

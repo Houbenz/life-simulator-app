@@ -20,7 +20,15 @@ public class Furniture extends Buy {
 
     private String fournitureType ;
     private String url ;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public Furniture(String name, float price, String fournitureType,String  url) {
         super(name, price);
     this.fournitureType=fournitureType;
@@ -83,6 +91,8 @@ public class Furniture extends Buy {
                 String imageUrl  = jsonObject.getString("url");
                 Furniture fourniture =new Furniture(name,price,fournitureType,imageUrl);
 
+
+                fourniture.setId(jsonObject.getInt("id"));
                 fournitures.add(fourniture);
             }
 

@@ -21,7 +21,15 @@ public class Food extends Buy {
     private String description ;
     private int benefit ;
     private String imagePath;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
 
 
@@ -98,7 +106,8 @@ public class Food extends Buy {
                 String imgPath =jsonObject.getString("uri");
 
                 Food food=new Food(name,price,description,benefit,imgPath);
-
+//
+                food.setId(jsonObject.getInt("id"));
                 foods.add(food);
 
             }

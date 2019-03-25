@@ -1,13 +1,16 @@
 [
   {
+    "id":1 ,
     "name":"grass","price":1, "benefit":1
   }
   ,
   {
+    "id":2 ,
     "name":"Mediocre pills","price":15, "benefit":20
   }
   ,
   {
+    "id":3 ,
     "name":"High quality pills","price":30, "benefit":40
   }
 ]

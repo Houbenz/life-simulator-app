@@ -670,6 +670,8 @@ public class MainMenu extends AppCompatActivity{
        for(beans.Work bean : worksBeans){
            database.Work work = new database.Work();
 
+           work.setId(bean.getId());
+
            work.setDegree_required(bean.getReqDegree());
            work.setImgPath(bean.getImagePath());
            work.setIncome(bean.getPay());
@@ -692,6 +694,8 @@ public class MainMenu extends AppCompatActivity{
 
                database.Work work = new database.Work();
 
+               work.setId(worksBeans.get(i).getId());
+
                work.setDegree_required(worksBeans.get(i).getReqDegree());
                work.setImgPath(worksBeans.get(i).getImagePath());
                work.setIncome(worksBeans.get(i).getPay());
@@ -712,6 +716,7 @@ public class MainMenu extends AppCompatActivity{
         for(Learn learn : learns){
             Degree degree = new Degree();
 
+            degree.setId(learn.getId());
             degree.setName(learn.getName());
             degree.setPrice(learn.getPrice());
 
@@ -744,6 +749,7 @@ public class MainMenu extends AppCompatActivity{
         for(Food food : foods){
             database.Food foodDb = new database.Food();
 
+            foodDb.setId(food.getId());
             foodDb.setName(food.getName());
             foodDb.setPrice(food.getPrice());
             foodDb.setBenefit(food.getBenefit());
@@ -785,6 +791,7 @@ public class MainMenu extends AppCompatActivity{
         for(Medicine medicine : medicines) {
             database.Medicine medicineDb = new database.Medicine();
 
+            medicineDb.setId(medicine.getId());
             medicineDb.setName(medicine.getName());
             medicineDb.setPrice(medicine.getPrice());
             medicineDb.setBenefit(medicine.getBenefit());
@@ -823,7 +830,10 @@ public class MainMenu extends AppCompatActivity{
             mainFragments.setColor(buy.getColor());
             mainFragments.setImage_Uri(buy.getImagePath());
 
-            myAppDataBase.myDao().addMainFragment(mainFragments);
+            if(!isUpdate)
+                myAppDataBase.myDao().addMainFragment(mainFragments);
+            else
+                myAppDataBase.myDao().updateMainFragment(mainFragments);
 
 
         }
@@ -834,6 +844,8 @@ public class MainMenu extends AppCompatActivity{
 
         for (Store store : stores) {
             database.Store storeDb = new database.Store();
+
+            storeDb.setId(store.getId());
             storeDb.setName(store.getName());
             storeDb.setPrice(store.getPrice());
             storeDb.setImgUrl(store.getUri());
@@ -873,6 +885,8 @@ public class MainMenu extends AppCompatActivity{
 
         for (Furniture furniture : furnitures){
             database.Furniture furnitureDb = new database.Furniture();
+
+            furnitureDb.setId(furniture.getId());
             furnitureDb.setName(furniture.getName());
             furnitureDb.setPrice(furniture.getPrice());
             furnitureDb.setImgUrl(furniture.getUrl());

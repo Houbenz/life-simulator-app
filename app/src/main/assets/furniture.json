@@ -1,6 +1,7 @@
 [
 
   {
+    "id": 1,
     "name":"simple chair",
     "price":100,
     "fournitureType":"chair",
@@ -8,6 +9,7 @@
   }
   ,
   {
+    "id":2 ,
     "name":"Salon Table",
     "price":250,
     "fournitureType":"salonTable",
@@ -15,6 +17,7 @@
   }
 ,
   {
+    "id": 3,
     "name":"Table",
     "price":400,
     "fournitureType":"table",
@@ -22,12 +25,14 @@
   }
 ,
   {
+    "id": 4,
     "name":"Old TV",
-    "price":250,
+    "price":150,
     "fournitureType":"tv",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/old_tv"
   },
   {
+    "id": 5,
     "name":"Medium TV",
     "price":300,
     "fournitureType":"tv",
@@ -35,6 +40,7 @@
   }
 ,
   {
+    "id": 6,
     "name":"Table with laptop",
     "price":4500,
     "fournitureType":"table",
@@ -42,18 +48,11 @@
   }
 ,
   {
+    "id": 7,
     "name":"Couch",
     "price":300,
     "fournitureType":"couch",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
-  }
-,
-
-  {
-    "name":"simple chair",
-    "price":100,
-    "fournitureType":"chair",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/chair"
   }
 
 ]

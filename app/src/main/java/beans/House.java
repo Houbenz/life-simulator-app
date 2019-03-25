@@ -19,7 +19,15 @@ public class House extends Buy {
 
     private int bonusE;
     private int bonusH;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public House(String name, float price,int bonusE,int bonusH) {
         super(name, price);
         this.bonusE=bonusE;
@@ -77,6 +85,7 @@ public class House extends Buy {
                 int bonusH=jsonObject.getInt("bonusH");
                 House house =new House(name,price,bonusE,bonusH);
 
+                house.setId(jsonObject.getInt("id"));
                 houses.add(house);
 
             }
