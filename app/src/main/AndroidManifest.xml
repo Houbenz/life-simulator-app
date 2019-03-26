@@ -19,7 +19,7 @@
         <activity
 
             android:name="com.houbenz.lifesimulator.MainMenu"
-            android:screenOrientation="landscape">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
@@ -30,7 +30,7 @@
         <activity
             android:name="com.houbenz.lifesimulator.GameScene"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="sensorLandscape"/>
 
         <activity android:name="com.houbenz.lifesimulator.SettingsActivity" />
 
