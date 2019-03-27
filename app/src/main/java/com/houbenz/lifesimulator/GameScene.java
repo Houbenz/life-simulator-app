@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -191,18 +193,21 @@ public class GameScene extends AppCompatActivity
                         //For GAME OVER
                         if(healthbar.getProgress()<=0){
                             threadRun=false;
-                            AlertDialog.Builder builder = new AlertDialog.Builder(GameScene.this);
+                            Dialog dialog = new Dialog(this);
+                            dialog.setContentView(R.layout.custom_toast_red);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            TextView message= dialog.findViewById(R.id.message);
 
-                            builder.setTitle("Game Over")
-                                    .setMessage("you died cuz your health is ZeRo , good luck next Time !");
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.setOnDismissListener(dialog -> {
+                            message.setText("Game Over ! :( your health is Zero");
+                            dialog.setOnDismissListener( dialog1 -> {
+                                dialog1.dismiss();
                                 finish();
-                                dialog.dismiss();
                             });
 
-                            alertDialog.show();
 
+                            //alertDialog.show();
+                            MainMenu.myAppDataBase.myDao().deletePlayer(player);
+                            dialog.show();
                         }
 
                         String hourS = "" + hour;
@@ -259,14 +264,11 @@ public class GameScene extends AppCompatActivity
                             if (player.getStore_income() != 0) {
 
                                 player.setBalance(player.getBalance() + player.getStore_income());
-                                balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
-                                        mp.start();
-                                        balance.setText(player.getBalance() + "$");
-                                        balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
-                                    }
+                                balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(() -> {
+                                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
+                                    mp.start();
+                                    balance.setText(player.getBalance() + "$");
+                                    balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
                                 });
                             }
                         }
@@ -309,14 +311,24 @@ public class GameScene extends AppCompatActivity
     }
 
 
-    public void showCustomToast(String message , String imgUrl, boolean isGreen){
+    public void showCustomToast(String message , String imgUrl, String type){
 
         LayoutInflater inflater=getLayoutInflater();
-        View layout;
-        if(isGreen)
-            layout = inflater.inflate(R.layout.custom_toast_green,(ViewGroup)findViewById(R.id.cutom_toast_green));
-        else
-            layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red));
+        View layout = null;
+
+       switch (type){
+           case "green":
+               layout = inflater.inflate(R.layout.custom_toast_green,(ViewGroup)findViewById(R.id.cutom_toast_green));
+               break ;
+           case "red" :
+               layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red));
+               break;
+           case "gold" :
+               layout=inflater.inflate(R.layout.custom_toast_levelup,(ViewGroup)findViewById(R.id.cutom_toast_levelup));
+               break;
+           default:;
+       }
+
 
         TextView messageTextView = layout.findViewById(R.id.message);
         ImageView imageToast = layout.findViewById(R.id.imageToast);
@@ -328,8 +340,11 @@ public class GameScene extends AppCompatActivity
             imageToast.setVisibility(View.VISIBLE);
             imageToast.setImageURI(Uri.parse(imgUrl));
             imageToast.setBackgroundColor(getResources().getColor(R.color.white));
-        }
+        }else {
 
+            if (type.equals("gold"))
+                imageToast.setVisibility(View.VISIBLE);
+        }
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.CENTER ,0,250);
 
@@ -623,6 +638,10 @@ public class GameScene extends AppCompatActivity
                                     int actualProgress =player.getLevel_object().getProgressLevel()-player.getLevel_object().getMaxProgress();
                                     player.upgradeLevel();
 
+                                    showCustomToast("You've Leveled up "+player.getLevel_object().getLevel(),"","gold");
+
+
+
                                     levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(() -> {
 
 
@@ -826,7 +845,7 @@ public class GameScene extends AppCompatActivity
                 }
                // showPurchaseDialog(message);
 
-                showCustomToast(message,fourniture.getImgUrl(),green);
+                showCustomToast(message,fourniture.getImgUrl(),"green");
 
 
                 //this is for the view model between homefragment and GameScene
@@ -933,7 +952,7 @@ public class GameScene extends AppCompatActivity
         }
         else{
 
-            showCustomToast("Insufficient funds to purchase "+food.getName(),food.getImgUrl(),false);
+            showCustomToast("Insufficient funds to purchase "+food.getName(),food.getImgUrl(),"red");
         }
     }
 
@@ -948,7 +967,7 @@ public class GameScene extends AppCompatActivity
             player.setBalance(newBalance);
             balance.setText(player.getBalance() + "$");
         }else
-            showCustomToast("Insufficient funds to purchase"+medicine.getName(),medicine.getImgUrl(),false);
+            showCustomToast("Insufficient funds to purchase"+medicine.getName(),medicine.getImgUrl(),"red");
     }
 
     @Override
@@ -958,9 +977,9 @@ public class GameScene extends AppCompatActivity
         if(newBalance>=0){
             player.setBalance(newBalance);
             balance.setText(player.getBalance()+"$");
-            showCustomToast("Congratulation you've bought "+house.getName(),house.getImagePath(),true);
+            showCustomToast("Congratulation you've bought "+house.getName(),house.getImagePath(),"green");
         }else
-            showCustomToast("insuficient funds to buy "+house.getName(),house.getImagePath(),false);
+            showCustomToast("insuficient funds to buy "+house.getName(),house.getImagePath(),"red");
     }
 
     public  double getIncomeFromStore(){
@@ -1006,7 +1025,7 @@ public class GameScene extends AppCompatActivity
                 MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
 
                 player.setStore_income(getIncomeFromStore());
-                showCustomToast("Congratulation you purchased "+store.getName()+" !",store.getImgUrl(),true);
+                showCustomToast("Congratulation you purchased "+store.getName()+" !",store.getImgUrl(),"green");
 
                 insertStoreFragment();
 
@@ -1019,7 +1038,7 @@ public class GameScene extends AppCompatActivity
             dialog.show();
 
         }else {
-            showCustomToast("Insufficient funds to purchase "+store.getName(),store.getImgUrl(),false);
+            showCustomToast("Insufficient funds to purchase "+store.getName(),store.getImgUrl(),"red");
             dialog.dismiss();
             dialog.cancel();
         }
@@ -1044,12 +1063,12 @@ public class GameScene extends AppCompatActivity
             acquired_degree.setDegree_Name(degree.getName());
             MainMenu.myAppDataBase.myDao().addAcquired_degree(acquired_degree);
 
-            showCustomToast("purchase of "+degree.getName()+" done succesfully","",true);
+            showCustomToast("purchase of "+degree.getName()+" done succesfully","","green");
 
             insertStudyFragment();
         }
         else
-            showCustomToast("insufficient funds to purchase "+degree.getName(),"",false);
+            showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
     }
 
     @Override
