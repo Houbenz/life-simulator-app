@@ -57,6 +57,9 @@ public interface MyDao {
     @Query("select * from Acquired_degree where player_id=:id")
     List<Acquired_degree> getAcquiredDegrees(int id);
 
+    @Query("select * from Acquired_degree where degree_id=:degreeid and player_id=:playerid")
+    Acquired_degree getAcqDegr(int playerid,int degreeid);
+
     @Query("select * from Player")
      List<Player> getPlayers();
 
@@ -98,6 +101,10 @@ public interface MyDao {
 
     @Query("select income from Store where id =:id")
     double getStoreIncome(int id);
+
+
+    @Update
+    void update_Acquired_Degree(Acquired_degree acquired_degree);
 
     @Update
     void updateAcquired_Furnitures(Acquired_Furnitures acquired_furnitures);

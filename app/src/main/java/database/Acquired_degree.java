@@ -21,6 +21,25 @@ public class Acquired_degree {
 
     private String degree_Name;
 
+    private int player_progress;
+
+    private String available;
+
+
+    public String getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(String available) {
+        this.available = available;
+    }
+    public int getPlayer_progress() {
+        return player_progress;
+    }
+
+    public void setPlayer_progress(int player_progress) {
+        this.player_progress = player_progress;
+    }
 
     public int getId() {
         return id;

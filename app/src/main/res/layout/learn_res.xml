@@ -34,4 +34,38 @@
         android:fontFamily="casual"
         android:text="Acquired : No"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/borderblacksmall">
+    <ProgressBar
+        android:id="@+id/progressStudy"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:max="100"
+        android:progress="55"
+        android:progressDrawable="@drawable/degree_progress_theme"/>
+    </FrameLayout>
+    <TextView
+        android:id="@+id/textprogress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="casual"
+        android:text="im here"
+        android:layout_marginLeft="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    <TextView
+        android:id="@+id/learntime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="casual"
+        android:text="Learn Time : 1 Hour"
+        android:layout_marginLeft="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 </LinearLayout>

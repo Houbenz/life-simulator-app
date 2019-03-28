@@ -8,4 +8,13 @@ import android.arch.persistence.room.PrimaryKey;
 public class Degree extends Purchases {
 
 
+    private int progress ;
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
 }

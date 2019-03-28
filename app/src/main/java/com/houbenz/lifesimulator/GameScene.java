@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -151,6 +150,12 @@ public class GameScene extends AppCompatActivity
 
     private ViewModelFourHome viewmodel;
 
+    private ViewGroup placeFragment;
+
+
+    private boolean learning =false;
+    private int learn_time=Params.LEARN_TIME;
+
     //this is the original app ad id
     private final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
@@ -195,7 +200,9 @@ public class GameScene extends AppCompatActivity
                             threadRun=false;
                             Dialog dialog = new Dialog(this);
                             dialog.setContentView(R.layout.custom_toast_red);
+
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
                             TextView message= dialog.findViewById(R.id.message);
 
                             message.setText("Game Over ! :( your health is Zero");
@@ -275,6 +282,49 @@ public class GameScene extends AppCompatActivity
                         time.setText(hourS + ":" + minuteS);
                         dayView.setText(getString(R.string.day)+" "+ dayS);
 
+
+                        //when you click learn
+                        if(learning){
+
+
+                            fragmentManager=getSupportFragmentManager();
+                            fragmentManager.popBackStack();
+
+
+                            learn_time--;
+                            work.setEnabled(false);
+                            buy.setEnabled(false);
+                            sleep.setEnabled(false);
+                            bank.setEnabled(false);
+                            study.setEnabled(false);
+                            startWorking.setEnabled(false);
+
+                            startWorking.setText("Learning "+learn_time +"m");
+
+                            if(learn_time <= 0){
+                                learning=false;
+                                learn_time=60;
+
+
+                                work.setEnabled(true);
+                                buy.setEnabled(true);
+                                sleep.setEnabled(true);
+                                bank.setEnabled(true);
+                                study.setEnabled(true);
+                                startWorking.setText(getString(R.string.startWork));
+
+                                if(! player.getWork().equals(getString(R.string.none)))
+                                    startWorking.setEnabled(true);
+
+                                DegreeFragment degreeFragment = new DegreeFragment();
+                                degreeFragment.setItemPosition(degreeItemPosition);
+                                fragmentInsertionSecond(degreeFragment);
+
+                                speedSeekBar.setProgress(0);
+                                speed=Params.TIME_SPEED_NORMAL;
+                            }
+
+                        }
 
 
                     });
@@ -361,6 +411,11 @@ public class GameScene extends AppCompatActivity
         setContentView(R.layout.activity_game_scene);
 
 
+
+
+        placeFragment=findViewById(R.id.placefragment);
+
+
         bank=findViewById(R.id.bank);
         levelBar=findViewById(R.id.levelProgressBar);
         levelNumber=findViewById(R.id.levelNumber);
@@ -373,8 +428,6 @@ public class GameScene extends AppCompatActivity
         playerN =findViewById(R.id.playerN);
         income=findViewById(R.id.income);
         balance=findViewById(R.id.balance);
-
-
 
 
         adView=findViewById(R.id.adView);
@@ -1048,27 +1101,66 @@ public class GameScene extends AppCompatActivity
     public void onHomeShow(String url) {
     }
 
+    private int degree_y=0;
+    private int degreeItemPosition =0;
+    @Override
+    public void deliverDegreeItemPosition(int pos,int y) {
+        degreeItemPosition =pos;
+        degree_y=y;
+    }
+
     @Override
     public void deliverDegree(Degree degree) {
+
         double newBalance =player.getBalance()-degree.getPrice();
 
-        if(newBalance>=0){
+
+        Acquired_degree acq =MainMenu.myAppDataBase.myDao().getAcqDegr(player.getId(),degree.getId());
+
+        if(acq == null) {
+
+        if(newBalance>=0) {
             player.setBalance(newBalance);
-            balance.setText(player.getBalance()+"$");
-            //player.getAcquiredDegress().add(learn.getName());
+            balance.setText(player.getBalance() + "$");
 
             Acquired_degree acquired_degree = new Acquired_degree();
             acquired_degree.setPlayer_id(player.getId());
             acquired_degree.setDegree_id(degree.getId());
             acquired_degree.setDegree_Name(degree.getName());
+            acquired_degree.setAvailable("false");
+            acquired_degree.setPlayer_progress(acquired_degree.getPlayer_progress() + 5);
             MainMenu.myAppDataBase.myDao().addAcquired_degree(acquired_degree);
 
-            showCustomToast("purchase of "+degree.getName()+" done succesfully","","green");
+            learning=true;
 
-            insertStudyFragment();
+        }else
+            {
+                showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
+            }
         }
-        else
-            showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
+            else {
+
+            if(newBalance >=0) {
+                acq.setPlayer_progress(acq.getPlayer_progress() + 5);
+                player.setBalance(newBalance);
+                balance.setText(player.getBalance() + "$");
+                learning=true;
+            }
+            else
+                showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
+
+            if (!acq.getAvailable().equals("true")) {
+
+                if (degree.getProgress() <= acq.getPlayer_progress()) {
+
+                    acq.setAvailable("true");
+                    showCustomToast("purchase of "+degree.getName()+" done succesfully","","green");
+                }
+
+                MainMenu.myAppDataBase.myDao().update_Acquired_Degree(acq);
+            }
+        }
+
     }
 
     @Override
@@ -1121,34 +1213,6 @@ public class GameScene extends AppCompatActivity
 
         fragmentInsertionSecond(bankFragment);
     }
-
-    public void showPurchaseDialog(String msg){
-
-        AlertDialog.Builder builder=new AlertDialog.Builder(GameScene.this);
-
-        builder.setTitle("Purchase")
-                .setMessage(msg);
-
-        AlertDialog alertDialog=builder.create();
-
-        alertDialog.show();
-
-    }
-
-
- /*   public void fragmentInsertion(Fragment fragment){
-
-        fragmentManager=getSupportFragmentManager();
-        fragmentManager.popBackStack();
-        fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
-        //fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.move,R.animator.move_out);
-
-        fragmentTransaction.replace(R.id.placefragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-
-
-    }/*/
 
     public void fragmentInsertionSecond(Fragment fragment){
 

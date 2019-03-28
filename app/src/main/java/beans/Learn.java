@@ -21,6 +21,17 @@ public class Learn {
     private float price;
     private int id ;
 
+    private int progress ;
+
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
     public int getId() {
         return id;
     }
@@ -83,6 +94,7 @@ public class Learn {
                 float price =jsonObject.getLong("price");
                 Learn learn =new Learn(name,price);
                 learn.setId(jsonObject.getInt("id"));
+                learn.setProgress(jsonObject.getInt("progress"));
                 learns.add(learn);
             }
 

@@ -4,6 +4,7 @@ package fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,17 @@ public class DegreeFragment extends Fragment {
 
     private OnDegreeClick monDegreeClick;
 
-    public DegreeFragment() {
+    private int itemPosition;
+    private int y ;
+
+
+
+    public DegreeFragment(){
+
     }
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,12 +53,17 @@ public class DegreeFragment extends Fragment {
 
         learnList.setAdapter(degreeListAdapter);
 
+        learnList.setSelectionFromTop(itemPosition,y);
+
         learnList.setOnItemClickListener((parent, view, position, id) -> {
 
             Degree degree =(Degree) parent.getItemAtPosition(position);
 
+            View v = learnList.getChildAt(0);
+            int top = (v == null) ? 0 : (v.getTop() - learnList.getPaddingTop());
             monDegreeClick.deliverDegree(degree);
 
+            monDegreeClick.deliverDegreeItemPosition(learnList.getFirstVisiblePosition(),top);
         });
 
             return fragment;
@@ -58,6 +73,7 @@ public class DegreeFragment extends Fragment {
     public interface OnDegreeClick {
 
          void deliverDegree(Degree degree);
+         void deliverDegreeItemPosition(int pos , int y );
     }
 
     @Override
@@ -70,5 +86,22 @@ public class DegreeFragment extends Fragment {
             throw  new ClassCastException(context.toString()+" must implement OnDegreeClick interface");
         }
 
+    }
+
+
+    public int getItemPosition() {
+        return itemPosition;
+    }
+
+    public void setItemPosition(int itemPosition) {
+        this.itemPosition = itemPosition;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

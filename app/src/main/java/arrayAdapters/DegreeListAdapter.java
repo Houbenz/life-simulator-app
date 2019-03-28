@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.houbenz.lifesimulator.MainMenu;
@@ -26,10 +27,12 @@ import database.Degree;
 public class DegreeListAdapter extends ArrayAdapter<Degree> {
 
 
+    private int slot;
     private  List<Acquired_degree> acquiredDegrees;
     public DegreeListAdapter(@NonNull Context context, List<Degree> degrees, int slot) {
         super(context, R.layout.learn_res,degrees);
         this.acquiredDegrees=MainMenu.myAppDataBase.myDao().getAcquiredDegrees(slot);
+        this.slot=slot;
     }
 
     @NonNull
@@ -47,6 +50,8 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
         TextView name=learnView.findViewById(R.id.nameLearn);
         TextView price=learnView.findViewById(R.id.priceLearn);
         TextView acquired=learnView.findViewById(R.id.acqLearn);
+        ProgressBar progressStudy=learnView.findViewById(R.id.progressStudy);
+        TextView textprog = learnView.findViewById(R.id.textprogress);
 
             if(degree != null) {
 
@@ -55,13 +60,46 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
                 price.setText(priceString);
 
 
+                Acquired_degree acq = MainMenu.myAppDataBase.myDao().getAcqDegr(slot,degree.getId());
+
+                progressStudy.setMax(degree.getProgress());
+                textprog.setText(progressStudy.getProgress() + "/"+progressStudy.getMax());
+
+
+
+               if(acq == null){
+
+                   textprog.setText(progressStudy.getProgress() + "/"+progressStudy.getMax());
+                   acquired.setText(getContext().getString(R.string.acquiredNo));
+                   acquired.setTextColor(getContext().getResources().getColor(R.color.red));
+
+               }else {
+                   if(acq.getPlayer_progress() >= progressStudy.getMax()){
+
+                       acquired.setText(getContext().getString(R.string.acquiredYes));
+                       acquired.setTextColor(getContext().getResources().getColor(R.color.green));
+                       progressStudy.setProgress(acq.getPlayer_progress());
+                       learnView.setClickable(true);
+                   }else{
+
+                       acquired.setTextColor(getContext().getResources().getColor(R.color.red));
+                   }
+
+                   textprog.setText(acq.getPlayer_progress() + "/"+progressStudy.getMax());
+                   progressStudy.setProgress(acq.getPlayer_progress());
+               }
+
+/*
                 boolean in = false;
                 int i = 0;
 
                 while (!in && i < acquiredDegrees.size()) {
 
-                    if (acquiredDegrees.get(i).getDegree_id() == degree.getId())
+                    if (acquiredDegrees.get(i).getDegree_id() == degree.getId()) {
                         in = true;
+                        progressStudy.setProgress(progressStudy.getProgress() + acquiredDegrees.get(i).getPlayer_progress());
+                        break;
+                    }
                     i++;
 
                 }
@@ -76,7 +114,7 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
                     acquired.setText(getContext().getString(R.string.acquiredNo));
                     acquired.setTextColor(getContext().getResources().getColor(R.color.red));
                 }
-
+*/
             }
         return  learnView;
     }

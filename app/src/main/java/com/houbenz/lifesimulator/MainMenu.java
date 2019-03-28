@@ -4,11 +4,14 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -74,6 +77,22 @@ public class MainMenu extends AppCompatActivity{
     };
 
 
+
+    static final Migration MIGRATION_14_15 = new Migration(14,15) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("alter table Acquired_Degree add column player_progress integer default 0 not null");
+            database.execSQL("alter table Acquired_Degree add column available varchar");
+
+            database.execSQL("alter table degree add column progress integer default 0 not null");
+
+        }
+    };
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +100,10 @@ public class MainMenu extends AppCompatActivity{
 
 
 
+
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
+                    .addMigrations(MIGRATION_14_15)
                     .allowMainThreadQueries().build();
 
         }catch (IllegalStateException e){
@@ -723,6 +744,8 @@ public class MainMenu extends AppCompatActivity{
             degree.setName(learn.getName());
             degree.setPrice(learn.getPrice());
 
+            degree.setProgress(learn.getProgress());
+
             if(!isUpdate)
                 myAppDataBase.myDao().addDegree(degree);
             else
@@ -737,8 +760,11 @@ public class MainMenu extends AppCompatActivity{
 
                 Degree degree = new Degree();
 
+                degree.setId(learns.get(i).getId());
                 degree.setName(learns.get(i).getName());
                 degree.setPrice(learns.get(i).getPrice());
+
+                degree.setProgress(learns.get(i).getProgress());
 
                 myAppDataBase.myDao().addDegree(degree);
             }

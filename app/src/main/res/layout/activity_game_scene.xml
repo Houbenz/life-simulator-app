@@ -61,7 +61,7 @@
                         android:layout_weight="1"
                         android:indeterminate="false"
                         android:progress="100"
-                        android:progressTint="@android:color/holo_red_dark" />
+                        android:progressTint="@color/red" />
 
                     <ProgressBar
                         android:id="@+id/hungerBar"

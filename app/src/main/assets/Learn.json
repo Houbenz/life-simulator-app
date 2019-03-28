@@ -2,36 +2,43 @@
 
   {
     "id":1 ,
-    "name":"highschool degree","price":100
+    "name":"highschool degree","price":20
+    ,"progress":20
   }
   ,
 
   {
     "id": 2,
-    "name":"driving licence","price":1000
+    "name":"driving licence","price":20
+  ,"progress":30
   }
   ,
   {
     "id": 3,
-    "name":"waiter Licence","price":1500
+    "name":"waiter Licence","price":20
+  ,"progress":45
   }
   ,
   {
     "id": 4,
-    "name":"teaching degree","price":3000
+    "name":"teaching degree","price":20
+  ,"progress":55
   }
   ,
   {
     "id":5 ,
-    "name":"programming licence","price":4000
+    "name":"programming licence","price":20
+  ,"progress":100
   }
 ,
   {
     "id": 6,
-    "name":"Piloting licence","price":5000
+    "name":"Piloting licence","price":20
+  ,"progress":120
   },
   {
     "id":7 ,
-    "name":"Phd","price":10000
+    "name":"Phd","price":20
+  ,"progress":200
   }
 ]

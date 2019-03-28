@@ -6,8 +6,8 @@ android {
         applicationId "com.houbenz.android.lifesimulator"
         minSdkVersion 20
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.2.4"
+        versionCode 8
+        versionName "1.2.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
