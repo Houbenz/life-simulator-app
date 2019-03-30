@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.games.Game;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +55,7 @@ import database.MyAppDataBase;
 import database.Player;
 import database.VersionDB;
 
-public class MainMenu extends AppCompatActivity{
+public class MainMenu extends AppCompatActivity {
 
 
     private Button newGame;
@@ -67,6 +77,10 @@ public class MainMenu extends AppCompatActivity{
 
     private SharedPreferences sharedPreferences;
 
+
+    private static final int RC_SIGN_IN = 106 ;
+    private static final int RC_LEADERBOARD_SCORE =1005;
+
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v, event) -> {
 
@@ -77,8 +91,7 @@ public class MainMenu extends AppCompatActivity{
     };
 
 
-
-    static final Migration MIGRATION_14_15 = new Migration(14,15) {
+    static final Migration MIGRATION_14_15 = new Migration(14, 15) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 
@@ -91,14 +104,10 @@ public class MainMenu extends AppCompatActivity{
     };
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-
 
 
         try {
@@ -106,19 +115,19 @@ public class MainMenu extends AppCompatActivity{
                     .addMigrations(MIGRATION_14_15)
                     .allowMainThreadQueries().build();
 
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
 
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .allowMainThreadQueries().fallbackToDestructiveMigration().build();
         }
 
-        sharedPreferences= getApplicationContext().getSharedPreferences("myShared",Context.MODE_PRIVATE);
+        sharedPreferences = getApplicationContext().getSharedPreferences("myShared", Context.MODE_PRIVATE);
 
 
-        String entry =sharedPreferences.getString("entry","none");
+        String entry = sharedPreferences.getString("entry", "none");
 
 
-        if(entry.equals("none")){
+        if (entry.equals("none")) {
             initWorkRows(false);
             initDegreeRows(false);
             initFragments(false);
@@ -126,22 +135,21 @@ public class MainMenu extends AppCompatActivity{
             initStores(false);
             initFurnitures(false);
             initMedicine(false);
-            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(),1));
+            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
 
-            sharedPreferences.edit().putString("entry","available").apply();
-        }
-        else {
+            sharedPreferences.edit().putString("entry", "available").apply();
+        } else {
 
-            String actualversion =getDatabaseVersion();
+            String actualversion = getDatabaseVersion();
             VersionDB versionDB = myAppDataBase.myDao().getVersionDB();
 
-            if(versionDB == null){
-                myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(),1));
+            if (versionDB == null) {
+                myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
                 versionDB = myAppDataBase.myDao().getVersionDB();
             }
 
 
-            if(! versionDB.getVersion().equals(actualversion)){
+            if (!versionDB.getVersion().equals(actualversion)) {
 
                 initWorkRows(true);
                 initDegreeRows(true);
@@ -158,70 +166,62 @@ public class MainMenu extends AppCompatActivity{
         }
 
 
-
-
-          newGame = findViewById(R.id.newgame);
+        newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
         settings = findViewById(R.id.settings);
-        credits=findViewById(R.id.credits);
+        credits = findViewById(R.id.credits);
 
 
-        imageView1=findViewById(R.id.imageView1);
-        imageView2=findViewById(R.id.imageView2);
-        imageView3=findViewById(R.id.imageView3);
-        imageView4=findViewById(R.id.imageView4);
+        imageView1 = findViewById(R.id.imageView1);
+        imageView2 = findViewById(R.id.imageView2);
+        imageView3 = findViewById(R.id.imageView3);
+        imageView4 = findViewById(R.id.imageView4);
 
 
-        mainLayout=(ConstraintLayout)findViewById(R.id.mainLayout);
+        mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
 
         mainLayout.setOnTouchListener(mOnTouchListener);
 
 
+        credits.setOnClickListener(view -> {
 
-        credits.setOnClickListener(view ->{
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-
-        });
-
-
-        newGame.setOnClickListener(view ->{
-
-                dialogueCreatorNewGame();
-        });
-
-        loadGame.setOnClickListener(view ->{
-
-                dialogueCreatorLoadGame();
+            if(account != null)
+            Games.getLeaderboardsClient(this,account).getLeaderboardIntent(getString(R.string.leaderboard_score))
+                    .addOnSuccessListener(intent -> {
+                        startActivityForResult(intent,RC_LEADERBOARD_SCORE);
+                    });
 
         });
 
 
-        /*
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent =new Intent(getApplicationContext(),SettingsActivity.class);
+        newGame.setOnClickListener(view -> {
 
-                startActivity(intent);
-
-            }
+            dialogueCreatorNewGame();
         });
-        */
+
+        loadGame.setOnClickListener(view -> {
+
+            dialogueCreatorLoadGame();
+
+        });
+
         animateButton();
 
 
-        firsttime  =4000;
+        firsttime = 4000;
 
         Thread thread = new Thread(() -> {
 
-            while (!isDestroyed()){
+            while (!isDestroyed()) {
 
                 try {
 
 
                     Thread.sleep(firsttime);
-                    firsttime=1500;
-                   runOnUiThread(() -> animateInThread(imageView3));
+                    firsttime = 1500;
+                    runOnUiThread(() -> animateInThread(imageView3));
 
                     Thread.sleep(1500);
                     runOnUiThread(() -> animateInThread(imageView4));
@@ -232,7 +232,7 @@ public class MainMenu extends AppCompatActivity{
                     Thread.sleep(1500);
                     runOnUiThread(() -> animateInThread(imageView2));
 
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -243,18 +243,53 @@ public class MainMenu extends AppCompatActivity{
         thread.start();
 
 
+        startSignInIntent();
+
+
+    }
+
+    private void startSignInIntent(){
+
+        GoogleSignInClient signInClient=GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+
+        Intent intent=signInClient.getSignInIntent();
+
+        startActivityForResult(intent,RC_SIGN_IN);
+
     }
 
 
-    public void animateInThread(ImageView imageView){
-        int randomNumber = (int) ((imagesResources().length-0)* Math.random());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        animateImagesAlphaToZero(imageView,4000);
+        if(requestCode == RC_SIGN_IN){
+
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+            if(result.isSuccess()){
+                GoogleSignInAccount account=result.getSignInAccount();
+            }else {
+                String message = result.getStatus().getStatusMessage();
+                if(message == null || message.isEmpty()){
+                    message="nothing";
+                }
+                new AlertDialog.Builder(this).setMessage(message)
+                        .setNeutralButton("ok",null).show();
+            }
+        }
+
+    }
+
+    public void animateInThread(ImageView imageView) {
+        int randomNumber = (int) ((imagesResources().length - 0) * Math.random());
+
+        animateImagesAlphaToZero(imageView, 4000);
         imageView.setImageResource(imagesResources()[randomNumber]);
-        animateImageAlphaToOne(imageView,4000);
+        animateImageAlphaToOne(imageView, 4000);
 
     }
-
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -269,7 +304,7 @@ public class MainMenu extends AppCompatActivity{
         View decorView = getWindow().getDecorView();
 
         decorView.setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_IMMERSIVE |
+                View.SYSTEM_UI_FLAG_IMMERSIVE |
                         View.SYSTEM_UI_FLAG_FULLSCREEN |
                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
@@ -278,283 +313,35 @@ public class MainMenu extends AppCompatActivity{
 
     }
 
-
-    //pour ecraser une partie lorsque le joueur utilise une slot deja prise
-    public void overwriteSlotDilaog (final int slotNumber){
-
-        final AlertDialog.Builder overwriteDialog = new AlertDialog.Builder(MainMenu.this);
-
-
-
-        overwriteDialog.setMessage(getString(R.string.overwriteTitle))
-                .setPositiveButton(getString(R.string.overwrite), (dialog,which) -> {
-                    myAppDataBase.myDao().deletePlayer(myAppDataBase.myDao().getPlayer(slotNumber));
-                        dialogInputCreate(slotNumber);
-
-                })
-                .setNegativeButton(getString(R.string.no), (dialog,which) -> {
-                            dialog.cancel();
-                            dialog.dismiss();
-                });
-
-        AlertDialog alertDialog= overwriteDialog.create();
-
-        alertDialog.show();
-
-    }
-
-
     //Affiche les slots pour charger une partie
 
     public void dialogueCreatorLoadGame() {
 
-        final Dialog loadSlot = new Dialog(MainMenu.this);
-        loadSlot.setTitle("Slot Load Game");
-        loadSlot.setContentView(R.layout.choose_slot_newgame);
-
-        TextView slotTitle1 = (TextView) loadSlot.findViewById(R.id.slotTitle1);
-        TextView slotTitle2 = (TextView) loadSlot.findViewById(R.id.slotTitle2);
-        TextView slotTitle3 = (TextView) loadSlot.findViewById(R.id.slotTitle3);
-
-        TextView slotDate1 = (TextView) loadSlot.findViewById(R.id.slotDate1);
-        TextView slotDate2 = (TextView) loadSlot.findViewById(R.id.slotDate2);
-        TextView slotDate3 = (TextView) loadSlot.findViewById(R.id.slotDate3);
-
-
-
-        ImageView slotImage1 = (ImageView) loadSlot.findViewById(R.id.slotImage1);
-        ImageView slotImage2 = (ImageView) loadSlot.findViewById(R.id.slotImage2);
-        ImageView slotImage3 = (ImageView) loadSlot.findViewById(R.id.slotImage3);
-
-        RelativeLayout slot1 = loadSlot.findViewById(R.id.slotId1);
-        RelativeLayout slot2 = loadSlot.findViewById(R.id.slotId2);
-        RelativeLayout slot3 = loadSlot.findViewById(R.id.slotId3);
-
-
-        //Player Slot 1
         Player player = myAppDataBase.myDao().getPlayer(1);
+
         if(player != null) {
-
-            Uri imgUri1;
-            if (!(player.getWork_image_path() == null))
-                imgUri1 = Uri.parse(player.getWork_image_path());
-            else
-                imgUri1 = Uri.parse("android.resource://com.houbenz.android.lifesimulator/drawable/ic_empty");
-
-            slotImage1.setImageURI(imgUri1);
-            slotTitle1.setText(player.getName());
-            slotDate1.setText(player.getCreation_date());
-
+            Intent intent = new Intent(MainMenu.this, GameScene.class);
+            intent.putExtra("slotNumber", 1);
+            startActivity(intent);
         }
-
-        else
-
-            slot1.setEnabled(false);
-
-        //Player Slot 2
-
-        player =myAppDataBase.myDao().getPlayer(2);
-        if(player != null) {
-
-        Uri imgUri2 ;
-        if (!(player.getWork_image_path() == null ))
-            imgUri2 = Uri.parse(player.getWork_image_path());
-        else
-            imgUri2 = Uri.parse("android.resource://com.houbenz.android.lifesimulator/drawable/ic_empty");
-
-        slotImage2.setImageURI(imgUri2);
-        slotTitle2.setText(player.getName());
-        slotDate2.setText(player.getCreation_date());
-
-        }
-
-         else
-            slot2.setEnabled(false);
-
-        //Player Slot 3
-        player=myAppDataBase.myDao().getPlayer(3);
-        if(player != null) {
-
-        Uri imgUri3;
-        if (!(player.getWork_image_path() == null ))
-            imgUri3 = Uri.parse(player.getWork_image_path());
-        else
-            imgUri3 = Uri.parse("android.resource://com.houbenz.android.lifesimulator/drawable/ic_empty");
-
-        slotImage3.setImageURI(imgUri3);
-        slotTitle3.setText(player.getName());
-        slotDate3.setText(player.getCreation_date());
-
-        }
-
-         else
-            slot3.setEnabled(false);
-
-
-        //Events on click for slots 1 2 3
-
-            slot1.setOnClickListener(view -> {
-
-                Intent intent = new Intent(MainMenu.this, GameScene.class);
-
-                intent.putExtra("slotNumber", 1);
-
-                startActivity(intent);
-
-                loadSlot.dismiss();
-            });
-
-            slot2.setOnClickListener(view -> {
-
-                Intent intent = new Intent(MainMenu.this, GameScene.class);
-
-                intent.putExtra("slotNumber", 2);
-
-                startActivity(intent);
-
-                loadSlot.dismiss();
-            });
-
-            slot3.setOnClickListener(view -> {
-
-                Intent intent = new Intent(MainMenu.this, GameScene.class);
-
-                intent.putExtra("slotNumber", 3);
-
-                startActivity(intent);
-
-                loadSlot.dismiss();
-            });
-
-            loadSlot.show();
-
-        }
-
-
-
-    //Affiche les slots pour un nouveau joueur
-    public void dialogueCreatorNewGame(){
-        final Dialog choose = new Dialog(MainMenu.this);
-        choose.setTitle("Slot New Game");
-        choose.setContentView(R.layout.choose_slot_newgame);
-
-        ImageView slotImage1=(ImageView)choose.findViewById(R.id.slotImage1);
-        ImageView slotImage2=(ImageView)choose.findViewById(R.id.slotImage2);
-        ImageView slotImage3=(ImageView)choose.findViewById(R.id.slotImage3);
-
-        TextView slotTitle1=(TextView)choose.findViewById(R.id.slotTitle1);
-        TextView slotTitle2=(TextView)choose.findViewById(R.id.slotTitle2);
-        TextView slotTitle3=(TextView)choose.findViewById(R.id.slotTitle3);
-
-        TextView slotDate1=(TextView)choose.findViewById(R.id.slotDate1);
-        TextView slotDate2=(TextView)choose.findViewById(R.id.slotDate2);
-        TextView slotDate3=(TextView)choose.findViewById(R.id.slotDate3);
-
-        RelativeLayout slot1 = choose.findViewById(R.id.slotId1);
-        RelativeLayout slot2 = choose.findViewById(R.id.slotId2);
-        RelativeLayout slot3 = choose.findViewById(R.id.slotId3);
-
-
-        List<Player> playerList =myAppDataBase.myDao().getPlayers();
-
-        for( Player player : playerList){
-
-
-                //First Slot
-                if (player.getId() == 1) {
-                    Uri imgUri1;
-                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
-                        imgUri1 = Uri.parse(player.getWork_image_path());
-                    else
-                        imgUri1 = Uri.parse("android.resource://com.example.android." +
-                                "testsharedpreferences/drawable/ic_empty");
-
-                    slotImage1.setImageURI(imgUri1);
-                    slotTitle1.setText(player.getName());
-                    slotDate1.setText(player.getCreation_date());
-
-
-                }
-
-
-                //Second Slot
-                if (player.getId() == 2) {
-                    Uri imgUri2 = null;
-
-                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
-                        imgUri2 = Uri.parse(player.getWork_image_path());
-                    else
-                        imgUri2 = Uri.parse("android.resource://com.example.android." +
-                                "testsharedpreferences/drawable/ic_empty");
-
-                    slotImage2.setImageURI(imgUri2);
-                    slotTitle2.setText(player.getName());
-                    slotDate2.setText(player.getCreation_date());
-
-
-                }
-
-                //Third Slot
-                if (player.getId() == 3) {
-                    Uri imgUri3 = null;
-
-                    if (!(player.getWork_image_path() == null || player.getWork_image_path().equals(getString(R.string.none))))
-                        imgUri3 = Uri.parse(player.getWork_image_path());
-                    else
-                        imgUri3 = Uri.parse("android.resource://com.example.android." +
-                                "testsharedpreferences/drawable/ic_empty");
-
-                    slotImage3.setImageURI(imgUri3);
-                    slotTitle3.setText(player.getName());
-                    slotDate3.setText(player.getCreation_date());
-                }
-            }
-
-        slot1.setOnClickListener(view ->{
-
-            if(slotTitle1.getText().equals(getString(R.string.none))) {
-                dialogInputCreate( 1);
-                choose.dismiss();
-            }
-            else
-            {
-                overwriteSlotDilaog(1);
-                choose.dismiss();
-            }
-        });
-        slot2.setOnClickListener(view ->{
-
-            if(slotTitle2.getText().equals(getString(R.string.none))) {
-                dialogInputCreate( 2);
-                choose.dismiss();
-            }
-            else
-            {
-                overwriteSlotDilaog(2);
-                choose.dismiss();
-            }
-        });
-        slot3.setOnClickListener(view ->{
-
-            if(slotTitle3.getText().equals(getString(R.string.none))) {
-                dialogInputCreate( 3);
-                choose.dismiss();
-            }
-            else
-            {
-                overwriteSlotDilaog(3);
-                choose.dismiss();
-            }
-        });
-
-
-        choose.show();
     }
 
+    //Affiche les slots pour un nouveau joueur
+    public void dialogueCreatorNewGame() {
 
+        Player player =myAppDataBase.myDao().getPlayer(1);
+
+        if(player == null){
+            dialogInputCreate( 1);
+        }
+        else
+        {
+            overwriteSlotDilaog(1);
+        }
+
+    }
 
     //Pour entrer le nom du joueur puis sauvgarder la premiere session
-
     public void dialogInputCreate(final int slotNumber){
 
         final Dialog putText = new Dialog(MainMenu.this);
@@ -619,29 +406,42 @@ public class MainMenu extends AppCompatActivity{
     }
 
 
+    //pour ecraser une partie lorsque le joueur utilise une slot deja prise
+    public void overwriteSlotDilaog(final int slotNumber) {
+
+        final AlertDialog.Builder overwriteDialog = new AlertDialog.Builder(MainMenu.this);
+
+
+        overwriteDialog.setMessage(getString(R.string.overwriteTitle))
+                .setPositiveButton(getString(R.string.overwrite), (dialog, which) -> {
+
+                    myAppDataBase.myDao().deletePlayer(myAppDataBase.myDao().getPlayer(slotNumber));
+
+                    dialogInputCreate(slotNumber);
+
+                })
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> {
+                    dialog.cancel();
+                    dialog.dismiss();
+                });
+
+        AlertDialog alertDialog = overwriteDialog.create();
+
+        alertDialog.show();
+
+    }
+
     public void animateButton(){
-
-
-
-
 
         animateView(newGame,1500);
         animateView(loadGame,2000);
         animateView(settings,2500);
         animateView(credits,3000);
 
-
-
-
         animateTranslationImageX(imageView1,1500);
         animateTranslationImageX(imageView2,2000);
         animateTranslationImageX(imageView3,2500);
         animateTranslationImageX(imageView4,3000);
-
-
-
-       // showRandomImage();
-
     }
 
 

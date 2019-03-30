@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <!-- app_id -->
+    <string name="app_id" translatable="false">720625181649</string>
+    <!-- package_name -->
+    <string name="package_name" translatable="false">com.houbenz.android.lifesimulator</string>
+    <!-- leaderboard Score -->
+    <string name="leaderboard_score" translatable="false">CgkI0cfuxPwUEAIQAQ</string>
+</resources>

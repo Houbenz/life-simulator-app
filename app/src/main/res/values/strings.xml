@@ -1,5 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+
     <string name="app_name" translatable="false">Life Simulator</string>
     <string name="preference_file_key" translatable="false">com.TestSharedPreferences.PREFERENCE_FILE_KEY</string>
 
@@ -65,6 +66,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="credit">Credits</string>
+    <string name="score">Score</string>
     <string name="intro">Press start working button to start work or choose a work from work section</string>
 
     <string name="required">Required</string>

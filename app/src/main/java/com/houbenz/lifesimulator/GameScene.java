@@ -36,6 +36,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.games.Games;
 
 import java.util.List;
 
@@ -307,7 +310,6 @@ public class GameScene extends AppCompatActivity
                             if(learn_time <= 0){
                                 learning=false;
                                 learn_time=60;
-
 
                                 work.setEnabled(true);
                                 buy.setEnabled(true);
@@ -1402,6 +1404,15 @@ public class GameScene extends AppCompatActivity
 
         MainMenu.myAppDataBase.myDao().updatePlayer(player);
 
+
+        GoogleSignInAccount account =GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+            Games.getLeaderboardsClient(this, account).submitScore(getString(R.string.leaderboard_score),
+                    (long) player.getBalance());
+
+            long saak =(long) player.getBalance();
+            Log.i("YUIO",saak+" ");
+        }
 
     }
 }

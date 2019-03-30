@@ -73,9 +73,9 @@
             android:layout_weight="1"
             android:fontFamily="casual"
             android:gravity="center"
-            android:text="@string/credit"
+            android:text="@string/score"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 
