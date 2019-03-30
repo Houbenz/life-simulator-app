@@ -111,6 +111,7 @@ public class MainMenu extends AppCompatActivity{
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .allowMainThreadQueries().fallbackToDestructiveMigration().build();
         }
+
         sharedPreferences= getApplicationContext().getSharedPreferences("myShared",Context.MODE_PRIVATE);
 
 
@@ -125,7 +126,7 @@ public class MainMenu extends AppCompatActivity{
             initStores(false);
             initFurnitures(false);
             initMedicine(false);
-            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion()));
+            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(),1));
 
             sharedPreferences.edit().putString("entry","available").apply();
         }
@@ -133,6 +134,12 @@ public class MainMenu extends AppCompatActivity{
 
             String actualversion =getDatabaseVersion();
             VersionDB versionDB = myAppDataBase.myDao().getVersionDB();
+
+            if(versionDB == null){
+                myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(),1));
+                versionDB = myAppDataBase.myDao().getVersionDB();
+            }
+
 
             if(! versionDB.getVersion().equals(actualversion)){
 
@@ -153,7 +160,7 @@ public class MainMenu extends AppCompatActivity{
 
 
 
-        newGame = findViewById(R.id.newgame);
+          newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
         settings = findViewById(R.id.settings);
         credits=findViewById(R.id.credits);

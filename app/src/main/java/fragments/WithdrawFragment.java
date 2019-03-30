@@ -12,7 +12,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
 
+import database.Player;
 
 
 public class WithdrawFragment extends Fragment {
@@ -44,7 +46,11 @@ public class WithdrawFragment extends Fragment {
         withdraw=frameLayout.findViewById(R.id.withdraw);
         bankBalanceW=frameLayout.findViewById(R.id.bankBalanceW);
 
-        float balanceInBank=getArguments().getFloat("balanceInBank");
+
+        int slot =getArguments().getInt("slot");
+        Player player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+       // double balance= player.getBalance();
+        double balanceInBank=player.getBank_deposit();
 
         bankBalanceW.setText("Balance : "+balanceInBank+"$");
         seekBarWithdraw.setMax((int)balanceInBank);
@@ -69,7 +75,7 @@ public class WithdrawFragment extends Fragment {
 
 
     public interface OnWithdraw{
-         void deliverWithdraw(int withdraw);
+         void deliverWithdraw(double withdraw);
     }
 
 

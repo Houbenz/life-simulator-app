@@ -13,6 +13,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
+
+import database.Player;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,12 +50,10 @@ public class DepositFragment extends Fragment {
         bankBalanceD=frameLayout.findViewById(R.id.bankBalanceD);
 
 
-
-
-
-        float balance= getArguments().getFloat("balance");
-
-        float balanceInBank=getArguments().getFloat("balanceInBank");
+        int slot =getArguments().getInt("slot");
+        Player player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+        double balance= player.getBalance();
+        double balanceInBank=player.getBank_deposit();
 
 
         bankBalanceD.setText("Balance : "+balanceInBank+"$");
@@ -73,21 +74,14 @@ public class DepositFragment extends Fragment {
 
 
 
-        deposit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                monDeposit.deliverDeposit(seekBarDeposit.getProgress());
-
-            }
-        });
+        deposit.setOnClickListener(v -> monDeposit.deliverDeposit(seekBarDeposit.getProgress()));
 
 
         return  frameLayout;
     }
 
     public interface OnDeposit{
-        public void deliverDeposit(int deposit);
+        public void deliverDeposit(double deposit);
     }
 
 

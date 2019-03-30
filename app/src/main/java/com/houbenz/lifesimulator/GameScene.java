@@ -14,6 +14,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,9 +167,9 @@ public class GameScene extends AppCompatActivity
      private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
 
     //this is for test video ad
-   // private final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
+    //private final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
 
-    @SuppressLint("ClickableViewAccessibility")
+
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
             hideSystemUI();
@@ -268,6 +269,7 @@ public class GameScene extends AppCompatActivity
 
                             player.setBank_deposit(player.getBank_deposit() * 1.01f);
 
+
                             if (player.getStore_income() != 0) {
 
                                 player.setBalance(player.getBalance() + player.getStore_income());
@@ -278,6 +280,7 @@ public class GameScene extends AppCompatActivity
                                     balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
                                 });
                             }
+                            saveProgress();
                         }
                         time.setText(hourS + ":" + minuteS);
                         dayView.setText(getString(R.string.day)+" "+ dayS);
@@ -808,6 +811,10 @@ public class GameScene extends AppCompatActivity
         startWorking.setEnabled(true);
         jobName.setText(work.getName());
 
+        if(mRewardVideoAd.isLoaded())
+            doubleEarn.setVisibility(View.VISIBLE);
+
+
     }
 
     @Override
@@ -960,6 +967,7 @@ public class GameScene extends AppCompatActivity
             hour -= 24;
             day++;
             player.setBank_deposit(player.getBank_deposit()*1.01f);
+            saveProgress();
             if(player.getStore_income() !=0) {
 
                 player.setBalance(player.getBalance() + player.getStore_income());
@@ -1191,26 +1199,26 @@ public class GameScene extends AppCompatActivity
     }
 
     @Override
-    public void deliverDeposit(int deposit){
+    public void deliverDeposit(double deposit){
 
-        int newBalance =(int)player.getBalance()-deposit;
+        double newBalance =player.getBalance()-deposit;
 
         player.setBank_deposit(player.getBank_deposit()+deposit);
         player.setBalance(newBalance);
-        balance.setText(newBalance+"$");
-
+        balance.setText(player.getBalance()+"$");
+        saveProgress();
         fragmentInsertionSecond(bankFragment);
     }
 
     @Override
-    public void deliverWithdraw(int withdraw) {
+    public void deliverWithdraw(double withdraw) {
 
         player.setBank_deposit(player.getBank_deposit()-withdraw);
 
         player.setBalance(player.getBalance()+withdraw);
 
         balance.setText(player.getBalance()+"$");
-
+        saveProgress();
         fragmentInsertionSecond(bankFragment);
     }
 
@@ -1265,7 +1273,8 @@ public class GameScene extends AppCompatActivity
     @Override
     public void onRewardedVideoAdLoaded() {
 
-        doubleEarn.setVisibility(View.VISIBLE);
+        if(!player.getWork().equals(getString(R.string.none)))
+            doubleEarn.setVisibility(View.VISIBLE);
     }
 
     @Override

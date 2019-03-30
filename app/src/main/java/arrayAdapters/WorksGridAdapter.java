@@ -79,7 +79,8 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
         while (!in && i<acquiredDegrees.size()) {
 
-            if (acquiredDegrees.get(i).getDegree_Name().equals(work.getDegree_required()))
+            if (acquiredDegrees.get(i).getDegree_Name().equals(work.getDegree_required())
+                    && acquiredDegrees.get(i).getAvailable().equals("true"))
             in = true;
 
             i++;

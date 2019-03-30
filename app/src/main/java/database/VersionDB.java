@@ -13,8 +13,9 @@ public class VersionDB {
     private int id ;
 
 
-    public VersionDB(String version){
+    public VersionDB(String version,int id){
         this.version=version;
+        this.id=id;
     }
 
     public String getVersion() {
