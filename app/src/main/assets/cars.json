@@ -1,0 +1,14 @@
+[
+  {
+    "id":1 ,
+    "name":"Simple Red Car","price":500,
+    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/red_car"
+  }
+,
+  {
+    "id":2 ,
+    "name":"4x4 Black","price":1000,
+    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/four_x_four"
+  }
+
+]

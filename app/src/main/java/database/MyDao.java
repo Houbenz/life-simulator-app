@@ -22,6 +22,10 @@ public interface MyDao {
     @Insert
     void addWork(Work work);
 
+
+    @Insert
+    void addAcquired_Car(Acquired_Cars acquired_cars);
+
     @Insert
     void  addAcquired_Furniture(Acquired_Furnitures acquired_furnitures);
     @Insert
@@ -48,6 +52,16 @@ public interface MyDao {
     @Insert
     void initDBVersion(VersionDB version);
 
+    @Insert
+    void addCar(Car car);
+
+
+    @Query("select * from Car")
+    List<Car> getCars();
+
+    @Query("select * from Acquired_Cars where player_id=:id")
+    List<Acquired_Cars> getAcquiredCars(int id);
+
     @Query("select * from acquired_furnitures where player_id = :id")
     List<Acquired_Furnitures> getAcquiredFurnitures(int id);
 
@@ -59,9 +73,6 @@ public interface MyDao {
 
     @Query("select * from Acquired_degree where degree_id=:degreeid and player_id=:playerid")
     Acquired_degree getAcqDegr(int playerid,int degreeid);
-
-    @Query("select * from Player")
-     List<Player> getPlayers();
 
     @Query("select * from Degree where name =:id")
     Degree getDegree(int id);
@@ -102,7 +113,11 @@ public interface MyDao {
     @Query("select income from Store where id =:id")
     double getStoreIncome(int id);
 
+    @Query("select * from Acquired_Cars where player_id =:id and car_id=:idc")
+    Acquired_Cars getAcquiredCars(int id,int idc);
 
+    @Update
+    void updateCar(Car car);
     @Update
     void update_Acquired_Degree(Acquired_degree acquired_degree);
 
@@ -158,5 +173,11 @@ public interface MyDao {
 
     @Query("select count(*) from Medicine")
     int medicineNumber();
+
+    @Query("select count(*) from Car")
+    int carsNumber();
+
+    @Query("select count(*) from MainFragments")
+    int fragmentNumber();
 
 }

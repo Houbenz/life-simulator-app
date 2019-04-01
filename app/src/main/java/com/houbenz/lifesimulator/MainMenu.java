@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.auth.api.Auth;
@@ -34,6 +35,7 @@ import com.google.android.gms.games.Game;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +51,7 @@ import beans.Learn;
 import beans.Medicine;
 import beans.Store;
 import conf.Params;
+import database.Car;
 import database.Degree;
 import database.MainFragments;
 import database.MyAppDataBase;
@@ -103,6 +106,30 @@ public class MainMenu extends AppCompatActivity {
         }
     };
 
+    static  final Migration MIGRATION_15_16 = new Migration(15,16) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("create table car(" +
+                    "id integer primary key autoincrement," +
+                    "name text," +
+                    "price real," +
+                    "uri text)");
+        }
+    };
+
+    static  final Migration MIGRATION_16_17 = new Migration(16,17) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("create table Acquired_Cars(id INTEGER primary key autoincrement not null," +
+                    "car_id INTEGER not null," +
+                    "player_id INTEGER not null," +
+                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
+                    "foreign key(car_id) references Car(id) on delete cascade on update cascade )");
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +139,7 @@ public class MainMenu extends AppCompatActivity {
 
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
-                    .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17)
                     .allowMainThreadQueries().build();
 
         } catch (IllegalStateException e) {
@@ -135,6 +162,7 @@ public class MainMenu extends AppCompatActivity {
             initStores(false);
             initFurnitures(false);
             initMedicine(false);
+            initCars(false);
             myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
 
             sharedPreferences.edit().putString("entry", "available").apply();
@@ -158,7 +186,7 @@ public class MainMenu extends AppCompatActivity {
                 initStores(true);
                 initFurnitures(true);
                 initMedicine(true);
-
+                initCars(true);
                 versionDB.setVersion(actualversion);
                 myAppDataBase.myDao().updateVerionDB(versionDB);
             }
@@ -270,13 +298,9 @@ public class MainMenu extends AppCompatActivity {
 
             if(result.isSuccess()){
                 GoogleSignInAccount account=result.getSignInAccount();
+                Toast.makeText(getApplicationContext(),"Auth Success",Toast.LENGTH_SHORT).show();
             }else {
-                String message = result.getStatus().getStatusMessage();
-                if(message == null || message.isEmpty()){
-                    message="nothing";
-                }
-                new AlertDialog.Builder(this).setMessage(message)
-                        .setNeutralButton("ok",null).show();
+                Toast.makeText(getApplicationContext(),"Auth Failed",Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -662,6 +686,7 @@ public class MainMenu extends AppCompatActivity {
 
         for (Buy buy : buys){
             MainFragments mainFragments = new MainFragments();
+            mainFragments.setId(buy.getId());
             mainFragments.setName(buy.getName());
             mainFragments.setColor(buy.getColor());
             mainFragments.setImage_Uri(buy.getImagePath());
@@ -670,8 +695,23 @@ public class MainMenu extends AppCompatActivity {
                 myAppDataBase.myDao().addMainFragment(mainFragments);
             else
                 myAppDataBase.myDao().updateMainFragment(mainFragments);
+        }
 
+        int oldRows = myAppDataBase.myDao().fragmentNumber();
+        int newRows =buys.size()-oldRows;
 
+        if(newRows > 0){
+
+            for(int i=oldRows; i <buys.size();i++){
+
+                MainFragments mainFragments = new MainFragments();
+                mainFragments.setId(buys.get(i).getId());
+                mainFragments.setName(buys.get(i).getName());
+                mainFragments.setColor(buys.get(i).getColor());
+                mainFragments.setImage_Uri(buys.get(i).getImagePath());
+
+                myAppDataBase.myDao().addMainFragment(mainFragments);
+            }
         }
     }
 
@@ -752,6 +792,68 @@ public class MainMenu extends AppCompatActivity {
 
 
     }
+
+    public void initCars(boolean isUpdate){
+
+        InputStream is ;
+        String json ;
+        try{
+            is=getApplicationContext().getAssets().open("cars.json");
+
+            int size =is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+            is.close();
+
+            json = new String(buffer,"UTF-8");
+            JSONArray jsonArray = new JSONArray(json);
+
+
+            for (int i =0 ; i<jsonArray.length();i++){
+                Car car = new Car();
+             JSONObject jsonObject = jsonArray.getJSONObject(i);
+             car.setId(jsonObject.getInt("id"));
+             car.setName(jsonObject.getString("name"));
+             car.setPrice(jsonObject.getDouble("price"));
+             car.setImgUrl(jsonObject.getString("uri"));
+
+                if(!isUpdate)
+                    MainMenu.myAppDataBase.myDao().addCar(car);
+                else
+                    MainMenu.myAppDataBase.myDao().updateCar(car);
+            }
+
+            int oldRows = MainMenu.myAppDataBase.myDao().carsNumber();
+            int newRows = jsonArray.length() - oldRows;
+
+
+            //for when we update the file with a new row
+
+            if(newRows > 0)
+                for(int i = oldRows ; i<jsonArray.length();i++){
+
+                    Car car = new Car();
+
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    car.setId(jsonObject.getInt("id"));
+                    car.setName(jsonObject.getString("name"));
+                    car.setPrice(jsonObject.getDouble("price"));
+                    car.setImgUrl(jsonObject.getString("uri"));
+
+                        MainMenu.myAppDataBase.myDao().updateCar(car);
+
+                }
+
+
+
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public String getDatabaseVersion(){
 

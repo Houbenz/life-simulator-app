@@ -44,16 +44,13 @@ public class PharmacyFragment extends Fragment {
 
         pharmacyView.setAdapter(pharmacyListAdapter);
 
-        pharmacyView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        pharmacyView.setOnItemClickListener((parent, view, position, id) -> {
 
-                Medicine medicine =(Medicine)parent.getItemAtPosition(position);
+            Medicine medicine =(Medicine)parent.getItemAtPosition(position);
 
-                monMedicineClicked.deliverMedicine(medicine);
+            monMedicineClicked.deliverMedicine(medicine);
 
 
-            }
         });
 
 

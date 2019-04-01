@@ -2,6 +2,7 @@ package com.houbenz.lifesimulator;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -31,7 +32,6 @@ import android.widget.ViewSwitcher;
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -42,6 +42,7 @@ import com.google.android.gms.games.Games;
 
 import java.util.List;
 
+import database.Acquired_Cars;
 import database.Acquired_Furnitures;
 import database.Food;
 import database.Furniture;
@@ -57,6 +58,7 @@ import database.Work;
 import conf.Params;
 import fragments.BankFragment;
 import fragments.BuyFragment;
+import fragments.CarFragment;
 import fragments.DepositFragment;
 import fragments.FoodFragment;
 import fragments.FournitureFragment;
@@ -68,7 +70,7 @@ import fragments.SleepFragment;
 import fragments.StoreFragment;
 import fragments.WithdrawFragment;
 import fragments.WorkFragment;
-import viewmodels.ViewModelFourHome;
+import viewmodels.ViewModelCars;
 
 
 public class GameScene extends AppCompatActivity
@@ -146,15 +148,13 @@ public class GameScene extends AppCompatActivity
 
     private boolean ignore=true;
 
-    private AdView adView;
 
     private RewardedVideoAd mRewardVideoAd;
 
     private ConstraintLayout constraintLayout;
 
-    private ViewModelFourHome viewmodel;
+    private ViewModelCars viewModelCars;
 
-    private ViewGroup placeFragment;
 
 
     private boolean learning =false;
@@ -416,11 +416,6 @@ public class GameScene extends AppCompatActivity
         setContentView(R.layout.activity_game_scene);
 
 
-
-
-        placeFragment=findViewById(R.id.placefragment);
-
-
         bank=findViewById(R.id.bank);
         levelBar=findViewById(R.id.levelProgressBar);
         levelNumber=findViewById(R.id.levelNumber);
@@ -435,12 +430,9 @@ public class GameScene extends AppCompatActivity
         balance=findViewById(R.id.balance);
 
 
-        adView=findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-        adView.setAdListener(adViewListener);
-
-
+        //for the car
+        viewModelCars=ViewModelProviders.of(this).get(ViewModelCars.class);
+        deliverCars();
 
         try {
             MobileAds.initialize(this, APP_ADS_ID);
@@ -452,10 +444,6 @@ public class GameScene extends AppCompatActivity
         mRewardVideoAd.setRewardedVideoAdListener(this);
         loadRewardAd();
         //listenReward();
-
-
-
-        viewmodel=ViewModelProviders.of(this).get(ViewModelFourHome.class);
 
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -792,32 +780,7 @@ public class GameScene extends AppCompatActivity
     }
 
 
-    //To execute tasks from fragments
-    @Override
-    public void deliverWork(Work work) {
 
-
-        income=findViewById(R.id.income);
-        income.setText(work.getIncome()+"$/"+getString(R.string.day));
-
-        choosenWork =work;
-
-        player.setWork(choosenWork.getName());
-        player.setWork_time(choosenWork.getWork_time());
-        player.setWork_image_path(work.getImgPath());
-        player.setWork_income(work.getIncome());
-
-        Uri imgURI = Uri.parse(work.getImgPath());
-        caracterImg.setImageURI(imgURI);
-            saveProgress();
-        startWorking.setEnabled(true);
-        jobName.setText(work.getName());
-
-        if(mRewardVideoAd.isLoaded())
-            doubleEarn.setVisibility(View.VISIBLE);
-
-
-    }
 
     @Override
     public void deliverMainFragment(String nameOfFragment) {
@@ -850,8 +813,73 @@ public class GameScene extends AppCompatActivity
             PharmacyFragment pharmacyFragment = new PharmacyFragment();
             fragmentInsertionSecond(pharmacyFragment);
         }
+
+        if(nameOfFragment.equals("Cars") || nameOfFragment.equals("Voitures")){
+            CarFragment carFragment = new CarFragment();
+            fragmentInsertionSecond(carFragment);
+        }
     }
 
+
+
+
+    public void deliverCars(){
+        viewModelCars.getCar().observe(this,car -> {
+
+            double newBalance=player.getBalance()-car.getPrice();
+
+
+            Acquired_Cars getACq = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId(),car.getId());
+            if(newBalance >= 0 && getACq == null){
+
+                player.setBalance(newBalance);
+                balance.setText(player.getBalance()+"$");
+
+                showCustomToast("you bought "+car.getName(),car.getImgUrl(),"green");
+
+                Acquired_Cars acquired_cars = new Acquired_Cars();
+                acquired_cars.setCar_id(car.getId());
+                acquired_cars.setPlayer_id(player.getId());
+                MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
+            }
+            else{
+                if(getACq!= null)
+                    showCustomToast("you already own this car",car.getImgUrl(),"red");
+                else
+                    showCustomToast("Not enough money to buy "+car.getName(),car.getImgUrl(),"red");
+            }
+        });
+
+        CarFragment carFragment = new CarFragment();
+        fragmentInsertionSecond(carFragment);
+    }
+
+    //To execute tasks from fragments
+    @Override
+    public void deliverWork(Work work) {
+
+
+        income=findViewById(R.id.income);
+        income.setText(work.getIncome()+"$/"+getString(R.string.day));
+
+        choosenWork =work;
+
+        player.setWork(choosenWork.getName());
+        player.setWork_time(choosenWork.getWork_time());
+        player.setWork_image_path(work.getImgPath());
+        player.setWork_income(work.getIncome());
+
+        Uri imgURI = Uri.parse(work.getImgPath());
+        caracterImg.setImageURI(imgURI);
+        saveProgress();
+        startWorking.setEnabled(true);
+        jobName.setText(work.getName());
+
+        if(mRewardVideoAd.isLoaded())
+            doubleEarn.setVisibility(View.VISIBLE);
+
+
+    }
 
     @Override
     public void deliverFourniture(final Furniture fourniture) {
@@ -1159,7 +1187,8 @@ public class GameScene extends AppCompatActivity
             else
                 showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
 
-            if (!acq.getAvailable().equals("true")) {
+            if (!acq.getAvailable().equals("true"))
+            {
 
                 if (degree.getProgress() <= acq.getPlayer_progress()) {
 
@@ -1317,45 +1346,6 @@ public class GameScene extends AppCompatActivity
     }
 
 
-    AdListener adViewListener= new AdListener(){
-        @Override
-        public void onAdClosed() {
-            super.onAdClosed();
-        }
-
-        @Override
-        public void onAdFailedToLoad(int i) {
-            super.onAdFailedToLoad(i);
-        }
-
-        @Override
-        public void onAdLeftApplication() {
-            super.onAdLeftApplication();
-        }
-
-        @Override
-        public void onAdOpened() {
-            super.onAdOpened();
-        }
-
-        @Override
-        public void onAdLoaded() {
-
-            adView.setVisibility(View.VISIBLE);
-            super.onAdLoaded();
-        }
-
-        @Override
-        public void onAdClicked() {
-            super.onAdClicked();
-        }
-
-        @Override
-        public void onAdImpression() {
-            super.onAdImpression();
-        }
-    };
-
     public void loadProgress(){
         database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
         jobName.setText(loaded_player.getWork());
@@ -1410,8 +1400,8 @@ public class GameScene extends AppCompatActivity
             Games.getLeaderboardsClient(this, account).submitScore(getString(R.string.leaderboard_score),
                     (long) player.getBalance());
 
-            long saak =(long) player.getBalance();
-            Log.i("YUIO",saak+" ");
+
+
         }
 
     }

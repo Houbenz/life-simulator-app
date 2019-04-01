@@ -290,7 +290,7 @@
                 android:fillViewport="true"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/adView"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/speedLayout">
@@ -510,17 +510,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="88dp" />
 
-            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/adView"
-                android:layout_width="320dp"
-                android:layout_height="50dp"
-                android:visibility="gone"
-                ads:adSize="BANNER"
-                ads:adUnitId="ca-app-pub-5859725902066144/5967459357"
-                ads:layout_constraintBottom_toBottomOf="parent"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintHorizontal_bias="0.58"
-                ads:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout

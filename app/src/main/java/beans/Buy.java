@@ -19,6 +19,7 @@ import java.util.Locale;
 public class Buy {
 
 
+    private  int id ;
     private String name ;
     private float price ;
     private String color;
@@ -43,6 +44,15 @@ public class Buy {
         this.price = price;
         this.color=color;
         this.imagePath=imagePath;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -112,7 +122,7 @@ public class Buy {
                 String color =jsonObject.getString("color");
                 String imagePath =jsonObject.getString("uri");
                 Buy buy =new Buy(name,0,color,imagePath);
-
+                buy.setId(jsonObject.getInt("id"));
                 buys.add(buy);
 
             }
