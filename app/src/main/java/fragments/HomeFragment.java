@@ -59,10 +59,10 @@ public class HomeFragment extends Fragment {
         chair=fragment.findViewById(R.id.chair);
 
 
-        int slot = getArguments().getInt("slot");
+        //int slot = getArguments().getInt("slot");
 
         //get all acquired furnitures
-        List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
+        List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(0);//put slot here
 
         for (Acquired_Furnitures furniture : acquired_furnituresList ){
             Uri uri;

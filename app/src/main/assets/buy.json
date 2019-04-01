@@ -32,6 +32,6 @@
   {
     "id":6,
     "name":"Cars","color" :"#f4b042"
-  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/test"
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_car"
   }
 ]

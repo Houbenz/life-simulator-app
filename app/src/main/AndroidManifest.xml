@@ -2,27 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.houbenz.lifesimulator">
 
-
-
     <uses-permission android:name="android.permission.INTERNET" />
-    <application
 
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
+    <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/home_icon"
         android:label="@string/app_name"
+        android:largeHeap="true"
+        android:permission=""
         android:roundIcon="@drawable/home_icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:permission="">
+        android:theme="@style/AppTheme">
         <activity
-
             android:name="com.houbenz.lifesimulator.MainMenu"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,19 +28,23 @@
         <activity
             android:name="com.houbenz.lifesimulator.GameScene"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="sensorLandscape"/>
-
+            android:screenOrientation="sensorLandscape" />
         <activity android:name="com.houbenz.lifesimulator.SettingsActivity" />
+
+        <activity android:name="com.houbenz.lifesimulator.HomeActivity"
+            android:screenOrientation="sensorLandscape"/>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5859725902066144~3681738021"/>
-
-        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="ca-app-pub-5859725902066144~3681738021" />
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+
     </application>
 
 </manifest>

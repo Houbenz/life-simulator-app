@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -477,7 +478,10 @@ public class GameScene extends AppCompatActivity
         homeButton=findViewById(R.id.homeButton);
 
         homeButton.setOnClickListener( event->{
-            insertHomeFragment();
+            //insertHomeFragment();
+            Intent intent = new Intent(this,HomeActivity.class);
+            startActivity(intent);
+
         });
 
         work=findViewById(R.id.work);
@@ -841,6 +845,9 @@ public class GameScene extends AppCompatActivity
                 acquired_cars.setCar_id(car.getId());
                 acquired_cars.setPlayer_id(player.getId());
                 MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
+
+                CarFragment carFragment = new CarFragment();
+                fragmentInsertionSecond(carFragment);
             }
             else{
                 if(getACq!= null)
@@ -850,8 +857,7 @@ public class GameScene extends AppCompatActivity
             }
         });
 
-        CarFragment carFragment = new CarFragment();
-        fragmentInsertionSecond(carFragment);
+
     }
 
     //To execute tasks from fragments
