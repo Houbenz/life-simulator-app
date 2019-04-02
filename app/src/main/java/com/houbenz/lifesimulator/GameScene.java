@@ -77,7 +77,7 @@ import viewmodels.ViewModelCars;
 public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnMainFragmentClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
-        HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked, HomeFragment.homeShow
+        HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked
     , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit,RewardedVideoAdListener
 {
 
@@ -478,9 +478,13 @@ public class GameScene extends AppCompatActivity
         homeButton=findViewById(R.id.homeButton);
 
         homeButton.setOnClickListener( event->{
-            //insertHomeFragment();
+
+            saveProgress();
             Intent intent = new Intent(this,HomeActivity.class);
+            intent.putExtra("slot",player.getId());
             startActivity(intent);
+
+            finish();
 
         });
 
@@ -947,8 +951,6 @@ public class GameScene extends AppCompatActivity
                 //this is for the view model between homefragment and GameScene
 
                 insertFurnitureFragment();
-
-                onHomeShow(fourniture.getImgUrl());
             });
 
             decline.setOnClickListener(view ->{
@@ -1139,10 +1141,6 @@ public class GameScene extends AppCompatActivity
             dialog.dismiss();
             dialog.cancel();
         }
-    }
-
-    @Override
-    public void onHomeShow(String url) {
     }
 
     private int degree_y=0;

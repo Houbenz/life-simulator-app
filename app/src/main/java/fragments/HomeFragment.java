@@ -33,7 +33,6 @@ public class HomeFragment extends Fragment {
     private ImageView couch;
     private ImageView chair;
     private ViewModelFourHome viewModel;
-    private homeShow monStartWork;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -43,10 +42,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
-        String url ="" ;
-        monStartWork.onHomeShow(url);
 
         viewModel= ViewModelProviders.of(getActivity()).get(ViewModelFourHome.class);
 
@@ -59,10 +54,10 @@ public class HomeFragment extends Fragment {
         chair=fragment.findViewById(R.id.chair);
 
 
-        //int slot = getArguments().getInt("slot");
+        int slot = getArguments().getInt("slot");
 
         //get all acquired furnitures
-        List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(0);//put slot here
+        List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
 
         for (Acquired_Furnitures furniture : acquired_furnituresList ){
             Uri uri;
@@ -120,19 +115,4 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
-
-    public interface homeShow {
-         void onHomeShow(String url);
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try{
-            monStartWork=(homeShow)context;
-        }catch (ClassCastException e){
-            throw  new ClassCastException(context.toString()+" must implement homeShow interface");
-        }
-    }
 }
