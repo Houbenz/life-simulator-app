@@ -1,5 +1,6 @@
 package com.houbenz.lifesimulator;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -116,11 +117,10 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         saveProgress();
-        finish();
         Intent intent = new Intent(this,GameScene.class);
         intent.putExtra("slotNumber",player.getId());
         startActivity(intent);
-
+        finish();
     }
 
     @Override
@@ -213,14 +213,25 @@ public class HomeActivity extends AppCompatActivity {
 
 
         viewmodel = ViewModelProviders.of(this).get(ViewModelPartner.class);
+
         viewmodel.isLooking().observe(this,isLooking ->{
             startLookingPartner=isLooking;
+        });
+
+        viewmodel.isBreakUp().observe(this ,isBreakup ->{
+
+            Log.i("Yeera","Im Always running :/");
+            if(isBreakup) {
+            player.setDating("false");
+            foundPartner=true;
+            }
         });
     }
 
 
     public void lookingPartner(boolean isLooking){
 
+        Log.i("Yeera","isLooking = "+isLooking);
         if(isLooking) {
 
             int min = 1;
@@ -252,9 +263,7 @@ public class HomeActivity extends AppCompatActivity {
                     Player player =MainMenu.myAppDataBase.myDao().getPlayer(slot);
                     player.setDating("true");
                     MainMenu.myAppDataBase.myDao().updatePlayer(player);
-                    Log.i("Yeera","Object player in HomeAct" + player.getDating());
                     Player azaz =MainMenu.myAppDataBase.myDao().getPlayer(slot);
-                    Log.i("Yeera","after update "+azaz.getDating());
                     this.player.setDating("true");
 
                     saveProgress();
@@ -273,6 +282,7 @@ public class HomeActivity extends AppCompatActivity {
         {
             showHomeButton.setEnabled(true);
             socialButton.setEnabled(true);
+            foundPartner=false;
         }
 
     }
@@ -433,7 +443,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
     public void saveProgress(){
 
         player.setHour(hour);
@@ -452,7 +461,6 @@ public class HomeActivity extends AppCompatActivity {
 
         player.setWork_income(workincome);
 
-        Log.i("Yeera","in saveProg HomeActivity " + player.getDating());
         MainMenu.myAppDataBase.myDao().updatePlayer(player);
 
 

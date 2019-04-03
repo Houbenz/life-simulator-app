@@ -1392,8 +1392,6 @@ public class GameScene extends AppCompatActivity
         player=loaded_player;
 
 
-        Log.i("Yeera","Game Scene "+ player.getDating());
-
         Level level = new Level(player.getLevel(),player.getLevel_progress(),player.getMax_progress());
         player.setLevel_object(level);
 

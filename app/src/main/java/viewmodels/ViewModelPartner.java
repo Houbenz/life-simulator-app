@@ -8,6 +8,7 @@ public class ViewModelPartner extends ViewModel {
 
     private MutableLiveData<Boolean> looking = new MutableLiveData<Boolean>();
     private MutableLiveData<Boolean> foundPartner = new MutableLiveData<Boolean>();
+    private MutableLiveData<Boolean> breakUp = new MutableLiveData<Boolean>();
 
 
 
@@ -23,4 +24,13 @@ public class ViewModelPartner extends ViewModel {
 
     public LiveData<Boolean> isFoundPartner(){return foundPartner;}
 
+    public  void setBreakUp(Boolean breakUp){this.breakUp.setValue(breakUp);}
+
+    public LiveData<Boolean> isBreakUp(){return breakUp;}
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+    }
 }

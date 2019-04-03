@@ -86,7 +86,6 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
             i++;
         }
 
-
         if(work.getDegree_required().equals(getContext().getString(R.string.none)))
             in=true;
 

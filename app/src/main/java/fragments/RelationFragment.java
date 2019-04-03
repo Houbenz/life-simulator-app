@@ -1,6 +1,7 @@
 package fragments;
 
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -39,16 +40,14 @@ public class RelationFragment extends Fragment {
     private Button lookPartner;
     private int dis =2;
     private View foundPartnerConstraint;
-
+    private Player player1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_relation, container, false);
 
         viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
-
         viewmodel.setIsLooking(false);
-
 
         int slot =getArguments().getInt("slot");
 
@@ -60,7 +59,7 @@ public class RelationFragment extends Fragment {
         goDate=fragment.findViewById(R.id.goDate);
         progressText=fragment.findViewById(R.id.progressText);
 
-        Player player1 =MainMenu.myAppDataBase.myDao().getPlayer(slot);
+         player1 =MainMenu.myAppDataBase.myDao().getPlayer(slot);
 
         if(player1.getDating().equals("true"))
         {
@@ -68,8 +67,8 @@ public class RelationFragment extends Fragment {
             lookPartner.setVisibility(View.GONE);
         }
 
-
         lookPartner.setOnClickListener(view ->{
+
 
             if(dis % 2 != 0) {
                 viewmodel.setIsLooking(false);
@@ -77,6 +76,8 @@ public class RelationFragment extends Fragment {
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
                 dis++;
             }else {
+
+                Log.i("Yeera","dis : "+dis);
                 viewmodel.setIsLooking(true);
                 lookPartner.setText("Stop looking for a partner");
                 lookPartner.setTextColor(getResources().getColor(R.color.red));
@@ -85,19 +86,18 @@ public class RelationFragment extends Fragment {
 
         });
 
-
         viewmodel.isFoundPartner().observe(this,isFound ->{
             if(isFound){
                 foundPartnerConstraint.setVisibility(View.VISIBLE);
                 lookPartner.setVisibility(View.GONE);
-
             }
             else {
                 lookPartner.setVisibility(View.VISIBLE);
                 foundPartnerConstraint.setVisibility(View.GONE);
+
+
             }
         });
-
 
         offerGift.setOnClickListener(view ->{
 
@@ -111,17 +111,12 @@ public class RelationFragment extends Fragment {
             TextView chocolateNumber = dialog.findViewById(R.id.chocolateNumber);
             TextView jeweleryNumber = dialog.findViewById(R.id.jeweleryNumber);
 
-
             Gift roses = MainMenu.myAppDataBase.myDao().getRoses();
-
 
             if(roses.getGiftCount()<10)
                 rosesNumber.setText("0"+roses.getGiftCount());
             else
                 rosesNumber.setText(roses.getGiftCount()+"");
-
-
-
 
             giftRoses.setOnClickListener(view1 ->{
 
@@ -129,29 +124,53 @@ public class RelationFragment extends Fragment {
 
                 if(newCount >=0) {
                     roses.setGiftCount(newCount);
-
                     MainMenu.myAppDataBase.myDao().updateGift(roses);
 
                     if (roses.getGiftCount() < 10)
                         rosesNumber.setText("0" + roses.getGiftCount());
                     else
                         rosesNumber.setText(roses.getGiftCount() + "");
-
                 }
             });
 
-            giftChocolate.setOnClickListener(view2-> {
-
-            });
-
-            giftJewelery.setOnClickListener(view3 ->{
-
-            });
+            giftChocolate.setOnClickListener(view2-> { });
+            giftJewelery.setOnClickListener(view3 ->{ });
 
             dialog.show();
         });
 
 
+
+        breakUp.setOnClickListener(view ->{
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setMessage("Do you really want to break up ?")
+                    .setPositiveButton("Yes", ((dialog, which) -> {
+                player1.setDating("false");
+                MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+
+                lookPartner.setVisibility(View.VISIBLE);
+                foundPartnerConstraint.setVisibility(View.GONE);
+
+                viewmodel.setBreakUp(true);
+
+
+                //for button search for a companion
+                lookPartner.setText("Start looking for a partner");
+                lookPartner.setTextColor(getResources().getColor(R.color.white));
+                dis=0;
+
+            })).setNegativeButton("No", ((dialog, which) -> {
+                dialog.cancel();
+                dialog.dismiss();
+            }));
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
+
+        });
 
         return fragment;
     }
