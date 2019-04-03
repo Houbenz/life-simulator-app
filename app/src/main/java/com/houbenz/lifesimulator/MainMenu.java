@@ -34,6 +34,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.games.Game;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ import beans.Store;
 import conf.Params;
 import database.Car;
 import database.Degree;
+import database.Gift;
 import database.MainFragments;
 import database.MyAppDataBase;
 import database.Player;
@@ -110,11 +112,11 @@ public class MainMenu extends AppCompatActivity {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 
-            database.execSQL("create table car(" +
+            database.execSQL("create table Car(" +
                     "id integer primary key autoincrement," +
                     "name text," +
                     "price real," +
-                    "uri text)");
+                    "imgUrl text)");
         }
     };
 
@@ -130,6 +132,48 @@ public class MainMenu extends AppCompatActivity {
         }
     };
 
+    static  final Migration MIGRATION_17_18 = new Migration(17,18) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("CREATE TABLE Gift(" +
+                    "id integer PRIMARY KEY AUTOINCREMENT not null," +
+                    "name TEXT," +
+                    "price REAL not null," +
+                    "imgUrl TEXT)");
+        }
+    };
+
+    static  final Migration MIGRATION_18_19 = new Migration(18,19) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("create table Acquired_Gifts(id INTEGER primary key autoincrement not null," +
+                    "gift_id INTEGER not null," +
+                    "player_id INTEGER not null," +
+                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
+                    "foreign key(gift_id) references Gift(id) on delete cascade on update cascade )");
+        }
+    };
+
+    static  final Migration MIGRATION_19_20 = new Migration(19,20) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("drop table Acquired_Gifts");
+            database.execSQL("alter table Gift add column giftCount INTEGER not null default 0");
+            database.execSQL("alter table Player add column dating TEXT");
+
+        }
+    };
+
+    static  final Migration MIGRATION_20_21 = new Migration(20,21) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("alter table Player add column dating TEXT");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +183,8 @@ public class MainMenu extends AppCompatActivity {
 
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
-                    .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17)
+                    .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
+                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21)
                     .allowMainThreadQueries().build();
 
         } catch (IllegalStateException e) {
@@ -155,6 +200,7 @@ public class MainMenu extends AppCompatActivity {
 
 
         if (entry.equals("none")) {
+            initGifts(false);
             initWorkRows(false);
             initDegreeRows(false);
             initFragments(false);
@@ -179,6 +225,7 @@ public class MainMenu extends AppCompatActivity {
 
             if (!versionDB.getVersion().equals(actualversion)) {
 
+                initGifts(true);
                 initWorkRows(true);
                 initDegreeRows(true);
                 initFragments(true);
@@ -409,6 +456,7 @@ public class MainMenu extends AppCompatActivity {
                     player.setBank_deposit(0);
                     player.setWork_time(0);
                     player.setWork_income(0);
+                    player.setDating("false");
 
                     player.setMax_progress(100);
                     player.setHealthbar(Params.HEALTH_VALUE);
@@ -843,12 +891,63 @@ public class MainMenu extends AppCompatActivity {
                     car.setImgUrl(jsonObject.getString("uri"));
 
                         MainMenu.myAppDataBase.myDao().updateCar(car);
-
                 }
 
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
+    public void initGifts(boolean isUpdate){
+
+        InputStream is ;
+        String json ;
+        try {
+            is = getApplicationContext().getAssets().open("gifts.json");
+
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json=new String (buffer,"UTF-8");
+            JSONArray jsonArray = new JSONArray(json);
+
+
+            for(int i =0 ; i<jsonArray.length();i++){
+                JSONObject jo=jsonArray.getJSONObject(i);
+                Gift gift = new Gift();
+                gift.setId(jo.getInt("id"));
+                gift.setName(jo.getString("name"));
+                gift.setImgUrl(jo.getString("uri"));
+                gift.setPrice(jo.getInt("price"));
+
+                if(!isUpdate)
+                    myAppDataBase.myDao().addGift(gift);
+                else
+                    myAppDataBase.myDao().updateGift(gift);
+            }
+
+            int oldRows = myAppDataBase.myDao().giftNumber();
+            int newRows = jsonArray.length() - oldRows;
+
+            if(newRows > 0){
+
+                for(int i =oldRows ; i<jsonArray.length();i++){
+
+                    JSONObject jo=jsonArray.getJSONObject(i);
+
+                    Gift gift = new Gift();
+
+                    gift.setId(jo.getInt("id"));
+                    gift.setName(jo.getString("name"));
+                    gift.setImgUrl(jo.getString("uri"));
+                    gift.setPrice(jo.getInt("price"));
+
+                    myAppDataBase.myDao().addGift(gift);
+                }
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -870,6 +969,7 @@ public class MainMenu extends AppCompatActivity {
             byte[] buffer = new byte[size];
 
             is.read(buffer);
+
             is.close();
 
             json=new String(buffer,"UTF-8");

@@ -28,6 +28,8 @@ public class Player {
 
     private double balance;
 
+    private String dating ;
+
     private  double bank_deposit;
 
     private int day;
@@ -209,6 +211,14 @@ public class Player {
 
     public void setMax_progress(int max_progress) {
         this.max_progress = max_progress;
+    }
+
+    public String getDating() {
+        return dating;
+    }
+
+    public void setDating(String dating) {
+        this.dating = dating;
     }
 
     public void upgradeLevel(){

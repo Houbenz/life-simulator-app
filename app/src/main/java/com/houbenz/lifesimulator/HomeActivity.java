@@ -72,7 +72,10 @@ public class HomeActivity extends AppCompatActivity {
     private int minute;
     private int totalTime;
     private ViewModelPartner viewmodel;
+
     private boolean startLookingPartner=false;
+
+    private boolean foundPartner =false;
 
     private int speed=Params.TIME_SPEED_NORMAL;
     private View.OnTouchListener mOnTouchListener = (v, event) ->{
@@ -82,30 +85,6 @@ public class HomeActivity extends AppCompatActivity {
     } ;
 
 
-     public void lookingPartner(boolean isLooking){
-
-            if(isLooking) {
-
-                int min = 1;
-                int max = 50;
-                int range = max - min + 1;
-                int random = (int)(Math.random() * range) + min;
-
-                Log.i("Yeera","the random number : "+random);
-
-                showHomeButton.setEnabled(false);
-                socialButton.setEnabled(false);
-                if(random == 10){
-                    Toast.makeText(getApplicationContext(),"Congratulation you met someone",Toast.LENGTH_SHORT).show();
-                }
-            }
-            else
-            {
-                showHomeButton.setEnabled(true);
-                socialButton.setEnabled(true);
-            }
-
-    }
 
 
 
@@ -240,6 +219,63 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    public void lookingPartner(boolean isLooking){
+
+        if(isLooking) {
+
+            int min = 1;
+            int max = 10;
+            int range = max - min + 1;
+            int random = (int)(Math.random() * range) + min;
+
+            showHomeButton.setEnabled(false);
+            socialButton.setEnabled(false);
+            if(random == 10){
+
+                foundPartner=true;
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.found_partner);
+                Button confirm =dialog.findViewById(R.id.confirm);
+                Button cancel = dialog.findViewById(R.id.cancel);
+
+                cancel.setOnClickListener(view ->{
+                    dialog.dismiss();
+                    dialog.cancel();
+                    foundPartner=false;
+                });
+                confirm.setOnClickListener(view ->{
+
+                    viewmodel.setFoundPartner(true);
+                    showHomeButton.setEnabled(true);
+                    socialButton.setEnabled(true);
+
+                    Player player =MainMenu.myAppDataBase.myDao().getPlayer(slot);
+                    player.setDating("true");
+                    MainMenu.myAppDataBase.myDao().updatePlayer(player);
+                    Log.i("Yeera","Object player in HomeAct" + player.getDating());
+                    Player azaz =MainMenu.myAppDataBase.myDao().getPlayer(slot);
+                    Log.i("Yeera","after update "+azaz.getDating());
+                    this.player.setDating("true");
+
+                    saveProgress();
+
+                    dialog.cancel();
+                    dialog.dismiss();
+                });
+
+
+                dialog.show();
+
+
+            }
+        }
+        else
+        {
+            showHomeButton.setEnabled(true);
+            socialButton.setEnabled(true);
+        }
+
+    }
 
     public void insertFragment(Fragment fragment){
 
@@ -350,6 +386,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
                         //from RelationFragment it uses a viewmodel
+
+                        if(!foundPartner)
                         lookingPartner(startLookingPartner);
 
                     });
@@ -414,6 +452,7 @@ public class HomeActivity extends AppCompatActivity {
 
         player.setWork_income(workincome);
 
+        Log.i("Yeera","in saveProg HomeActivity " + player.getDating());
         MainMenu.myAppDataBase.myDao().updatePlayer(player);
 
 
@@ -421,8 +460,6 @@ public class HomeActivity extends AppCompatActivity {
         if (account != null) {
             Games.getLeaderboardsClient(this, account).submitScore(getString(R.string.leaderboard_score),
                     (long) player.getBalance());
-
-
 
         }
 

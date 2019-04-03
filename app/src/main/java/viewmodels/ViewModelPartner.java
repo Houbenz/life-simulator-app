@@ -7,6 +7,8 @@ import android.arch.lifecycle.ViewModel;
 public class ViewModelPartner extends ViewModel {
 
     private MutableLiveData<Boolean> looking = new MutableLiveData<Boolean>();
+    private MutableLiveData<Boolean> foundPartner = new MutableLiveData<Boolean>();
+
 
 
     public void setIsLooking(Boolean isLooking){
@@ -17,5 +19,8 @@ public class ViewModelPartner extends ViewModel {
         return looking;
     }
 
+    public  void setFoundPartner(Boolean foundPartner){this.foundPartner.setValue(foundPartner);}
+
+    public LiveData<Boolean> isFoundPartner(){return foundPartner;}
 
 }

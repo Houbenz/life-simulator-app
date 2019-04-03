@@ -1,8 +1,6 @@
 package com.houbenz.lifesimulator;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +29,6 @@ import android.widget.ViewSwitcher;
 
 
 import com.android.houbenz.lifesimulator.R;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -63,6 +60,7 @@ import fragments.CarFragment;
 import fragments.DepositFragment;
 import fragments.FoodFragment;
 import fragments.FournitureFragment;
+import fragments.GiftFragment;
 import fragments.HouseFragment;
 import fragments.HomeFragment;
 import fragments.DegreeFragment;
@@ -72,6 +70,7 @@ import fragments.StoreFragment;
 import fragments.WithdrawFragment;
 import fragments.WorkFragment;
 import viewmodels.ViewModelCars;
+import viewmodels.ViewModelGift;
 
 
 public class GameScene extends AppCompatActivity
@@ -155,7 +154,7 @@ public class GameScene extends AppCompatActivity
     private ConstraintLayout constraintLayout;
 
     private ViewModelCars viewModelCars;
-
+    private ViewModelGift viewModelGift;
 
 
     private boolean learning =false;
@@ -434,6 +433,11 @@ public class GameScene extends AppCompatActivity
         //for the car
         viewModelCars=ViewModelProviders.of(this).get(ViewModelCars.class);
         deliverCars();
+
+        //for the gifts
+        viewModelGift=ViewModelProviders.of(this).get(ViewModelGift.class);
+        deliverGift();
+
 
         try {
             MobileAds.initialize(this, APP_ADS_ID);
@@ -826,10 +830,34 @@ public class GameScene extends AppCompatActivity
             CarFragment carFragment = new CarFragment();
             fragmentInsertionSecond(carFragment);
         }
+
+        if(nameOfFragment.equals("Gifts") || nameOfFragment.equals("Cadeau")){
+             GiftFragment giftFragment = new GiftFragment();
+            fragmentInsertionSecond(giftFragment);
+        }
     }
 
+    public void deliverGift(){
+        viewModelGift.getGift().observe(this,gift -> {
+
+            double newBalance= player.getBalance() - gift.getPrice();
+
+            if(newBalance >=0){
+                player.setBalance(newBalance );
+                balance.setText(newBalance+"$");
+                showCustomToast("you bought "+gift.getName(),gift.getImgUrl(),"green");
 
 
+                //to increment the number of gifts
+                int giftCount =gift.getGiftCount()+1;
+                gift.setGiftCount(giftCount);
+                MainMenu.myAppDataBase.myDao().updateGift(gift);
+            }
+            else{
+                showCustomToast("Not enough money to buy "+gift.getName(),gift.getImgUrl(),"red");
+            }
+        });
+    }
 
     public void deliverCars(){
         viewModelCars.getCar().observe(this,car -> {
@@ -860,8 +888,6 @@ public class GameScene extends AppCompatActivity
                     showCustomToast("Not enough money to buy "+car.getName(),car.getImgUrl(),"red");
             }
         });
-
-
     }
 
     //To execute tasks from fragments
@@ -1365,6 +1391,8 @@ public class GameScene extends AppCompatActivity
 
         player=loaded_player;
 
+
+        Log.i("Yeera","Game Scene "+ player.getDating());
 
         Level level = new Level(player.getLevel(),player.getLevel_progress(),player.getMax_progress());
         player.setLevel_object(level);

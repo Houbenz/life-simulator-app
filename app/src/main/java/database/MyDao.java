@@ -55,6 +55,12 @@ public interface MyDao {
     @Insert
     void addCar(Car car);
 
+    @Insert
+    void addGift(Gift gift);
+
+
+    @Query("select * from Gift")
+    List<Gift> getGifts();
 
     @Query("select * from Car")
     List<Car> getCars();
@@ -116,6 +122,7 @@ public interface MyDao {
     @Query("select * from Acquired_Cars where player_id =:id and car_id=:idc")
     Acquired_Cars getAcquiredCars(int id,int idc);
 
+
     @Update
     void updateCar(Car car);
     @Update
@@ -143,7 +150,10 @@ public interface MyDao {
     void updateDegree(Degree degree);
 
     @Update
-    void updatePlayer(Player player);
+    int updatePlayer(Player player);
+
+    @Update
+    void updateGift(Gift gift);
 
     @Update
     void updateMainFragment(MainFragments mainFragments);
@@ -154,6 +164,10 @@ public interface MyDao {
     @Delete
     void deletePlayer(Player player);
 
+    //Get Gifts individually
+
+    @Query("select * from Gift where name like 'Roses'")
+    Gift getRoses();
 
     //Counts
     @Query("select count(*) from Work")
@@ -180,4 +194,6 @@ public interface MyDao {
     @Query("select count(*) from MainFragments")
     int fragmentNumber();
 
+    @Query("select count(*) from Gift")
+    int giftNumber();
 }

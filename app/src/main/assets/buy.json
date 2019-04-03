@@ -34,4 +34,10 @@
     "name":"Cars","color" :"#f4b042"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_car"
   }
+  ,
+  {
+  "id":7,
+  "name":"Gifts","color" :"#1725c1"
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/gift"
+  }
 ]

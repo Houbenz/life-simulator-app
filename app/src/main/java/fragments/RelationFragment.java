@@ -1,18 +1,23 @@
 package fragments;
 
 
-import android.arch.lifecycle.ViewModel;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
-import com.houbenz.lifesimulator.HomeActivity;
+import com.houbenz.lifesimulator.MainMenu;
 
+import database.Gift;
+import database.Player;
 import viewmodels.ViewModelPartner;
 
 
@@ -23,9 +28,17 @@ public class RelationFragment extends Fragment {
 
     }
 
+    private ProgressBar relationStatus;
+    private Button offerGift;
+    private Button breakUp;
+    private Button goDate;
+
+    private TextView progressText;
+
     private ViewModelPartner viewmodel;
     private Button lookPartner;
     private int dis =2;
+    private View foundPartnerConstraint;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +49,25 @@ public class RelationFragment extends Fragment {
 
         viewmodel.setIsLooking(false);
 
+
+        int slot =getArguments().getInt("slot");
+
         lookPartner=fragment.findViewById(R.id.lookPartner);
+        foundPartnerConstraint=fragment.findViewById(R.id.foundPartnerConstraint);
+        relationStatus=fragment.findViewById(R.id.relationProgress);
+        offerGift=fragment.findViewById(R.id.offerGift);
+        breakUp=fragment.findViewById(R.id.breakUp);
+        goDate=fragment.findViewById(R.id.goDate);
+        progressText=fragment.findViewById(R.id.progressText);
+
+        Player player1 =MainMenu.myAppDataBase.myDao().getPlayer(slot);
+
+        if(player1.getDating().equals("true"))
+        {
+            foundPartnerConstraint.setVisibility(View.VISIBLE);
+            lookPartner.setVisibility(View.GONE);
+        }
+
 
         lookPartner.setOnClickListener(view ->{
 
@@ -52,9 +83,74 @@ public class RelationFragment extends Fragment {
                 dis++;
             }
 
-
-
         });
+
+
+        viewmodel.isFoundPartner().observe(this,isFound ->{
+            if(isFound){
+                foundPartnerConstraint.setVisibility(View.VISIBLE);
+                lookPartner.setVisibility(View.GONE);
+
+            }
+            else {
+                lookPartner.setVisibility(View.VISIBLE);
+                foundPartnerConstraint.setVisibility(View.GONE);
+            }
+        });
+
+
+        offerGift.setOnClickListener(view ->{
+
+            Dialog dialog  =new Dialog(getActivity());
+            dialog.setContentView(R.layout.dialog_gift);
+
+            Button giftRoses=dialog.findViewById(R.id.giftRoses);
+            Button giftChocolate=dialog.findViewById(R.id.giftChocolate);
+            Button giftJewelery=dialog.findViewById(R.id.giftJewlery);
+            TextView rosesNumber = dialog.findViewById(R.id.rosesNumber);
+            TextView chocolateNumber = dialog.findViewById(R.id.chocolateNumber);
+            TextView jeweleryNumber = dialog.findViewById(R.id.jeweleryNumber);
+
+
+            Gift roses = MainMenu.myAppDataBase.myDao().getRoses();
+
+
+            if(roses.getGiftCount()<10)
+                rosesNumber.setText("0"+roses.getGiftCount());
+            else
+                rosesNumber.setText(roses.getGiftCount()+"");
+
+
+
+
+            giftRoses.setOnClickListener(view1 ->{
+
+                int newCount = roses.getGiftCount() - 1 ;
+
+                if(newCount >=0) {
+                    roses.setGiftCount(newCount);
+
+                    MainMenu.myAppDataBase.myDao().updateGift(roses);
+
+                    if (roses.getGiftCount() < 10)
+                        rosesNumber.setText("0" + roses.getGiftCount());
+                    else
+                        rosesNumber.setText(roses.getGiftCount() + "");
+
+                }
+            });
+
+            giftChocolate.setOnClickListener(view2-> {
+
+            });
+
+            giftJewelery.setOnClickListener(view3 ->{
+
+            });
+
+            dialog.show();
+        });
+
 
 
         return fragment;
