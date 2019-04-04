@@ -1,10 +1,27 @@
 [
 
-
   {
     "id":1 ,
-    "name":"Roses","price":150,
-    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/roses"
+    "name":"Chocolate","price":75,
+    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/chocolate",
+    "giftCount":0
 
   }
+  ,
+  {
+    "id":2 ,
+    "name":"Roses","price":150,
+    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/roses",
+    "giftCount":0
+
+  }
+,
+  {
+    "id":3 ,
+    "name":"Jewelry","price":3000,
+    "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/jewelry",
+    "giftCount":0
+
+  }
+
 ]

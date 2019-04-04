@@ -24,7 +24,6 @@ public class GiftListAdapter extends ArrayAdapter<Gift> {
         super(context, R.layout.commun_buy_res,gifts);
     }
 
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

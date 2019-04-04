@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -104,6 +105,10 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+        viewModel.getRelationBar().observe(this,relationBar ->{
+            player.setRelationBar(relationBar);
+        });
+        Log.i("youpa","progress : " +player.getRelationBar());
         saveProgress();
         Intent intent = new Intent(this,GameScene.class);
         intent.putExtra("slotNumber",player.getId());
@@ -113,6 +118,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+
+        viewModel.getRelationBar().observe(this,relationBar ->{
+            player.setRelationBar(relationBar);
+        });
+
         saveProgress();
         super.onStop();
     }
@@ -120,6 +130,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
+        viewModel.getRelationBar().observe(this,relationBar ->{
+            player.setRelationBar(relationBar);
+        });
+
         saveProgress();
         super.onDestroy();
     }
@@ -198,20 +213,20 @@ public class HomeActivity extends AppCompatActivity {
         runClockThread();
         initialiseProgressBars();
 
-
         viewModel = ViewModelProviders.of(this).get(ViewModelPartner.class);
-
 
         viewModel.isFoundPartner().observe(this,isFound ->{
             player.setDating("true");
 
         });
 
-
         viewModel.isBreakUp().observe(this,isbreakUp ->{
             player.setDating("false");
         });
 
+        viewModel.getRelationBar().observe(this,relationBar ->{
+            player.setRelationBar(relationBar);
+        });
     }
 
     public void insertFragment(Fragment fragment){

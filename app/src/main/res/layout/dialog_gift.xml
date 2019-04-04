@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,7 +28,7 @@
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/syrup" />
+            app:srcCompat="@drawable/jewelry" />
 
         <TextView
             android:id="@+id/daz"
@@ -69,7 +79,7 @@
             android:id="@+id/imageView8"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/pills" />
+            app:srcCompat="@drawable/chocolate" />
 
         <TextView
             android:id="@+id/textView6"
@@ -154,4 +164,20 @@
             android:layout_height="wrap_content"
             android:text="gift" />
     </LinearLayout>
+
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/relationPlusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="casual"
+        android:text="Hellow everyBody"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/gold"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 </LinearLayout>

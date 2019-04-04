@@ -58,7 +58,6 @@ public interface MyDao {
     @Insert
     void addGift(Gift gift);
 
-
     @Query("select * from Gift")
     List<Gift> getGifts();
 
@@ -164,10 +163,20 @@ public interface MyDao {
     @Delete
     void deletePlayer(Player player);
 
+    @Delete
+    void deleteGift(Gift gift);
+
+
     //Get Gifts individually
 
     @Query("select * from Gift where name like 'Roses'")
     Gift getRoses();
+
+    @Query("select * from Gift where name like 'Chocolate'")
+    Gift getChocolate();
+
+    @Query("select * from Gift where name like 'Jewelry'")
+    Gift getJewelry();
 
     //Counts
     @Query("select count(*) from Work")

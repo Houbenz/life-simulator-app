@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import beans.Buy;
 import beans.Food;
@@ -170,6 +171,14 @@ public class MainMenu extends AppCompatActivity {
         }
     };
 
+    static  final Migration MIGRATION_21_22 = new Migration(21,22) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("alter table Player add column relationBar INTEGER not null default 0");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,7 +188,7 @@ public class MainMenu extends AppCompatActivity {
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
-                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21)
+                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22)
                     .allowMainThreadQueries().build();
 
         } catch (IllegalStateException e) {
@@ -483,6 +492,13 @@ public class MainMenu extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.overwrite), (dialog, which) -> {
 
                     myAppDataBase.myDao().deletePlayer(myAppDataBase.myDao().getPlayer(slotNumber));
+                    List<Gift> gifts = myAppDataBase.myDao().getGifts();
+
+                    //
+                    for(Gift gift : gifts){
+                        gift.setGiftCount(0);
+                       myAppDataBase.myDao().updateGift(gift);
+                    }
 
                     dialogInputCreate(slotNumber);
 
@@ -812,7 +828,7 @@ public class MainMenu extends AppCompatActivity {
             furnitureDb.setFurnitureType(furniture.getFournitureType());
 
             if(!isUpdate)
-            myAppDataBase.myDao().addFurnitures(furnitureDb);
+                myAppDataBase.myDao().addFurnitures(furnitureDb);
             else
                 myAppDataBase.myDao().updateFurniture(furnitureDb);
         }
@@ -917,6 +933,7 @@ public class MainMenu extends AppCompatActivity {
                 gift.setName(jo.getString("name"));
                 gift.setImgUrl(jo.getString("uri"));
                 gift.setPrice(jo.getInt("price"));
+                gift.setGiftCount(jo.getInt("giftCount"));
 
                 if(!isUpdate)
                     myAppDataBase.myDao().addGift(gift);
@@ -939,6 +956,7 @@ public class MainMenu extends AppCompatActivity {
                     gift.setName(jo.getString("name"));
                     gift.setImgUrl(jo.getString("uri"));
                     gift.setPrice(jo.getInt("price"));
+                    gift.setGiftCount(jo.getInt("giftCount"));
 
                     myAppDataBase.myDao().addGift(gift);
                 }

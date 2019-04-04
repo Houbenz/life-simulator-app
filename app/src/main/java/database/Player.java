@@ -46,6 +46,16 @@ public class Player {
     private int healthbar;
     private int hungerbar;
     private int energybar;
+    private int relationBar;
+
+
+    public int getRelationBar() {
+        return relationBar;
+    }
+
+    public void setRelationBar(int relationBar) {
+        this.relationBar = relationBar;
+    }
 
     public Player(){
         this.level_object = new Level(0);

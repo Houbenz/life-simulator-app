@@ -848,10 +848,25 @@ public class GameScene extends AppCompatActivity
                 showCustomToast("you bought "+gift.getName(),gift.getImgUrl(),"green");
 
 
-                //to increment the number of gifts
                 int giftCount =gift.getGiftCount()+1;
-                gift.setGiftCount(giftCount);
-                MainMenu.myAppDataBase.myDao().updateGift(gift);
+
+                if(gift.getName().equals("Chocolate")) {
+                    gift.setGiftCount(giftCount);
+                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                }
+
+                if(gift.getName().equals("Roses")){
+                    gift.setGiftCount(giftCount);
+                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                }
+
+                if(gift.getName().equals("Jewelry")){
+                    gift.setGiftCount(giftCount);
+                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                }
+                //to increment the number of gifts
+
+
             }
             else{
                 showCustomToast("Not enough money to buy "+gift.getName(),gift.getImgUrl(),"red");

@@ -1,5 +1,7 @@
 package conf;
 
+import java.util.ArrayList;
+
 /**
  * Created by Houbenz on 23/08/2018.
  */
@@ -50,7 +52,26 @@ public class Params {
     public static final int LEARN_TIME = 60 ;
 
 
-    public static final int MIN_TIME_LOOKING_FOR_PARTNER=1000;
-    public static final int MAX_TIME_LOOKING_FOR_PARTNER=10000;
+    public static final int MIN_TIME_LOOKING_FOR_PARTNER=5000;
+    public static final int MAX_TIME_LOOKING_FOR_PARTNER=50000;
+
+    public static final int CHOCOLATE_BONUS=1;
+    public static final int ROSES_BONUS=5;
+    public static final int JEWELRY_BONUS=45;
+
+
+
+    public static ArrayList<String> getTexts(){
+        ArrayList<String> strings = new ArrayList<String >();
+
+        strings.add("you go to clubs hoping to meet someone");
+        strings.add("you changed direction and go to bars");
+        strings.add("finally you change your mind and start introducing yourself to strangers");
+        strings.add("you go to dating sites");
+
+        return strings;
+    }
+
+
 
 }
