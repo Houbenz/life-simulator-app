@@ -1,9 +1,6 @@
 package com.houbenz.lifesimulator;
 
 import android.app.Dialog;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -27,8 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 
-import androidx.lifecycle.ViewModelStore;
-import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.lifecycle.ViewModelProviders;
 import beans.Level;
 import conf.Params;
 import database.Player;
@@ -72,21 +67,14 @@ public class HomeActivity extends AppCompatActivity {
     private int hour;
     private int minute;
     private int totalTime;
-    private ViewModelPartner viewmodel;
 
-    private boolean startLookingPartner=false;
-
-    private boolean foundPartner =false;
-
+    private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
     private View.OnTouchListener mOnTouchListener = (v, event) ->{
 
         hideSystemUI();
         return false;
     } ;
-
-
-
 
 
     @Override
@@ -210,76 +198,20 @@ public class HomeActivity extends AppCompatActivity {
         runClockThread();
         initialiseProgressBars();
 
-        viewmodel = ViewModelProviders.of(this).get(ViewModelPartner.class);
 
-      /*  viewmodel.isLooking().observe(this,isLooking ->{
-            startLookingPartner=isLooking;
-       });*/
+        viewModel = ViewModelProviders.of(this).get(ViewModelPartner.class);
 
-        viewmodel.isBreakUp().observe(this ,isBreakup ->{
 
-            if(isBreakup) {
+        viewModel.isFoundPartner().observe(this,isFound ->{
+            player.setDating("true");
+
+        });
+
+
+        viewModel.isBreakUp().observe(this,isbreakUp ->{
             player.setDating("false");
-            MainMenu.myAppDataBase.myDao().updatePlayer(player);
-            viewmodel.setFoundPartner(false);
-            //foundPartner=false;
-            }
         });
-    }
 
-
-    public void lookingPartner(){
-
-        viewmodel.isLooking().observe(this,isLooking -> {
-
-
-            if (isLooking) {
-
-                int min = 1;
-                int max = 10;
-                int range = max - min + 1;
-                int random = (int) (Math.random() * range) + min;
-
-                showHomeButton.setEnabled(false);
-                socialButton.setEnabled(false);
-                if (random == 10) {
-
-                    foundPartner = true;
-                    Dialog dialog = new Dialog(this);
-                    dialog.setContentView(R.layout.found_partner);
-                    Button confirm = dialog.findViewById(R.id.confirm);
-                    Button cancel = dialog.findViewById(R.id.cancel);
-
-                    cancel.setOnClickListener(view -> {
-                        dialog.dismiss();
-                        dialog.cancel();
-                        foundPartner = false;
-                    });
-                    confirm.setOnClickListener(view -> {
-
-                        viewmodel.setFoundPartner(true);
-                        showHomeButton.setEnabled(true);
-                        socialButton.setEnabled(true);
-
-                        Player player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
-                        player.setDating("true");
-                        MainMenu.myAppDataBase.myDao().updatePlayer(player);
-                        this.player.setDating("true");
-
-                        saveProgress();
-
-                        dialog.cancel();
-                        dialog.dismiss();
-                    });
-
-                    dialog.show();
-                }
-            } else {
-                showHomeButton.setEnabled(true);
-                socialButton.setEnabled(true);
-            }
-
-        });
     }
 
     public void insertFragment(Fragment fragment){
@@ -388,13 +320,6 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         time.setText(hourS + ":" + minuteS);
                         dayView.setText(getString(R.string.day) + " " + dayS);
-
-
-                        //from RelationFragment it uses a viewmodel
-
-                        if(!foundPartner)
-                            lookingPartner();
-                            // lookingPartner(startLookingPartner);
 
                     });
                 } catch (InterruptedException e) {

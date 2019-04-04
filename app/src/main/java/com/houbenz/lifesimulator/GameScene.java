@@ -476,7 +476,6 @@ public class GameScene extends AppCompatActivity
 
         loadProgress();
 
-
         insertHomeFragment();
 
 

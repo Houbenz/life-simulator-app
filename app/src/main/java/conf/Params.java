@@ -49,4 +49,8 @@ public class Params {
 
     public static final int LEARN_TIME = 60 ;
 
+
+    public static final int MIN_TIME_LOOKING_FOR_PARTNER=1000;
+    public static final int MAX_TIME_LOOKING_FOR_PARTNER=10000;
+
 }
