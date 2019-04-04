@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/introLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -79,7 +79,7 @@
             app:layout_constraintTop_toTopOf="@+id/tablePlace"
             app:srcCompat="@drawable/chair" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 
 

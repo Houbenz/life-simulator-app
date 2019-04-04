@@ -3,12 +3,11 @@ package fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.houbenz.lifesimulator.MainMenu;
 import com.android.houbenz.lifesimulator.R;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import arrayAdapters.StoreListAdapter;
 import database.Store;
-import database.Acquired_Stores;
 
 /**
  * A simple {@link Fragment} subclass.

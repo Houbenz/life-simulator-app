@@ -3,9 +3,9 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +47,7 @@ public class RelationFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_relation, container, false);
 
         viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
-        viewmodel.setIsLooking(false);
+        //viewmodel.setIsLooking(false);
 
         int slot =getArguments().getInt("slot");
 
@@ -63,27 +63,25 @@ public class RelationFragment extends Fragment {
 
         if(player1.getDating().equals("true"))
         {
+
+            Log.i("Youpi","player1 when entered RelationFragment " +player1.getDating() );
             foundPartnerConstraint.setVisibility(View.VISIBLE);
             lookPartner.setVisibility(View.GONE);
         }
 
         lookPartner.setOnClickListener(view ->{
 
-
-            if(dis % 2 != 0) {
-                viewmodel.setIsLooking(false);
-                lookPartner.setText("Start looking for a partner");
-                lookPartner.setTextColor(getResources().getColor(R.color.white));
-                dis++;
-            }else {
-
-                Log.i("Yeera","dis : "+dis);
+            if(dis % 2 == 0) {
                 viewmodel.setIsLooking(true);
                 lookPartner.setText("Stop looking for a partner");
                 lookPartner.setTextColor(getResources().getColor(R.color.red));
                 dis++;
+            }else {
+                viewmodel.setIsLooking(false);
+                lookPartner.setText("Start looking for a partner");
+                lookPartner.setTextColor(getResources().getColor(R.color.white));
+                dis++;
             }
-
         });
 
         viewmodel.isFoundPartner().observe(this,isFound ->{
@@ -94,8 +92,6 @@ public class RelationFragment extends Fragment {
             else {
                 lookPartner.setVisibility(View.VISIBLE);
                 foundPartnerConstraint.setVisibility(View.GONE);
-
-
             }
         });
 
@@ -139,8 +135,6 @@ public class RelationFragment extends Fragment {
             dialog.show();
         });
 
-
-
         breakUp.setOnClickListener(view ->{
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -150,16 +144,20 @@ public class RelationFragment extends Fragment {
                 player1.setDating("false");
                 MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
+                Log.i("Youpi","player1 when breakUp Clicked "+ player1.getDating());
+
                 lookPartner.setVisibility(View.VISIBLE);
                 foundPartnerConstraint.setVisibility(View.GONE);
 
                 viewmodel.setBreakUp(true);
 
 
+                viewmodel.setIsLooking(false);
+
                 //for button search for a companion
                 lookPartner.setText("Start looking for a partner");
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
-                dis=0;
+                dis=2;
 
             })).setNegativeButton("No", ((dialog, which) -> {
                 dialog.cancel();
@@ -169,9 +167,7 @@ public class RelationFragment extends Fragment {
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
 
-
         });
-
         return fragment;
     }
 

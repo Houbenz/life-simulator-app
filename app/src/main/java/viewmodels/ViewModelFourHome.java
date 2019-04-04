@@ -1,14 +1,12 @@
 package viewmodels;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import database.Acquired_Furnitures;
-import database.Furniture;
 
 public class ViewModelFourHome extends ViewModel {
 

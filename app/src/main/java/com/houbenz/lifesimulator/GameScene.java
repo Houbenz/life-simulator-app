@@ -1,7 +1,7 @@
 package com.houbenz.lifesimulator;
 
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,11 +10,10 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +39,8 @@ import com.google.android.gms.games.Games;
 
 import java.util.List;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import database.Acquired_Cars;
 import database.Acquired_Furnitures;
 import database.Food;
@@ -100,8 +101,8 @@ public class GameScene extends AppCompatActivity
 
     private TextView levelNumber;
 
-    private android.support.v4.app.FragmentManager fragmentManager;
-    private android.support.v4.app.FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
 
     private SharedPreferences sharedPreferences;
 

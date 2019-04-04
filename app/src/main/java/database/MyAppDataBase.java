@@ -1,7 +1,7 @@
 package database;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 @Database(entities ={Player.class,Degree.class,Work.class,Purchases.class,Gift.class,Acquired_degree.class,Acquired_Furnitures.class,
         Acquired_Stores.class,Acquired_Cars.class,Food.class,Furniture.class,MainFragments.class,Medicine.class,Store.class,VersionDB.class,Car.class

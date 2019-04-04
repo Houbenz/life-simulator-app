@@ -1,7 +1,7 @@
 package database;
 
 
-import android.arch.persistence.room.Entity;
+import androidx.room.Entity;
 
 @Entity
 public class Food extends Purchases {
