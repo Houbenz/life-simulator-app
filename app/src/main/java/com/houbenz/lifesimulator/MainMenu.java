@@ -263,7 +263,6 @@ public class MainMenu extends AppCompatActivity {
 
 
         credits.setOnClickListener(view -> {
-
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
             if(account != null)
@@ -414,6 +413,12 @@ public class MainMenu extends AppCompatActivity {
             overwriteSlotDilaog(1);
         }
 
+    }
+
+    public void deselectButtons(){
+        newGame.setSelected(false);
+        loadGame.setSelected(false);
+        credits.setSelected(false);
     }
 
     //Pour entrer le nom du joueur puis sauvgarder la premiere session

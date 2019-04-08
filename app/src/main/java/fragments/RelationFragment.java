@@ -3,6 +3,9 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
@@ -12,10 +15,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.games.Game;
+import com.houbenz.lifesimulator.GameScene;
 import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.ArrayList;
@@ -23,12 +35,16 @@ import java.util.ArrayList;
 import androidx.lifecycle.ViewModelProviders;
 import conf.Params;
 import database.Gift;
+import database.Partner;
 import database.Player;
 import viewmodels.ViewModelPartner;
 
+import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
 
-public class RelationFragment extends Fragment {
 
+public class RelationFragment extends Fragment implements RewardedVideoAdListener {
+
+    private RewardedVideoAd mRewardVideoAd;
 
     public RelationFragment() {
 
@@ -39,6 +55,7 @@ public class RelationFragment extends Fragment {
     private Button breakUp;
     private Button goDate;
 
+    private Button adButtonFindPartner;
     private TextView visitText;
 
     private TextView progressText;
@@ -47,18 +64,16 @@ public class RelationFragment extends Fragment {
     private View foundPartnerConstraint;
     private Player player1;
     private int slot;
+    private int minusRelation;
     private ViewModelPartner viewmodel;
     private CountDownTimer countDownTimer;
+
+    private boolean cancelTimer =false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_relation, container, false);
-
-
-        viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
-
-        slot = getArguments().getInt("slot");
 
         lookPartner = fragment.findViewById(R.id.lookPartner);
         foundPartnerConstraint = fragment.findViewById(R.id.foundPartnerConstraint);
@@ -68,14 +83,32 @@ public class RelationFragment extends Fragment {
         goDate = fragment.findViewById(R.id.goDate);
         progressText = fragment.findViewById(R.id.progressText);
         visitText=fragment.findViewById(R.id.visittext);
+        adButtonFindPartner=fragment.findViewById(R.id.adButtonFindPartner);
+
+
+        try {
+            MobileAds.initialize(getContext(), APP_ADS_ID);
+
+        }catch (Exception e){
+            Toast.makeText(getContext(),"not loading :/",Toast.LENGTH_LONG).show();
+        }
+
+
+        mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(getActivity());
+        mRewardVideoAd.setRewardedVideoAdListener(this);
+
+        loadRewardAd();
+
+        viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
+
+        slot = getArguments().getInt("slot");
 
         player1 = MainMenu.myAppDataBase.myDao().getPlayer(slot);
 
 
-        Log.i("Youpi","rel : "+ player1.getRelationBar());
-
         //initiate relation progress bar
         relationBar.setProgress(player1.getRelationBar());
+
         progressText.setText(relationBar.getProgress()+"/"+relationBar.getMax());
 
         if (player1.getDating().equals("true")) {
@@ -84,40 +117,59 @@ public class RelationFragment extends Fragment {
             visitText.setVisibility(View.GONE);
         }
 
+
+        int min =Params.MIN_TIME_LOOKING_FOR_PARTNER;
+        int max = Params.MAX_TIME_LOOKING_FOR_PARTNER;
+
+        int range = max - min + 1;
+        int random = (int) (Math.random() * range) + min;
+
+        ArrayList<String > strings =Params.getTexts();
+
+        countDownTimer = new CountDownTimer(random, 3000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                int min = 0;
+                int max = 3;
+                int random = (int) (Math.random() * max) - min;
+                visitText.setText(strings.get(random));
+
+                if(cancelTimer) {
+                    countDownTimer.cancel();
+
+                    lookPartner.setText("Start looking for a partner");
+                    lookPartner.setTextColor(getResources().getColor(R.color.white));
+                    visitText.setVisibility(View.GONE);
+                    cancelTimer=false;
+                }
+            }
+            @Override
+            public void onFinish() {
+                ArrayList<Partner> partners =Partner.initPartners(getContext());
+
+                int min = 0 ;
+                int max = 3;
+                int random = (int)(Math.random() * max) - min;
+
+                foundPartner(partners.get(random));
+            }
+        };
+
         lookPartner.setOnClickListener(view -> {
             if (dis % 2 == 0) {
                 lookPartner.setText("Stop looking for a partner");
                 lookPartner.setTextColor(getResources().getColor(R.color.red));
                 dis++;
                 visitText.setVisibility(View.VISIBLE);
-                int min =Params.MIN_TIME_LOOKING_FOR_PARTNER;
-                int max = Params.MAX_TIME_LOOKING_FOR_PARTNER;
 
-                int range = max - min + 1;
-                int random = (int) (Math.random() * range) + min;
-
-                ArrayList<String > strings =Params.getTexts();
-                countDownTimer = new CountDownTimer(random, 3000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                            int min = 0;
-                            int max = 3;
-                            int random = (int) (Math.random() * max) - min;
-                            visitText.setText(strings.get(random));
-
-                    }
-                    @Override
-                    public void onFinish() {
-                        foundPartner();
-                    }
-                };
                 countDownTimer.start();
-
 
             } else {
                 lookPartner.setText("Start looking for a partner");
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
+                visitText.setVisibility(View.GONE);
+                countDownTimer.cancel();
                 dis++;
             }
         });
@@ -184,7 +236,7 @@ public class RelationFragment extends Fragment {
                         rosesNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ 5 to Relation");
+                        relationPlusText.setText("+ "+Params.ROSES_BONUS+" to Relation");
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
                             relationPlusText.setText("");
                             relationPlusText.setVisibility(View.INVISIBLE);
@@ -224,7 +276,7 @@ public class RelationFragment extends Fragment {
                         chocolateNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ 5 to Relation");
+                        relationPlusText.setText("+ "+Params.CHOCOLATE_BONUS+" to Relation");
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -265,7 +317,7 @@ public class RelationFragment extends Fragment {
                         jeweleryNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ 5 to Relation");
+                        relationPlusText.setText("+ "+Params.JEWELRY_BONUS+" to Relation");
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -296,6 +348,7 @@ public class RelationFragment extends Fragment {
 
                         MainMenu.myAppDataBase.myDao().updatePlayer(player1);
                         lookPartner.setVisibility(View.VISIBLE);
+                        adButtonFindPartner.setVisibility(View.VISIBLE);
                         foundPartnerConstraint.setVisibility(View.GONE);
                         lookPartner.setText("Start looking for a partner");
                         lookPartner.setTextColor(getResources().getColor(R.color.white));
@@ -303,6 +356,7 @@ public class RelationFragment extends Fragment {
 
                         viewmodel.setBreakUp(true);
 
+                        loadRewardAd();
                     })).setNegativeButton("No", ((dialog, which) -> {
                 dialog.cancel();
                 dialog.dismiss();
@@ -312,15 +366,30 @@ public class RelationFragment extends Fragment {
             alertDialog.show();
 
         });
+
+
+        adButtonFindPartner.setOnClickListener(v -> {
+
+            if(mRewardVideoAd.isLoaded()){
+                mRewardVideoAd.show();
+            }
+        });
+
+
+
         return fragment;
     }
 
-    public void foundPartner() {
-
+    public void foundPartner(Partner partner) {
             Dialog dialog = new Dialog(getActivity());
             dialog.setContentView(R.layout.found_partner);
             Button confirm = dialog.findViewById(R.id.confirm);
             Button cancel = dialog.findViewById(R.id.cancel);
+            ImageView partnerImage = dialog.findViewById(R.id.partnerImage);
+            TextView title = dialog.findViewById(R.id.title);
+
+            partnerImage.setImageURI(Uri.parse(partner.getImage()));
+            title.setText("Congratulations you've met "+partner.getName() +" !");
 
             cancel.setOnClickListener(view -> {
                 dialog.dismiss();
@@ -339,20 +408,80 @@ public class RelationFragment extends Fragment {
                 foundPartnerConstraint.setVisibility(View.VISIBLE);
                 lookPartner.setVisibility(View.GONE);
                 visitText.setVisibility(View.GONE);
-
+                adButtonFindPartner.setVisibility(View.GONE);
                 viewmodel.setFoundPartner(true);
 
                 dialog.cancel();
                 dialog.dismiss();
             });
 
+
+            dialog.setOnDismissListener(dialog1 -> {
+
+                lookPartner.setText("Start looking for a partner");
+                lookPartner.setTextColor(getResources().getColor(R.color.white));
+                visitText.setVisibility(View.GONE);
+                dis =0 ;
+            });
             dialog.show();
+
+
     }
 
 
+    private void loadRewardAd(){
+        mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
+    }
 
 
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        if(player1.getDating().equals("false")) {
+            adButtonFindPartner.setVisibility(View.VISIBLE);
+        }
+    }
 
+    @Override
+    public void onRewardedVideoAdOpened() {
+
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        countDownTimer.cancel();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+
+        loadRewardAd();
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+
+        Toast.makeText(getContext(),"Reward Delivered",Toast.LENGTH_SHORT).show();
+        ArrayList<Partner> partners =Partner.initPartners(getContext());
+        int min = 0 ;
+        int max = 3;
+        int random = (int)(Math.random() * max) - min;
+        foundPartner(partners.get(random));
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        loadRewardAd();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+
+    }
 }
 
 

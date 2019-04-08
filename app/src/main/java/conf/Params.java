@@ -17,7 +17,7 @@ public class Params {
     public static final int ENERGY_GAIN_PER_HOUR=8;
 
 
-    public static final double START_BALANCE = 50000;
+    public static final double START_BALANCE = 50;
 
 
     //for hunger loss (gains are directly from food.json file)
@@ -32,7 +32,7 @@ public class Params {
 
     //speed
 
-    public final static int TIME_SPEED_NORMAL =500;
+    public final static int TIME_SPEED_NORMAL =350;
     public final static int TIME_SPEED_FAST =250;
     public final static int TIME_SPEED_ULTRA_FAST =125;
     public final static int TIME_SPEED_SUPER_FAST =75;
@@ -58,6 +58,10 @@ public class Params {
     public static final int CHOCOLATE_BONUS=1;
     public static final int ROSES_BONUS=5;
     public static final int JEWELRY_BONUS=45;
+
+
+    public static final int MINUS_RELATION=7;
+
 
 
 

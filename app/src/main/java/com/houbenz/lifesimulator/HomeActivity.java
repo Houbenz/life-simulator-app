@@ -1,5 +1,6 @@
 package com.houbenz.lifesimulator;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -69,6 +70,8 @@ public class HomeActivity extends AppCompatActivity {
     private int minute;
     private int totalTime;
 
+    private int minusRelation ;
+
     private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
     private View.OnTouchListener mOnTouchListener = (v, event) ->{
@@ -77,6 +80,11 @@ public class HomeActivity extends AppCompatActivity {
         return false;
     } ;
 
+
+    public void deselectButtons(){
+        showHomeButton.setSelected(false);
+        socialButton.setSelected(false);
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -118,11 +126,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-
-        viewModel.getRelationBar().observe(this,relationBar ->{
-            player.setRelationBar(relationBar);
-        });
-
         saveProgress();
         super.onStop();
     }
@@ -134,9 +137,9 @@ public class HomeActivity extends AppCompatActivity {
         viewModel.getRelationBar().observe(this,relationBar ->{
             player.setRelationBar(relationBar);
         });
-
         saveProgress();
         super.onDestroy();
+        threadRun=false;
     }
 
     @Override
@@ -162,7 +165,9 @@ public class HomeActivity extends AppCompatActivity {
         mConstraintLayout.setOnTouchListener(mOnTouchListener);
 
         slot =getIntent().getIntExtra("slot",0);
+        minusRelation=getIntent().getIntExtra("minusRelation",0);
         loadProgress();
+
 
         HomeFragment homeFragment1 = new HomeFragment();
         insertFragment(homeFragment1);
@@ -171,13 +176,22 @@ public class HomeActivity extends AppCompatActivity {
         showHomeButton=findViewById(R.id.showHomeButton);
 
         showHomeButton.setOnClickListener(view ->{
+
+            deselectButtons();
+            showHomeButton.setSelected(true);
+
             HomeFragment homeFragment = new HomeFragment();
             insertFragment(homeFragment);
         });
 
+        showHomeButton.setSelected(true);
 
         socialButton=findViewById(R.id.socialButton);
         socialButton.setOnClickListener(view ->{
+
+            deselectButtons();
+            socialButton.setSelected(true);
+
             RelationFragment relationFragment = new RelationFragment();
             insertFragment(relationFragment);
         });
@@ -208,8 +222,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-
-        loadProgress();
         runClockThread();
         initialiseProgressBars();
 
@@ -234,8 +246,11 @@ public class HomeActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
 
+        saveProgress();
+
         Bundle bundle = new Bundle();
         bundle.putInt("slot",slot);
+        bundle.putInt("minusRelation",minusRelation);
         fragment.setArguments(bundle);
         transaction =fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
         transaction.replace(R.id.placeFragment, fragment);
@@ -255,7 +270,6 @@ public class HomeActivity extends AppCompatActivity {
 
                         //For GAME OVER
                         if (healthbar.getProgress() <= 0) {
-                            threadRun = false;
                             Dialog dialog = new Dialog(this);
                             dialog.setContentView(R.layout.custom_toast_red);
 
@@ -269,8 +283,11 @@ public class HomeActivity extends AppCompatActivity {
                                 finish();
                             });
 
-                            MainMenu.myAppDataBase.myDao().deletePlayer(player);
-                            dialog.show();
+                            if( ! threadRun) {
+                                MainMenu.myAppDataBase.myDao().deletePlayer(player);
+                                dialog.show();
+                            }
+                            threadRun = false;
                         }
 
                         String hourS = "" + hour;
@@ -367,6 +384,7 @@ public class HomeActivity extends AppCompatActivity {
 
         player=loaded_player;
 
+        player.setRelationBar(player.getRelationBar() - minusRelation);
 
         Level level = new Level(player.getLevel(),player.getLevel_progress(),player.getMax_progress());
         player.setLevel_object(level);

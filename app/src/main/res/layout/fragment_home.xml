@@ -45,8 +45,7 @@
             app:layout_constraintHorizontal_bias="0.982"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.516"
-            app:srcCompat="@drawable/table_laptop" />
+            app:layout_constraintVertical_bias="0.516" />
 
         <ImageView
             android:id="@+id/couch"
@@ -76,8 +75,7 @@
             app:layout_constraintEnd_toStartOf="@+id/salontable"
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toEndOf="@+id/tablePlace"
-            app:layout_constraintTop_toTopOf="@+id/tablePlace"
-            app:srcCompat="@drawable/chair" />
+            app:layout_constraintTop_toTopOf="@+id/tablePlace" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

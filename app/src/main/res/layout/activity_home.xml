@@ -19,7 +19,8 @@
 
         <Button
             android:id="@+id/showHomeButton"
-            style="@style/GameSceneButtons"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_margin="0dp"
@@ -31,22 +32,26 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="outside" />
+            android:text="outside"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/socialButton"
-            style="@style/GameSceneButtons"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="social" />
+            android:text="social"
+            android:visibility="visible" />
 
         <Button
             style="@style/GameSceneButtons"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="stats" />
+            android:text="stats"
+            android:visibility="gone" />
     </LinearLayout>
 
     <FrameLayout

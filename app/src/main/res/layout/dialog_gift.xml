@@ -59,7 +59,8 @@
 
         <Button
             android:id="@+id/giftJewlery"
-            style="@style/GameSceneButtons"
+            android:textColor="@color/white"
+            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="gift" />
@@ -110,7 +111,8 @@
 
         <Button
             android:id="@+id/giftChocolate"
-            style="@style/GameSceneButtons"
+            android:textColor="@color/white"
+            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="gift" />
@@ -159,7 +161,8 @@
 
         <Button
             android:id="@+id/giftRoses"
-            style="@style/GameSceneButtons"
+            android:textColor="@color/white"
+            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="gift" />

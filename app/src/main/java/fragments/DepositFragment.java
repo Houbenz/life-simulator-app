@@ -51,12 +51,12 @@ public class DepositFragment extends Fragment {
 
 
         int slot =getArguments().getInt("slot");
-        Player player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
-        double balance= player.getBalance();
-        double balanceInBank=player.getBank_deposit();
+       // Player player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+        float balance=getArguments().getFloat("balance");
+        float balanceInBank=getArguments().getFloat("balanceInBank");
 
 
-        bankBalanceD.setText("Balance : "+balanceInBank+"$");
+        bankBalanceD.setText("Balance : "+balanceInBank +"$");
 
         seekBarDeposit.setMax((int)balance);
 
