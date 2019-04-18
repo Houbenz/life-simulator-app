@@ -325,11 +325,16 @@ public class GameScene extends AppCompatActivity
                             mainText.setText("You're Now Learning");
 
                             learn_time--;
+
+                            enableAllButtons(false);
+
+                            /*
                             work.setEnabled(false);
                             buy.setEnabled(false);
                             sleep.setEnabled(false);
                             bank.setEnabled(false);
                             study.setEnabled(false);
+                            */
                             startWorking.setEnabled(false);
 
                             startWorking.setText("Learning "+learn_time +"m");
@@ -338,12 +343,16 @@ public class GameScene extends AppCompatActivity
                             if(learn_time <= 0){
                                 learning=false;
                                 learn_time=60;
-
+                                /*
                                 work.setEnabled(true);
                                 buy.setEnabled(true);
                                 sleep.setEnabled(true);
                                 bank.setEnabled(true);
                                 study.setEnabled(true);
+                                homeButton.setEnabled(true);
+                                */
+                                enableAllButtons(true);
+
                                 startWorking.setText(getString(R.string.startWork));
 
                                 if(! player.getWork().equals(getString(R.string.none)))
@@ -372,6 +381,16 @@ public class GameScene extends AppCompatActivity
             }
         });
         thread.start();
+    }
+
+
+    public void enableAllButtons(boolean enable){
+        work.setEnabled(enable);
+        buy.setEnabled(enable);
+        sleep.setEnabled(enable);
+        bank.setEnabled(enable);
+        study.setEnabled(enable);
+        homeButton.setEnabled(enable);
     }
 
     @Override
@@ -652,11 +671,13 @@ public class GameScene extends AppCompatActivity
 
                 workthreadRun=false;
 
-                buy.setEnabled(true);
+               /* buy.setEnabled(true);
                 sleep.setEnabled(true);
                 bank.setEnabled(true);
                 study.setEnabled(true);
-                work.setEnabled(true);
+                work.setEnabled(true);*/
+
+                enableAllButtons(true);
                 speedSeekBar.setProgress(0);
                 speed=Params.TIME_SPEED_NORMAL;
                 startWorking.setText(getString(R.string.startwork));
@@ -774,11 +795,13 @@ public class GameScene extends AppCompatActivity
 
                            if(workthreadRun) {
 
-                                        work.setEnabled(false);
+                                       /* work.setEnabled(false);
                                         buy.setEnabled(false);
                                         sleep.setEnabled(false);
                                         bank.setEnabled(false);
-                                        study.setEnabled(false);
+                                        study.setEnabled(false);*/
+                                       enableAllButtons(false);
+
                                         fragmentManager = getSupportFragmentManager();
                                         fragmentManager.popBackStack();
 

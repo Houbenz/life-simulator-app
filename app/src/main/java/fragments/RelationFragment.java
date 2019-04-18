@@ -3,14 +3,11 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +23,11 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.android.gms.games.Game;
 import com.houbenz.lifesimulator.GameScene;
 import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.lifecycle.ViewModelProviders;
 import conf.Params;
@@ -68,6 +65,9 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private ViewModelPartner viewmodel;
     private CountDownTimer countDownTimer;
 
+    private ImageView partnerImage;
+    private TextView partnerName;
+
     private boolean cancelTimer =false;
 
     @Override
@@ -84,7 +84,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         progressText = fragment.findViewById(R.id.progressText);
         visitText=fragment.findViewById(R.id.visittext);
         adButtonFindPartner=fragment.findViewById(R.id.adButtonFindPartner);
-
+        partnerImage=fragment.findViewById(R.id.partnerImage);
+        partnerName=fragment.findViewById(R.id.partnerName);
 
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
@@ -115,6 +116,11 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             foundPartnerConstraint.setVisibility(View.VISIBLE);
             lookPartner.setVisibility(View.GONE);
             visitText.setVisibility(View.GONE);
+            Partner partner=MainMenu.myAppDataBase.myDao().getDatingPartner();
+
+            partnerName.setText(partner.getName());
+            partnerImage.setImageURI(Uri.parse(partner.getImage()));
+
         }
 
 
@@ -146,7 +152,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             }
             @Override
             public void onFinish() {
-                ArrayList<Partner> partners =Partner.initPartners(getContext());
+
+                List<Partner> partners =MainMenu.myAppDataBase.myDao().getPartners();
 
                 int min = 0 ;
                 int max = 3;
@@ -336,35 +343,43 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            builder.setMessage("Do you really want to break up ?")
-                    .setPositiveButton("Yes", ((dialog, which) -> {
+            Partner partner=MainMenu.myAppDataBase.myDao().getDatingPartner();
 
-                        player1.setDating("false");
-                        player1.setRelationBar(0);
-                        relationBar.setProgress(0);
-                        progressText.setText(relationBar.getProgress()+"/100");
+            if(partner !=null) {
 
-                        viewmodel.setRelationBar(relationBar.getProgress());
+                builder.setMessage("Do you really want to break up with "+partner.getName()+" ?")
+                        .setPositiveButton("Yes", ((dialog, which) -> {
 
-                        MainMenu.myAppDataBase.myDao().updatePlayer(player1);
-                        lookPartner.setVisibility(View.VISIBLE);
-                        adButtonFindPartner.setVisibility(View.VISIBLE);
-                        foundPartnerConstraint.setVisibility(View.GONE);
-                        lookPartner.setText("Start looking for a partner");
-                        lookPartner.setTextColor(getResources().getColor(R.color.white));
-                        dis = 2;
+                            player1.setDating("false");
+                            player1.setRelationBar(0);
+                            relationBar.setProgress(0);
+                            progressText.setText(relationBar.getProgress() + "/100");
 
-                        viewmodel.setBreakUp(true);
+                            viewmodel.setRelationBar(relationBar.getProgress());
 
-                        loadRewardAd();
-                    })).setNegativeButton("No", ((dialog, which) -> {
-                dialog.cancel();
-                dialog.dismiss();
-            }));
+                            MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+                            partner.setDating("false");
+                            MainMenu.myAppDataBase.myDao().updatePartner(partner);
 
+                            lookPartner.setVisibility(View.VISIBLE);
+                            adButtonFindPartner.setVisibility(View.VISIBLE);
+                            foundPartnerConstraint.setVisibility(View.GONE);
+                            lookPartner.setText("Start looking for a partner");
+                            lookPartner.setTextColor(getResources().getColor(R.color.white));
+                            dis = 2;
+
+                            viewmodel.setBreakUp(true);
+
+                            loadRewardAd();
+                        })).setNegativeButton("No", ((dialog, which) -> {
+                    dialog.cancel();
+                    dialog.dismiss();
+                }));
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
         });
 
 
@@ -405,10 +420,16 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                this.player1.setDating("true");
                 MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
+                partner.setDating("true");
+                MainMenu.myAppDataBase.myDao().updatePartner(partner);
+
                 foundPartnerConstraint.setVisibility(View.VISIBLE);
                 lookPartner.setVisibility(View.GONE);
                 visitText.setVisibility(View.GONE);
                 adButtonFindPartner.setVisibility(View.GONE);
+                partnerName.setText(partner.getName());
+                this.partnerImage.setImageURI(Uri.parse(partner.getImage()));
+
                 viewmodel.setFoundPartner(true);
 
                 dialog.cancel();
@@ -461,7 +482,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     public void onRewarded(RewardItem rewardItem) {
 
         Toast.makeText(getContext(),"Reward Delivered",Toast.LENGTH_SHORT).show();
-        ArrayList<Partner> partners =Partner.initPartners(getContext());
+      List<Partner> partners =MainMenu.myAppDataBase.myDao().getPartners();
         int min = 0 ;
         int max = 3;
         int random = (int)(Math.random() * max) - min;

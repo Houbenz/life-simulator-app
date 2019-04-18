@@ -10,12 +10,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Partner {
 
+    @PrimaryKey(autoGenerate = true)
     private int id ;
     private String name ;
     private String image;
     private int likeness;
+
+    private String dating ;
+
+    public String getDating() {
+        return dating;
+    }
+
+    public void setDating(String dating) {
+        this.dating = dating;
+    }
 
     public int getId() {
         return id;
@@ -49,44 +64,7 @@ public class Partner {
         this.likeness = likeness;
     }
 
-    public static ArrayList<Partner> initPartners(Context context){
 
-        ArrayList<Partner> partners = new ArrayList<>();
-
-        InputStream is ;
-        String json ;
-
-        try {
-
-            is=context.getAssets().open("partner-female.json");
-
-            byte[] buffer = new byte[is.available()];
-
-            is.read(buffer);
-            is.close();
-            json=new String (buffer,"UTF-8");
-            JSONArray jsonArray= new JSONArray(json);
-
-            for (int i = 0 ; i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Partner partner = new Partner();
-
-                partner.setId(jsonObject.getInt("id"));
-                partner.setImage(jsonObject.getString("image"));
-                partner.setLikeness(jsonObject.getInt("likeness"));
-                partner.setName(jsonObject.getString("name"));
-                partners.add(partner);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return partners;
-    }
 
 
 }

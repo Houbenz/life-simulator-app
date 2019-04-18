@@ -3,25 +3,25 @@
   {
     "id":1,
     "name":"veronica",
-    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/woman_mockup",
+    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/crown_hair",
     "likeness":5
   },
   {
     "id":2,
     "name":"Britney",
-    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/woman_mockup",
+    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/white_hair",
     "likeness":10
   },
   {
     "id":3,
     "name":"Ines",
-    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/woman_mockup",
+    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/glasses_girl",
     "likeness":20
   },
   {
     "id":4,
     "name":"Samia",
-    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/woman_mockup",
+    "image":"android.resource://com.houbenz.android.lifesimulator/drawable/black_hair",
     "likeness":15
   }
 ]

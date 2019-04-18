@@ -22,6 +22,8 @@ public interface MyDao {
     @Insert
     void addWork(Work work);
 
+    @Insert
+    void addPartner(Partner partner);
 
     @Insert
     void addAcquired_Car(Acquired_Cars acquired_cars);
@@ -57,6 +59,10 @@ public interface MyDao {
 
     @Insert
     void addGift(Gift gift);
+
+
+    @Query("select * from Partner")
+    List<Partner> getPartners();
 
     @Query("select * from Gift")
     List<Gift> getGifts();
@@ -121,6 +127,11 @@ public interface MyDao {
     @Query("select * from Acquired_Cars where player_id =:id and car_id=:idc")
     Acquired_Cars getAcquiredCars(int id,int idc);
 
+    @Query("select * from Partner where dating like 'true' ")
+    Partner getDatingPartner();
+
+    @Update
+    void updatePartner(Partner partner);
 
     @Update
     void updateCar(Car car);
@@ -205,4 +216,7 @@ public interface MyDao {
 
     @Query("select count(*) from Gift")
     int giftNumber();
+
+    @Query("select count(*) from Partner")
+    int partnerNumber();
 }

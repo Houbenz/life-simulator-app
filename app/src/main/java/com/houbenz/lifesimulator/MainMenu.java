@@ -53,6 +53,7 @@ import database.Degree;
 import database.Gift;
 import database.MainFragments;
 import database.MyAppDataBase;
+import database.Partner;
 import database.Player;
 import database.VersionDB;
 
@@ -179,6 +180,18 @@ public class MainMenu extends AppCompatActivity {
         }
     };
 
+    static  final Migration MIGRATION_22_23 = new Migration(22,23) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("create table Partner(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "name TEXT," +
+                    "image TEXT," +
+                    "dating TEXT," +
+                    "INTEGER likeness not null default 0)");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,7 +201,7 @@ public class MainMenu extends AppCompatActivity {
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
-                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22)
+                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22,MIGRATION_22_23)
                     .allowMainThreadQueries().build();
 
         } catch (IllegalStateException e) {
@@ -213,6 +226,7 @@ public class MainMenu extends AppCompatActivity {
             initFurnitures(false);
             initMedicine(false);
             initCars(false);
+            initPartners(false);
             myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
 
             sharedPreferences.edit().putString("entry", "available").apply();
@@ -238,6 +252,7 @@ public class MainMenu extends AppCompatActivity {
                 initFurnitures(true);
                 initMedicine(true);
                 initCars(true);
+                initPartners(true);
                 versionDB.setVersion(actualversion);
                 myAppDataBase.myDao().updateVerionDB(versionDB);
             }
@@ -966,6 +981,66 @@ public class MainMenu extends AppCompatActivity {
                     myAppDataBase.myDao().addGift(gift);
                 }
             }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void initPartners(boolean isUpdate){
+
+        ArrayList<Partner> partners = new ArrayList<>();
+
+        InputStream is ;
+        String json ;
+
+        try {
+
+            is=getApplicationContext().getAssets().open("partner-female.json");
+
+            byte[] buffer = new byte[is.available()];
+
+            is.read(buffer);
+            is.close();
+            json=new String (buffer,"UTF-8");
+            JSONArray jsonArray= new JSONArray(json);
+
+            for (int i = 0 ; i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Partner partner = new Partner();
+
+                partner.setId(jsonObject.getInt("id"));
+                partner.setImage(jsonObject.getString("image"));
+                partner.setLikeness(jsonObject.getInt("likeness"));
+                partner.setName(jsonObject.getString("name"));
+                partners.add(partner);
+
+                if(!isUpdate)
+                    myAppDataBase.myDao().addPartner(partner);
+                else
+                    myAppDataBase.myDao().updatePartner(partner);
+            }
+
+
+            int oldRows = myAppDataBase.myDao().partnerNumber();
+            int newRows = jsonArray.length() - oldRows;
+
+            if(newRows >0){
+
+                for (int i = oldRows ; i<jsonArray.length();i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Partner partner = new Partner();
+
+                    partner.setId(jsonObject.getInt("id"));
+                    partner.setImage(jsonObject.getString("image"));
+                    partner.setLikeness(jsonObject.getInt("likeness"));
+                    partner.setName(jsonObject.getString("name"));
+                    partners.add(partner);
+                    myAppDataBase.myDao().addPartner(partner);
+                }
+            }
+
+
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
