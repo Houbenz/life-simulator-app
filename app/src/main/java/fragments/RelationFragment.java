@@ -503,6 +503,14 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     public void onRewardedVideoCompleted() {
 
     }
+
+
+    @Override
+    public void onDetach() {
+        countDownTimer.cancel();
+        countDownTimer=null;
+        super.onDetach();
+    }
 }
 
 

@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -51,6 +52,7 @@ import conf.Params;
 import database.Car;
 import database.Degree;
 import database.Gift;
+import database.House;
 import database.MainFragments;
 import database.MyAppDataBase;
 import database.Partner;
@@ -191,6 +193,24 @@ public class MainMenu extends AppCompatActivity {
                     "INTEGER likeness not null default 0)");
         }
     };
+    static  final Migration MIGRATION_23_24 = new Migration(23,24) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("create table House(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "name TEXT," +
+                    "imgUrl TEXT," +
+                    "INTEGER bonusH not null default 0," +
+                    "INTEGER bonusE not null default 0," +
+                    "real price not null default 0)");
+
+      database.execSQL("create table Acquired_Houses(id INTEGER primary key autoincrement not null," +
+                    "house_id INTEGER not null," +
+                    "player_id INTEGER not null," +
+                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
+                    "foreign key(gift_id) references Gift(id) on delete cascade on update cascade )");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,7 +221,8 @@ public class MainMenu extends AppCompatActivity {
         try {
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
-                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22,MIGRATION_22_23)
+                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,
+                            MIGRATION_21_22,MIGRATION_22_23,MIGRATION_23_24)
                     .allowMainThreadQueries().build();
 
         } catch (IllegalStateException e) {
@@ -227,6 +248,7 @@ public class MainMenu extends AppCompatActivity {
             initMedicine(false);
             initCars(false);
             initPartners(false);
+            initHouses(false);
             myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
 
             sharedPreferences.edit().putString("entry", "available").apply();
@@ -253,6 +275,7 @@ public class MainMenu extends AppCompatActivity {
                 initMedicine(true);
                 initCars(true);
                 initPartners(true);
+                initHouses(true);
                 versionDB.setVersion(actualversion);
                 myAppDataBase.myDao().updateVerionDB(versionDB);
             }
@@ -1037,6 +1060,77 @@ public class MainMenu extends AppCompatActivity {
                     partner.setName(jsonObject.getString("name"));
                     partners.add(partner);
                     myAppDataBase.myDao().addPartner(partner);
+                }
+            }
+
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void initHouses(boolean isUpdate){
+
+        ArrayList<House> houses = new ArrayList<>();
+
+        InputStream is ;
+        String json ;
+
+        try {
+
+
+
+
+
+            is=getApplicationContext().getAssets().open("house.json");
+
+            byte[] buffer = new byte[is.available()];
+
+            is.read(buffer);
+            is.close();
+            json=new String (buffer,"UTF-8");
+            JSONArray jsonArray= new JSONArray(json);
+            Log.i("Youha"," aze yuoppa");
+            for (int i = 0 ; i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                House house = new House();
+
+                house.setId(jsonObject.getInt("id"));
+                house.setName(jsonObject.getString("name"));
+                house.setPrice(jsonObject.getInt("price"));
+                house.setImgUrl(jsonObject.getString("uri"));
+                house.setBonusEnergy(jsonObject.getInt("bonusE"));
+                house.setBonusHealth(jsonObject.getInt("bonusH"));
+                Log.i("Youha",house.getName()+" yuoppa");
+                houses.add(house);
+
+                if(!isUpdate)
+                    myAppDataBase.myDao().addHouse(house);
+                else
+                    myAppDataBase.myDao().updateHouse(house);
+            }
+
+
+            int oldRows = myAppDataBase.myDao().houseNumber();
+            int newRows = jsonArray.length() - oldRows;
+
+            if(newRows >0){
+
+                for (int i = oldRows ; i<jsonArray.length();i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    House house = new House();
+
+                    house.setId(jsonObject.getInt("id"));
+                    house.setName(jsonObject.getString("name"));
+                    house.setPrice(jsonObject.getInt("price"));
+                    house.setImgUrl(jsonObject.getString("uri"));
+                    house.setBonusEnergy(jsonObject.getInt("bonusE"));
+                    house.setBonusHealth(jsonObject.getInt("bonusH"));
+                    houses.add(house);
+
+                    myAppDataBase.myDao().addHouse(house);
                 }
             }
 

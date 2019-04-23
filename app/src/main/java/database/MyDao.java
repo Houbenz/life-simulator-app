@@ -37,6 +37,9 @@ public interface MyDao {
     void addAcquired_Store(Acquired_Stores acquired_stores);
 
     @Insert
+    void addAcquired_House(Acquired_Houses acquiredHouses);
+
+    @Insert
     void addFood(Food food);
 
     @Insert
@@ -60,6 +63,11 @@ public interface MyDao {
     @Insert
     void addGift(Gift gift);
 
+    @Insert
+    void addHouse(House house);
+
+    @Query("select * from House")
+    List<House> gethouses();
 
     @Query("select * from Partner")
     List<Partner> getPartners();
@@ -69,6 +77,13 @@ public interface MyDao {
 
     @Query("select * from Car")
     List<Car> getCars();
+
+    @Query("select * from Acquired_Houses where player_id=:id")
+    List<Acquired_Houses> getAcquiredHouses(int id);
+
+
+    @Query("select * from Acquired_Houses where player_id=:id and house_id=:houseId")
+   Acquired_Houses getAcqHouse(int id,int houseId);
 
     @Query("select * from Acquired_Cars where player_id=:id")
     List<Acquired_Cars> getAcquiredCars(int id);
@@ -130,6 +145,9 @@ public interface MyDao {
     @Query("select * from Partner where dating like 'true' ")
     Partner getDatingPartner();
 
+
+    @Update
+    void updateHouse(House house);
     @Update
     void updatePartner(Partner partner);
 
@@ -219,4 +237,7 @@ public interface MyDao {
 
     @Query("select count(*) from Partner")
     int partnerNumber();
+
+    @Query("select count(*) from House")
+    int houseNumber();
 }

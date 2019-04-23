@@ -4,13 +4,21 @@ package fragments;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
 
-import beans.House;
+import java.util.List;
+
+import arrayAdapters.HouseListAdapter;
+import database.House;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,22 +39,24 @@ public class HouseFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment= inflater.inflate(R.layout.fragment_house, container, false);
 
-/*
-        ArrayList<House>houses=House.initHouse(getContext());
+
+        List<House> houseList=MainMenu.myAppDataBase.myDao().gethouses();
+
+
+        int slot = getArguments().getInt("slot");
+
         ListView houseView =fragment.findViewById(R.id.houseView);
-        HouseListAdapter houseListAdapter =new HouseListAdapter(getContext(),houses);
+
+        HouseListAdapter houseListAdapter =new HouseListAdapter(getContext(),houseList,slot);
 
         houseView.setAdapter(houseListAdapter);
-        houseView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        houseView.setOnItemClickListener((parent, view, position, id) -> {
 
-                House house =(House)parent.getItemAtPosition(position);
-                monHouseClicked.deliverHouse(house);
-            }
+            House house =(House)parent.getItemAtPosition(position);
+            monHouseClicked.deliverHouse(house);
         });
 
-*/
+
         return fragment;
 
     }

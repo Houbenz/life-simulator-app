@@ -44,9 +44,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import database.Acquired_Cars;
 import database.Acquired_Furnitures;
+import database.Acquired_Houses;
 import database.Food;
 import database.Furniture;
-import beans.House;
+import database.House;
 import beans.Level;
 import database.Medicine;
 import database.Acquired_Stores;
@@ -415,6 +416,9 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        workthreadRun=false;
+        mp.release();
+        mpIncome.release();
         super.onBackPressed();
         mainText.setText("You're currently doing nothing");
         mainText.setVisibility(View.VISIBLE);
@@ -671,12 +675,6 @@ public class GameScene extends AppCompatActivity
 
                 workthreadRun=false;
 
-               /* buy.setEnabled(true);
-                sleep.setEnabled(true);
-                bank.setEnabled(true);
-                study.setEnabled(true);
-                work.setEnabled(true);*/
-
                 enableAllButtons(true);
                 speedSeekBar.setProgress(0);
                 speed=Params.TIME_SPEED_NORMAL;
@@ -795,11 +793,6 @@ public class GameScene extends AppCompatActivity
 
                            if(workthreadRun) {
 
-                                       /* work.setEnabled(false);
-                                        buy.setEnabled(false);
-                                        sleep.setEnabled(false);
-                                        bank.setEnabled(false);
-                                        study.setEnabled(false);*/
                                        enableAllButtons(false);
 
                                         fragmentManager = getSupportFragmentManager();
@@ -1160,56 +1153,61 @@ public class GameScene extends AppCompatActivity
 
         sleepTime=hoursNumber;
 
+        if(sleepTime >0) {
 
-        energyBar.setProgress(hoursNumber * Params.ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
-        energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
+            energyBar.setProgress(hoursNumber * Params.ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
+            energypr.setText(energyBar.getProgress() + "/" + energyBar.getMax());
 
-        hungerBar.setProgress(hungerBar.getProgress()-hoursNumber * Params.HUNGER_LOSS_PER_HOUR_IN_SLEEP);
-        hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+            hungerBar.setProgress(hungerBar.getProgress() - hoursNumber * Params.HUNGER_LOSS_PER_HOUR_IN_SLEEP);
+            hungerpr.setText(hungerBar.getProgress() + "/" + hungerBar.getMax());
 
-        if(hungerBar.getProgress()==0){
-            healthbar.setProgress(healthbar.getProgress() - hoursNumber * Params.HEALTH_LOSS_PER_HOUR_IN_SLEEP);
-            healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
-        }
-
-        hour+=sleepTime;
-
-        if(hour>=24) {
-            hour -= 24;
-            day++;
-            player.setBank_deposit(player.getBank_deposit()*1.01f);
-            saveProgress();
-            if(player.getStore_income() !=0) {
-
-                player.setBalance(player.getBalance() + player.getStore_income());
-                  balance.setText(player.getBalance() + "$");
+            if (hungerBar.getProgress() == 0) {
+                healthbar.setProgress(healthbar.getProgress() - hoursNumber * Params.HEALTH_LOSS_PER_HOUR_IN_SLEEP);
+                healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
             }
-        }
-        switcher=findViewById(R.id.switcher);
 
-        switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                switcher.animate().setDuration(250).alpha(1.0f);
-                switcher.showNext();
-            }
-        });
+            hour += sleepTime;
 
-            CountDownTimer countDownTimer = new CountDownTimer(3000,1000) {
-                @Override public void onTick(long millisUntilFinished){
+            if (hour >= 24) {
+                hour -= 24;
+                day++;
+                player.setBank_deposit(player.getBank_deposit() * 1.01f);
+                saveProgress();
+                if (player.getStore_income() != 0) {
+
+                    player.setBalance(player.getBalance() + player.getStore_income());
+                    balance.setText(player.getBalance() + "$");
                 }
-                @Override public void onFinish() {
+            }
+            switcher = findViewById(R.id.switcher);
 
-                switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        switcher.animate().alpha(1.0f).setDuration(250);
-                        switcher.showPrevious();
-                    }
-                });
+            switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    switcher.animate().setDuration(250).alpha(1.0f);
+                    switcher.showNext();
+                }
+            });
+
+            CountDownTimer countDownTimer = new CountDownTimer(3000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                }
+
+                @Override
+                public void onFinish() {
+
+                    switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            switcher.animate().alpha(1.0f).setDuration(250);
+                            switcher.showPrevious();
+                        }
+                    });
                 }
             };
-        countDownTimer.start();
+            countDownTimer.start();
+        }
     }
 
     @Override
@@ -1244,14 +1242,29 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void deliverHouse(House house) {
-        float newBalance = (int)player.getBalance()-house.getPrice();
+        Acquired_Houses acquired_house1=MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),house.getId());
 
-        if(newBalance>=0){
-            player.setBalance(newBalance);
-            balance.setText(player.getBalance()+"$");
-            showCustomToast("Congratulation you've bought "+house.getName(),house.getImagePath(),"green");
-        }else
-            showCustomToast("insuficient funds to buy "+house.getName(),house.getImagePath(),"red");
+        if(acquired_house1 ==null) {
+            double newBalance = player.getBalance() - house.getPrice();
+
+            if (newBalance >= 0) {
+                player.setBalance(newBalance);
+                balance.setText(player.getBalance() + "$");
+
+                Acquired_Houses acquired_houses = new Acquired_Houses();
+                acquired_houses.setHouse_id(house.getId());
+                acquired_houses.setPlayer_id(player.getId());
+
+                MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
+
+                showCustomToast("Congratulation you've bought " + house.getName(), house.getImgUrl(), "green");
+            } else
+                showCustomToast("insuficient funds to buy " + house.getName(), house.getImgUrl(), "red");
+
+
+            HouseFragment houseFragment = new HouseFragment();
+            fragmentInsertionSecond(houseFragment);
+        }
     }
 
     public  double getIncomeFromStore(){
