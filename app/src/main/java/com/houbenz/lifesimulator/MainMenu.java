@@ -59,6 +59,17 @@ import database.Partner;
 import database.Player;
 import database.VersionDB;
 
+import static database.Migration.MIGRATION_14_15;
+import static database.Migration.MIGRATION_15_16;
+import static database.Migration.MIGRATION_16_17;
+import static database.Migration.MIGRATION_17_18;
+import static database.Migration.MIGRATION_18_19;
+import static database.Migration.MIGRATION_19_20;
+import static database.Migration.MIGRATION_20_21;
+import static database.Migration.MIGRATION_21_22;
+import static database.Migration.MIGRATION_22_23;
+import static database.Migration.MIGRATION_23_24;
+
 public class MainMenu extends AppCompatActivity {
 
 
@@ -95,122 +106,7 @@ public class MainMenu extends AppCompatActivity {
     };
 
 
-    static final Migration MIGRATION_14_15 = new Migration(14, 15) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
 
-            database.execSQL("alter table Acquired_Degree add column player_progress integer default 0 not null");
-            database.execSQL("alter table Acquired_Degree add column available varchar");
-
-            database.execSQL("alter table degree add column progress integer default 0 not null");
-
-        }
-    };
-
-    static  final Migration MIGRATION_15_16 = new Migration(15,16) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("create table Car(" +
-                    "id integer primary key autoincrement," +
-                    "name text," +
-                    "price real," +
-                    "imgUrl text)");
-        }
-    };
-
-    static  final Migration MIGRATION_16_17 = new Migration(16,17) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("create table Acquired_Cars(id INTEGER primary key autoincrement not null," +
-                    "car_id INTEGER not null," +
-                    "player_id INTEGER not null," +
-                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
-                    "foreign key(car_id) references Car(id) on delete cascade on update cascade )");
-        }
-    };
-
-    static  final Migration MIGRATION_17_18 = new Migration(17,18) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("CREATE TABLE Gift(" +
-                    "id integer PRIMARY KEY AUTOINCREMENT not null," +
-                    "name TEXT," +
-                    "price REAL not null," +
-                    "imgUrl TEXT)");
-        }
-    };
-
-    static  final Migration MIGRATION_18_19 = new Migration(18,19) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("create table Acquired_Gifts(id INTEGER primary key autoincrement not null," +
-                    "gift_id INTEGER not null," +
-                    "player_id INTEGER not null," +
-                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
-                    "foreign key(gift_id) references Gift(id) on delete cascade on update cascade )");
-        }
-    };
-
-    static  final Migration MIGRATION_19_20 = new Migration(19,20) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("drop table Acquired_Gifts");
-            database.execSQL("alter table Gift add column giftCount INTEGER not null default 0");
-            database.execSQL("alter table Player add column dating TEXT");
-
-        }
-    };
-
-    static  final Migration MIGRATION_20_21 = new Migration(20,21) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("alter table Player add column dating TEXT");
-        }
-    };
-
-    static  final Migration MIGRATION_21_22 = new Migration(21,22) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("alter table Player add column relationBar INTEGER not null default 0");
-        }
-    };
-
-    static  final Migration MIGRATION_22_23 = new Migration(22,23) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("create table Partner(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "name TEXT," +
-                    "image TEXT," +
-                    "dating TEXT," +
-                    "INTEGER likeness not null default 0)");
-        }
-    };
-    static  final Migration MIGRATION_23_24 = new Migration(23,24) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL("create table House(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "name TEXT," +
-                    "imgUrl TEXT," +
-                    "INTEGER bonusH not null default 0," +
-                    "INTEGER bonusE not null default 0," +
-                    "real price not null default 0)");
-
-      database.execSQL("create table Acquired_Houses(id INTEGER primary key autoincrement not null," +
-                    "house_id INTEGER not null," +
-                    "player_id INTEGER not null," +
-                    "foreign key(player_id) references Player(id) on delete cascade on update cascade," +
-                    "foreign key(gift_id) references Gift(id) on delete cascade on update cascade )");
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,18 +114,19 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
 
-        try {
+
+
+
+        myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        /*
             myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                     .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
                             MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,
                             MIGRATION_21_22,MIGRATION_22_23,MIGRATION_23_24)
                     .allowMainThreadQueries().build();
-
-        } catch (IllegalStateException e) {
-
-            myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
-                    .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-        }
+        */
 
         sharedPreferences = getApplicationContext().getSharedPreferences("myShared", Context.MODE_PRIVATE);
 
@@ -295,7 +192,7 @@ public class MainMenu extends AppCompatActivity {
         imageView4 = findViewById(R.id.imageView4);
 
 
-        mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
+        mainLayout = findViewById(R.id.mainLayout);
 
         mainLayout.setOnTouchListener(mOnTouchListener);
 
@@ -603,7 +500,7 @@ public class MainMenu extends AppCompatActivity {
 
     public int[] imagesResources(){
 
-        int[] arrayImage =new int[13];
+        int[] arrayImage =new int[18];
         arrayImage[0]=R.drawable.ic_empty;
         arrayImage[1]=R.drawable.ic_firefighter;
         arrayImage[2]=R.drawable.ic_waiter;
@@ -617,6 +514,12 @@ public class MainMenu extends AppCompatActivity {
         arrayImage[10]=R.drawable.syrup;
         arrayImage[11]=R.drawable.grass;
         arrayImage[12]=R.drawable.pills;
+        arrayImage[13]=R.drawable.glasses_girl;
+        arrayImage[14]=R.drawable.gift;
+        arrayImage[15]=R.drawable.chocolate;
+        arrayImage[16]=R.drawable.crown_hair;
+        arrayImage[17]=R.drawable.roses;
+        arrayImage[17]=R.drawable.jewelry;
         return arrayImage;
     }
 

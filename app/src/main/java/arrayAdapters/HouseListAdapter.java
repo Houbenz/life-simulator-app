@@ -36,7 +36,7 @@ public class HouseListAdapter extends ArrayAdapter<House> {
     private List<Acquired_Houses> acquired_houses;
 
     public HouseListAdapter(@NonNull Context context, List<House> houses,int slot) {
-        super(context, R.layout.house_res,houses);
+        super(context, R.layout.commun_buy_res,houses);
         acquired_houses=MainMenu.myAppDataBase.myDao().getAcquiredHouses(slot);
     }
 
@@ -50,7 +50,7 @@ public class HouseListAdapter extends ArrayAdapter<House> {
         LayoutInflater layoutInflater =LayoutInflater.from(getContext());
 
         @SuppressLint("viewHolder")
-        View houseView =layoutInflater.inflate(R.layout.house_res,parent,false);
+        View houseView =layoutInflater.inflate(R.layout.commun_buy_res,parent,false);
 
         House house =getItem(position);
 

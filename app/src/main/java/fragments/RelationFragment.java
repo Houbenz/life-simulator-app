@@ -1,8 +1,10 @@
 package fragments;
 
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.ads.AdRequest;
@@ -68,6 +71,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private ImageView partnerImage;
     private TextView partnerName;
 
+
     private boolean cancelTimer =false;
 
     @Override
@@ -86,6 +90,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         adButtonFindPartner=fragment.findViewById(R.id.adButtonFindPartner);
         partnerImage=fragment.findViewById(R.id.partnerImage);
         partnerName=fragment.findViewById(R.id.partnerName);
+
 
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
@@ -383,6 +388,31 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         });
 
 
+        goDate.setOnClickListener(view ->{
+            Dialog dialog = new Dialog(getActivity());
+            dialog.setContentView(R.layout.dialog);
+            TextView dialogTitle=dialog.findViewById(R.id.dialogTitle);
+            Button cofirm=dialog.findViewById(R.id.confirm);
+            Button decline=dialog.findViewById(R.id.decline);
+
+            dialogTitle.setText("this date will cost you "+151+"$, proceed ?");
+
+            cofirm.setOnClickListener(v ->{
+                viewmodel.setGoDate(151);
+                dialog.dismiss();
+            });
+
+            decline.setOnClickListener(v1 ->{
+                dialog.cancel();
+            });
+
+            dialog.setOnDismissListener(dialog1 -> {
+                dialog.cancel();
+            });
+
+            dialog.show();
+        });
+
         adButtonFindPartner.setOnClickListener(v -> {
 
             if(mRewardVideoAd.isLoaded()){
@@ -511,6 +541,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         countDownTimer=null;
         super.onDetach();
     }
+
+
 }
 
 

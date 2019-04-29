@@ -1,6 +1,6 @@
 package com.houbenz.lifesimulator;
 
-import android.app.Activity;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,12 +13,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -72,6 +78,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private int minusRelation ;
 
+    private ViewSwitcher switcher;
     private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
     private View.OnTouchListener mOnTouchListener = (v, event) ->{
@@ -79,7 +86,6 @@ public class HomeActivity extends AppCompatActivity {
         hideSystemUI();
         return false;
     } ;
-
 
     public void deselectButtons(){
         showHomeButton.setSelected(false);
@@ -116,7 +122,6 @@ public class HomeActivity extends AppCompatActivity {
         viewModel.getRelationBar().observe(this,relationBar ->{
             player.setRelationBar(relationBar);
         });
-        Log.i("youpa","progress : " +player.getRelationBar());
         saveProgress();
         Intent intent = new Intent(this,GameScene.class);
         intent.putExtra("slotNumber",player.getId());
@@ -159,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
         levelNumber=findViewById(R.id.levelNumber);
         speedSeekBar=findViewById(R.id.speedSeekBar);
         speedName=findViewById(R.id.speedName);
-
+        switcher=findViewById(R.id.switcherHomeActivity);
 
         mConstraintLayout=findViewById(R.id.constraintLayout);
         mConstraintLayout.setOnTouchListener(mOnTouchListener);
@@ -239,6 +244,50 @@ public class HomeActivity extends AppCompatActivity {
         viewModel.getRelationBar().observe(this,relationBar ->{
             player.setRelationBar(relationBar);
         });
+
+
+
+
+        //When dating occurs
+        viewModel.isGoDate().observe(this,goDate ->{
+
+            if(goDate>0){
+
+                double newBalance =player.getBalance()-goDate;
+
+                if(newBalance >= 0) {
+                    //Show dating animation (means it works)
+                    switcher.animate().alpha(0f).setDuration(250).withEndAction(()->{
+                       switcher.animate().alpha(1.0f).setDuration(250);
+                        switcher.showNext();
+                    });
+                    animateHearts();
+                    player.setBalance(newBalance);
+                    balance.setText(player.getBalance() + "$");
+
+                    CountDownTimer timer = new CountDownTimer(5000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+                            //show the previous view (means return to previous  state) with animation
+                            switcher.animate().alpha(0f).setDuration(250).withEndAction(()->{
+                                switcher.animate().alpha(1.0f).setDuration(250);
+                                switcher.showPrevious();
+                            });
+                        }
+                    };
+
+                    timer.start();
+                }
+            }
+        });
+
+
     }
 
     public void insertFragment(Fragment fragment){
@@ -452,4 +501,71 @@ public class HomeActivity extends AppCompatActivity {
             levelNumber.setText(getString(R.string.level)+": "+player.getLevel_object().getLevel());
 
     };
+
+
+
+
+    public void animateHearts(){
+
+        GridLayout gridLayout =findViewById(R.id.datingScreen);
+
+        LayoutInflater inflater =LayoutInflater.from(getApplicationContext());
+
+        CountDownTimer count =new CountDownTimer(6500,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+
+
+
+                TextView text = (TextView)inflater.inflate(R.layout.text,null);
+
+                gridLayout.addView(text);
+                text.setText("Relation + 10");
+                text.animate().setDuration(300).alpha(0f).translationY(300f).withEndAction(() ->{
+                   text.animate().setDuration(300).alpha(1f).translationY(0f);
+                    gridLayout.removeAllViews();
+                });
+            }
+        };
+
+        count.start();
+
+        for(int i =0 ; i<30;i++){
+
+            View image= inflater.inflate(R.layout.heart_view,null);
+            gridLayout.addView(image);
+
+            //animateAlphaZeroToOne(image,2000);
+            animateTranslationY(image,6000);
+            //animateAlphaOneToZero(image,2000);
+        }
+    }
+
+
+    public void animateTranslationY(View image, int duration){
+
+        int rand = (int)(Math.random()*1500) + 1000;
+        int finalrand=-( (int)(Math.random()*1000) +500);
+
+        ObjectAnimator animator=ObjectAnimator.ofFloat(image,View.TRANSLATION_Y,rand , finalrand);
+        animator.setDuration(duration);
+        animator.start();
+    }
+
+    public void animateAlphaZeroToOne(View image,int duration){
+        ObjectAnimator animator=ObjectAnimator.ofFloat(image,View.ALPHA,0f , 1f);
+        animator.setDuration(duration);
+        animator.start();
+    }
+    public void animateAlphaOneToZero(View image,int duration){
+        ObjectAnimator animator=ObjectAnimator.ofFloat(image,View.ALPHA,1f , 0f);
+        animator.setDuration(duration);
+        animator.start();
+    }
 }

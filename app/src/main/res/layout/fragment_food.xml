@@ -9,6 +9,8 @@
             android:id="@+id/foodList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:dividerHeight="16sp"
+            android:divider="@android:color/transparent"/>
 
 </FrameLayout>

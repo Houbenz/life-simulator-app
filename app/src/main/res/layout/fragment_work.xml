@@ -3,6 +3,7 @@
     android:id="@+id/fragmentWork"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+
     tools:context="fragments.WorkFragment">
 
     <!-- TODO: Update blank fragment layout -->

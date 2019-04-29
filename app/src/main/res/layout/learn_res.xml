@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="4dp"
+    app:cardCornerRadius="20dp">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="8dp">
+    android:paddingLeft="8dp"
+    android:paddingBottom="8dp">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/priceLearn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/borderblack"
+            android:backgroundTint="@color/strong_red"
+            android:fontFamily="casual"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Price : 0.0$"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/nameLearn"
@@ -14,17 +50,9 @@
         android:fontFamily="casual"
         android:text="Name of specialty"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:textSize="18dp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/priceLearn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="casual"
-        android:text="Price : 0.0$"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
     <TextView
         android:id="@+id/acqLearn"
@@ -33,39 +61,52 @@
         android:layout_marginBottom="4dp"
         android:fontFamily="casual"
         android:text="Acquired : No"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/borderblacksmall">
-    <ProgressBar
-        android:id="@+id/progressStudy"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/degree_progress_theme"/>
+
+        <ProgressBar
+            android:id="@+id/progressStudy"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/degree_progress_theme" />
     </FrameLayout>
+
     <TextView
         android:id="@+id/textprogress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="casual"
         android:text="im here"
-        android:layout_marginLeft="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/learntime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="casual"
         android:text="Learn Time : 1 Hour"
-        android:layout_marginLeft="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold" />
 </LinearLayout>
+</androidx.cardview.widget.CardView>

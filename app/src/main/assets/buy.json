@@ -26,7 +26,7 @@
   {
     "id":5,
     "name":"Pharmacy","color" :"#d1ce32"
-    ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/health_img"
+    ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/health"
   }
 ,
   {

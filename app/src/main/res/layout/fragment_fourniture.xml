@@ -8,6 +8,8 @@
         android:layout_height="match_parent"
         android:horizontalSpacing="5dp"
         android:numColumns="2"
+        android:dividerHeight="16sp"
+        android:divider="@android:color/transparent"
         android:verticalSpacing="5dp" />
 
     <!--

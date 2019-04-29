@@ -416,6 +416,7 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        deselectButtons();
         workthreadRun=false;
         mp.release();
         mpIncome.release();
@@ -1181,12 +1182,9 @@ public class GameScene extends AppCompatActivity
             }
             switcher = findViewById(R.id.switcher);
 
-            switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    switcher.animate().setDuration(250).alpha(1.0f);
-                    switcher.showNext();
-                }
+            switcher.animate().alpha(0f).setDuration(250).withEndAction(() -> {
+                switcher.animate().setDuration(250).alpha(1.0f);
+                switcher.showNext();
             });
 
             CountDownTimer countDownTimer = new CountDownTimer(3000, 1000) {
@@ -1197,12 +1195,9 @@ public class GameScene extends AppCompatActivity
                 @Override
                 public void onFinish() {
 
-                    switcher.animate().alpha(0f).setDuration(250).withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            switcher.animate().alpha(1.0f).setDuration(250);
-                            switcher.showPrevious();
-                        }
+                    switcher.animate().alpha(0f).setDuration(250).withEndAction(() -> {
+                        switcher.animate().alpha(1.0f).setDuration(250);
+                        switcher.showPrevious();
                     });
                 }
             };

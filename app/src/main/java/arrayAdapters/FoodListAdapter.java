@@ -50,7 +50,7 @@ public class FoodListAdapter extends ArrayAdapter<Food> {
 
             if(food != null) {
 
-                String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)food.getPrice());
+                String priceString =String.format(Locale.ENGLISH,"%d$",(int)food.getPrice());
                 String benefitString =String.format(Locale.ENGLISH,"%s : %d %s",getContext().getString(R.string.benefit),food.getBenefit(), getContext().getString(R.string.hunger));
                 String descriptionString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.description),food.getDescription());
 

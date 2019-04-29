@@ -68,7 +68,7 @@ public class FournitureGridAdapter extends ArrayAdapter<Furniture> {
         fournitureImg.setImageURI(uri);
 
         if(fourniture != null) {
-            String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)fourniture.getPrice());
+            String priceString =String.format(Locale.ENGLISH,"%d$",(int)fourniture.getPrice());
             String fournitureTypeString =String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.type),fourniture.getFurnitureType());
 
             if(in) {

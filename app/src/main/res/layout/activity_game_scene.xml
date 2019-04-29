@@ -242,15 +242,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/colorAccent"
                     android:fontFamily="casual"
                     android:gravity="center"
                     android:text="@string/doubleEarn"
-                    android:backgroundTint="@color/colorAccent"
-                    android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/income"
@@ -515,7 +515,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:layout_marginBottom="5dp"
-                    app:srcCompat="@drawable/health_img" />
+                    app:srcCompat="@drawable/health" />
 
                 <ImageView
                     android:id="@+id/hungerIcon"
