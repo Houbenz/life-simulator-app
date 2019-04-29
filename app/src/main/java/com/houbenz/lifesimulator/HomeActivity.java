@@ -78,6 +78,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private int minusRelation ;
 
+    private TextView datingMessage;
     private ViewSwitcher switcher;
     private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
@@ -511,7 +512,7 @@ public class HomeActivity extends AppCompatActivity {
 
         LayoutInflater inflater =LayoutInflater.from(getApplicationContext());
 
-        CountDownTimer count =new CountDownTimer(6500,1000) {
+        CountDownTimer count =new CountDownTimer(5500,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -523,12 +524,15 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-                TextView text = (TextView)inflater.inflate(R.layout.text,null);
+                datingMessage = findViewById(R.id.datingMessage);
 
-                gridLayout.addView(text);
-                text.setText("Relation + 10");
-                text.animate().setDuration(300).alpha(0f).translationY(300f).withEndAction(() ->{
-                   text.animate().setDuration(300).alpha(1f).translationY(0f);
+
+                datingMessage.setText("Relation + 10");
+                datingMessage.setVisibility(View.VISIBLE);
+                datingMessage.animate().setDuration(1000).alpha(0f).translationY(-100).withEndAction(() ->{
+                    datingMessage.setAlpha(1f);
+                    datingMessage.setTranslationY(datingMessage.getTranslationY()+100);
+                    datingMessage.setVisibility(View.GONE);
                     gridLayout.removeAllViews();
                 });
             }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -453,8 +454,9 @@ public class GameScene extends AppCompatActivity
 
         if (!imgUrl.equals("")) {
             imageToast.setVisibility(View.VISIBLE);
+
             imageToast.setImageURI(Uri.parse(imgUrl));
-            imageToast.setBackgroundColor(getResources().getColor(R.color.white));
+            //imageToast.setBackgroundColor(getResources().getColor(R.color.white));
         }else {
 
             if (type.equals("gold"))
@@ -988,7 +990,7 @@ public class GameScene extends AppCompatActivity
                     MainMenu.myAppDataBase.myDao().updateGift(gift);
                 }
                 //to increment the number of gifts
-
+                fragmentInsertionSecond(new GiftFragment());
 
             }
             else{
@@ -1000,32 +1002,47 @@ public class GameScene extends AppCompatActivity
     public void deliverCars(){
         viewModelCars.getCar().observe(this,car -> {
 
+
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog);
+            Button confirm=dialog.findViewById(R.id.confirm);
+            Button decline=dialog.findViewById(R.id.decline);
+
             double newBalance=player.getBalance()-car.getPrice();
 
-
             Acquired_Cars getACq = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId(),car.getId());
+
             if(newBalance >= 0 && getACq == null){
 
-                player.setBalance(newBalance);
-                balance.setText(player.getBalance()+"$");
+            confirm.setOnClickListener(view ->{
 
-                showCustomToast("you bought "+car.getName(),car.getImgUrl(),"green");
-
-                Acquired_Cars acquired_cars = new Acquired_Cars();
-                acquired_cars.setCar_id(car.getId());
-                acquired_cars.setPlayer_id(player.getId());
-                MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
-
-                CarFragment carFragment = new CarFragment();
-                fragmentInsertionSecond(carFragment);
-            }
-            else{
+                    player.setBalance(newBalance);
+                    balance.setText(player.getBalance()+"$");
+                    showCustomToast("you bought "+car.getName(),car.getImgUrl(),"green");
+                    Acquired_Cars acquired_cars = new Acquired_Cars();
+                    acquired_cars.setCar_id(car.getId());
+                    acquired_cars.setPlayer_id(player.getId());
+                    MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
+                    CarFragment carFragment = new CarFragment();
+                    fragmentInsertionSecond(carFragment);
+                dialog.dismiss();
+            });
+                dialog.show();
+            } else{
                 if(getACq!= null)
                     showCustomToast("you already own this car",car.getImgUrl(),"red");
                 else
                     showCustomToast("Not enough money to buy "+car.getName(),car.getImgUrl(),"red");
             }
+
+            decline.setOnClickListener(view1 ->{
+                dialog.dismiss();
+            });
+
+
         });
+
+
     }
 
     //To execute tasks from fragments
@@ -1034,7 +1051,7 @@ public class GameScene extends AppCompatActivity
 
 
         income=findViewById(R.id.income);
-        income.setText(work.getIncome()+"$/"+getString(R.string.day));
+        income.setText(work.getIncome()+"$/"+getString(R.string.hour));
 
         choosenWork =work;
 
@@ -1291,10 +1308,12 @@ public class GameScene extends AppCompatActivity
         Button decline =dialog.findViewById(R.id.decline);
 
         if(newBalance>=0){
-            player.setBalance(newBalance);
-            balance.setText(player.getBalance()+"$");
 
             confirm.setOnClickListener(view ->{
+
+
+                player.setBalance(newBalance);
+                balance.setText(player.getBalance()+"$");
 
                 Acquired_Stores acquired_stores = new Acquired_Stores();
                 acquired_stores.setStore_id(store.getId());

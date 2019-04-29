@@ -72,6 +72,8 @@ public class Params {
         strings.add("you changed direction and go to bars");
         strings.add("finally you change your mind and start introducing yourself to strangers");
         strings.add("you go to dating sites");
+        strings.add("maybe introduce yourself to your neighbors");
+        strings.add("You start a conversation with your coworkers");
 
         return strings;
     }

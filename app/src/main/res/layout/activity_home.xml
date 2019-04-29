@@ -74,7 +74,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/placeFragment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -86,7 +86,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/infoLayout">
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/datingMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="casual"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/infoLayout"

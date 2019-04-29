@@ -225,10 +225,10 @@
 
                 <Button
                     android:id="@+id/startWorking"
-                    android:background="@drawable/work_button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/work_button"
                     android:fontFamily="casual"
                     android:text="@string/startWork"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -250,7 +250,7 @@
                     android:textColor="@color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/income"
@@ -312,10 +312,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="86dp"
-                    android:layout_marginBottom="87dp"
                     android:fontFamily="casual"
                     android:text="You're Currently doing nothing"
                     android:textAlignment="center"

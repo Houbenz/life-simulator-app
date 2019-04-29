@@ -51,7 +51,6 @@ public class CarFragment extends Fragment {
 
             Car car =(Car)parent.getItemAtPosition(position);
 
-            Toast.makeText(getContext(),car.getName() +" is clicked",Toast.LENGTH_SHORT).show();
 
             viewModelCars.setCar(car);
 

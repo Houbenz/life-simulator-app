@@ -71,6 +71,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private ImageView partnerImage;
     private TextView partnerName;
 
+    private int dateNumber=0;
+
 
     private boolean cancelTimer =false;
 
@@ -142,7 +144,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             public void onTick(long millisUntilFinished) {
 
                 int min = 0;
-                int max = 3;
+                int max = strings.size() - 1;
                 int random = (int) (Math.random() * max) - min;
                 visitText.setText(strings.get(random));
 
@@ -389,28 +391,50 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
         goDate.setOnClickListener(view ->{
-            Dialog dialog = new Dialog(getActivity());
-            dialog.setContentView(R.layout.dialog);
-            TextView dialogTitle=dialog.findViewById(R.id.dialogTitle);
-            Button cofirm=dialog.findViewById(R.id.confirm);
-            Button decline=dialog.findViewById(R.id.decline);
 
-            dialogTitle.setText("this date will cost you "+151+"$, proceed ?");
+            if(dateNumber >2){
 
-            cofirm.setOnClickListener(v ->{
-                viewmodel.setGoDate(151);
-                dialog.dismiss();
-            });
+                Toast.makeText(getContext(),"You've gone in too much dates lately ",Toast.LENGTH_LONG).show();
 
-            decline.setOnClickListener(v1 ->{
-                dialog.cancel();
-            });
+            }
+            else {
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog);
+                TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+                Button cofirm = dialog.findViewById(R.id.confirm);
+                Button decline = dialog.findViewById(R.id.decline);
 
-            dialog.setOnDismissListener(dialog1 -> {
-                dialog.cancel();
-            });
+                int randCost = (int) (Math.random() * 250) + 50;
 
-            dialog.show();
+                dialogTitle.setText("this date will cost you " + randCost + "$, proceed ?");
+
+                cofirm.setOnClickListener(v -> {
+                    viewmodel.setGoDate(randCost);
+                    dialog.dismiss();
+
+                    dateNumber++;
+
+                    relationBar.setProgress(relationBar.getProgress() + 10);
+
+                    progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+                    player1.setRelationBar(relationBar.getProgress());
+
+                    viewmodel.setRelationBar(relationBar.getProgress());
+
+                    MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+
+                });
+
+                decline.setOnClickListener(v1 -> {
+                    dialog.cancel();
+                });
+
+                dialog.setOnDismissListener(dialog1 -> {
+                    dialog.cancel();
+                });
+
+                dialog.show();
+            }
         });
 
         adButtonFindPartner.setOnClickListener(v -> {

@@ -57,6 +57,7 @@ public class FoodListAdapter extends ArrayAdapter<Food> {
                 name.setText(food.getName());
                 price.setText(priceString);
                 benefit.setText(benefitString);
+                benefit.setTextColor(getContext().getResources().getColor(R.color.green));
                 description.setText(descriptionString);
 
                 Uri imgURI = Uri.parse(food.getImgUrl());

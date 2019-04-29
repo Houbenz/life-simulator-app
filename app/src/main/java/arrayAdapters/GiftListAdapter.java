@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.List;
 
@@ -37,11 +38,32 @@ public class GiftListAdapter extends ArrayAdapter<Gift> {
 
         TextView name=giftView.findViewById(R.id.name);
         TextView price=giftView.findViewById(R.id.price);
+        TextView owned=giftView.findViewById(R.id.owned);
         ImageView image=giftView.findViewById(R.id.comImage);
 
         name.setText(gift.getName());
         price.setText(gift.getPrice()+"$");
         image.setImageURI(Uri.parse(gift.getImgUrl()));
+
+
+        Gift gift1=null;
+
+        switch (gift.getName()){
+            case "Roses":
+                 gift1 = MainMenu.myAppDataBase.myDao().getRoses();
+                owned.setText("Own :"+gift1.getGiftCount()+" Roses");
+                break;
+
+            case "Chocolate":
+                 gift1 = MainMenu.myAppDataBase.myDao().getChocolate();
+                owned.setText("Own :"+gift1.getGiftCount()+" Chocolates");
+                break;
+
+            case "Jewelry":
+                 gift1 = MainMenu.myAppDataBase.myDao().getJewelry();
+                owned.setText("Own :"+gift1.getGiftCount()+" Jewelries");
+                break;
+        }
 
         return giftView;
     }
