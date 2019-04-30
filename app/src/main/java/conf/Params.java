@@ -52,8 +52,8 @@ public class Params {
     public static final int LEARN_TIME = 60 ;
 
 
-    public static final int MIN_TIME_LOOKING_FOR_PARTNER=5000;
-    public static final int MAX_TIME_LOOKING_FOR_PARTNER=50000;
+    public static final int MIN_TIME_LOOKING_FOR_PARTNER=70000;
+    public static final int MAX_TIME_LOOKING_FOR_PARTNER=200000;
 
     public static final int CHOCOLATE_BONUS=1;
     public static final int ROSES_BONUS=5;

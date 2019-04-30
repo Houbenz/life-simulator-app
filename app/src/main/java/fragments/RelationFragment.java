@@ -34,6 +34,7 @@ import java.util.List;
 
 import androidx.lifecycle.ViewModelProviders;
 import conf.Params;
+import customViews.RelationBar;
 import database.Gift;
 import database.Partner;
 import database.Player;
@@ -50,7 +51,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
     }
 
-    private ProgressBar relationBar;
+    private RelationBar relationBar;
     private Button offerGift;
     private Button breakUp;
     private Button goDate;
@@ -83,7 +84,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
         lookPartner = fragment.findViewById(R.id.lookPartner);
         foundPartnerConstraint = fragment.findViewById(R.id.foundPartnerConstraint);
-        relationBar = fragment.findViewById(R.id.relationProgress);
+        relationBar =fragment.findViewById(R.id.relationProgress);
         offerGift = fragment.findViewById(R.id.offerGift);
         breakUp = fragment.findViewById(R.id.breakUp);
         goDate = fragment.findViewById(R.id.goDate);
@@ -92,7 +93,6 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         adButtonFindPartner=fragment.findViewById(R.id.adButtonFindPartner);
         partnerImage=fragment.findViewById(R.id.partnerImage);
         partnerName=fragment.findViewById(R.id.partnerName);
-
 
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
@@ -419,6 +419,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                     progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
                     player1.setRelationBar(relationBar.getProgress());
 
+
                     viewmodel.setRelationBar(relationBar.getProgress());
 
                     MainMenu.myAppDataBase.myDao().updatePlayer(player1);
@@ -446,10 +447,16 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
 
+        relationBar.setOnMaxReachedListener(()->{
+            Toast.makeText(getContext(),"You Reached Max Congratulation !! " +
+                    "progress ="+ relationBar.getProgress(),Toast.LENGTH_LONG).show();
+        });
+
+
         return fragment;
     }
 
-    public void foundPartner(Partner partner) {
+    private void foundPartner(Partner partner) {
             Dialog dialog = new Dialog(getActivity());
             dialog.setContentView(R.layout.found_partner);
             Button confirm = dialog.findViewById(R.id.confirm);

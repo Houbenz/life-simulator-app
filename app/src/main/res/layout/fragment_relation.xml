@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lookPartner">
 
-        <ProgressBar
+        <customViews.RelationBar
             android:id="@+id/relationProgress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"

@@ -256,7 +256,7 @@ public class MainMenu extends AppCompatActivity {
         thread.start();
 
 
-        startSignInIntent();
+        //startSignInIntent();
 
 
     }
@@ -272,7 +272,7 @@ public class MainMenu extends AppCompatActivity {
 
     }
 
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -290,7 +290,7 @@ public class MainMenu extends AppCompatActivity {
         }
 
     }
-
+*/
     public void animateInThread(ImageView imageView) {
         int randomNumber = (int) ((imagesResources().length - 0) * Math.random());
 
