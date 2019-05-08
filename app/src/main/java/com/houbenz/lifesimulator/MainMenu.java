@@ -401,7 +401,7 @@ public class MainMenu extends AppCompatActivity {
                     player.setWork_time(0);
                     player.setWork_income(0);
                     player.setDating("false");
-
+                    player.setMarried("false");
                     player.setMax_progress(100);
                     player.setHealthbar(Params.HEALTH_VALUE);
                     player.setEnergybar(Params.ENERGY_VALUE);

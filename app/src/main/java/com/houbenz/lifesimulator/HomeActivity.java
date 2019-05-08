@@ -254,10 +254,15 @@ public class HomeActivity extends AppCompatActivity {
 
         viewModel.isBreakUp().observe(this,isbreakUp ->{
             player.setDating("false");
+            player.setMarried("false");
         });
 
         viewModel.getRelationBar().observe(this,relationBar ->{
             player.setRelationBar(relationBar);
+        });
+
+        viewModel.isMarried().observe(this,married ->{
+            player.setMarried("true");
         });
 
 

@@ -29,6 +29,7 @@ public class Player {
     private double balance;
 
     private String dating ;
+    private String married;
 
     private  double bank_deposit;
 
@@ -241,5 +242,13 @@ public class Player {
 
     public void changeMaxProgress(){
         getLevel_object().setMaxProgress(getLevel_object().getLevel()*100);
+    }
+
+    public String getMarried() {
+        return married;
+    }
+
+    public void setMarried(String married) {
+        this.married = married;
     }
 }

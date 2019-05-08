@@ -10,6 +10,7 @@ public class ViewModelPartner extends ViewModel {
     private MutableLiveData<Boolean> foundPartner = new MutableLiveData<Boolean>();
     private MutableLiveData<Boolean> breakUp = new MutableLiveData<Boolean>();
     private MutableLiveData<Integer> goDate = new MutableLiveData<Integer>();
+    private MutableLiveData<Boolean> married = new MutableLiveData<Boolean>();
 
     public void setRelationBar(Integer relationBar){this.relationBar.setValue(relationBar);}
 
@@ -26,4 +27,7 @@ public class ViewModelPartner extends ViewModel {
 
     public void setGoDate(int goDate){this.goDate.setValue(goDate);}
     public LiveData<Integer> isGoDate(){return goDate;}
+
+    public void setMarried(Boolean married){this.married.setValue(married);}
+    public LiveData<Boolean> isMarried(){return married;}
 }
