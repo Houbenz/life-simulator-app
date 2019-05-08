@@ -18,6 +18,7 @@ public class Acquired_Houses {
 
     private int player_id;
     private int house_id;
+    private String imgUrl;
 
     public int getId() {
         return id;
@@ -41,5 +42,13 @@ public class Acquired_Houses {
 
     public void setHouse_id(int house_id) {
         this.house_id = house_id;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

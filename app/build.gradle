@@ -22,18 +22,18 @@ android {
         targetCompatibility = '1.8'
     }
 
-    defaultConfig{
+    defaultConfig {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions{
+        javaCompileOptions {
 
-            annotationProcessorOptions{
-                arguments=["room.schemaLocation":"$projectDir/schemas".toString()]
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
     }
 
-    sourceSets{
+    sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }

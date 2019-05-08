@@ -66,6 +66,10 @@ public interface MyDao {
     @Insert
     void addHouse(House house);
 
+
+    @Query("select * from House where id =:id")
+    House getHouse(int id);
+
     @Query("select * from House")
     List<House> gethouses();
 
@@ -145,6 +149,8 @@ public interface MyDao {
     @Query("select * from Partner where dating like 'true' ")
     Partner getDatingPartner();
 
+    @Update
+    void updateAcquired_car(Acquired_Cars cars);
 
     @Update
     void updateHouse(House house);

@@ -515,7 +515,7 @@ public class GameScene extends AppCompatActivity
 
 
         mpIncome = MediaPlayer.create(this,R.raw.money_gain);
-        mp =MediaPlayer.create(getApplicationContext(),R.raw.level_up);
+        mp =MediaPlayer.create(this,R.raw.level_up);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -1022,6 +1022,8 @@ public class GameScene extends AppCompatActivity
                     Acquired_Cars acquired_cars = new Acquired_Cars();
                     acquired_cars.setCar_id(car.getId());
                     acquired_cars.setPlayer_id(player.getId());
+                    acquired_cars.setImgUrl(car.getImgUrl());
+                    acquired_cars.setAvailable("true");
                     MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
                     CarFragment carFragment = new CarFragment();
                     fragmentInsertionSecond(carFragment);
@@ -1029,8 +1031,21 @@ public class GameScene extends AppCompatActivity
             });
                 dialog.show();
             } else{
-                if(getACq!= null)
-                    showCustomToast("you already own this car",car.getImgUrl(),"red");
+                if(getACq!= null) {
+
+                    showCustomToast(car.getName()+" is selected " , car.getImgUrl(), "green");
+
+
+                    List<Acquired_Cars> acquired_cars = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId());
+                    for(Acquired_Cars acq : acquired_cars){
+                        acq.setAvailable("false");
+                        MainMenu.myAppDataBase.myDao().updateAcquired_car(acq);
+
+                    }
+                    getACq.setAvailable("true");
+                    MainMenu.myAppDataBase.myDao().updateAcquired_car(getACq);
+
+                }
                 else
                     showCustomToast("Not enough money to buy "+car.getName(),car.getImgUrl(),"red");
             }
@@ -1266,6 +1281,7 @@ public class GameScene extends AppCompatActivity
                 Acquired_Houses acquired_houses = new Acquired_Houses();
                 acquired_houses.setHouse_id(house.getId());
                 acquired_houses.setPlayer_id(player.getId());
+                acquired_houses.setImgUrl(house.getImgUrl());
 
                 MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
 

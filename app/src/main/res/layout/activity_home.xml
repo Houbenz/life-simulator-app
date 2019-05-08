@@ -44,16 +44,20 @@
                     android:layout_margin="0dp"
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
+                    android:fontFamily="casual"
                     android:text="Show Home"
                     android:textColor="@color/white" />
 
                 <Button
-                    style="@style/GameSceneButtons"
+                    android:id="@+id/showOutsideHomeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:text="outside"
-                    android:visibility="gone" />
+                    android:background="@drawable/custom_button"
+                    android:fontFamily="casual"
+                    android:text="Show Outside Home"
+                    android:textColor="@color/white"
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/socialButton"
@@ -61,16 +65,17 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
-                    android:text="social"
+                    android:fontFamily="casual"
+                    android:text="Social"
                     android:textColor="@color/white"
                     android:visibility="visible" />
 
                 <Button
-                    style="@style/GameSceneButtons"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:text="stats"
+                    android:text="Stats"
+                    android:background="@drawable/custom_button"
                     android:visibility="gone" />
             </LinearLayout>
 

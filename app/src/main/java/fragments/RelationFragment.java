@@ -1,10 +1,8 @@
 package fragments;
 
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -15,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.ads.AdRequest;
@@ -115,7 +111,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
         //initiate relation progress bar
-        relationBar.setProgress(player1.getRelationBar());
+        //relationBar.setProgress(player1.getRelationBar());
 
         progressText.setText(relationBar.getProgress()+"/"+relationBar.getMax());
 
@@ -447,7 +443,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
 
-        relationBar.setOnMaxReachedListener(()->{
+        relationBar.setMaxReachedListener(()->{
             Toast.makeText(getContext(),"You Reached Max Congratulation !! " +
                     "progress ="+ relationBar.getProgress(),Toast.LENGTH_LONG).show();
         });

@@ -7,5 +7,14 @@
     "bonusH":5,
     "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/small_house"
   }
+  ,
+  {
+    "id": 2,
+    "name":"Garage",
+    "price":1500,
+    "bonusE":5,
+    "bonusH":5,
+    "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/garage"
+  }
 
 ]

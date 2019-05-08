@@ -36,6 +36,7 @@ import beans.Level;
 import conf.Params;
 import database.Player;
 import fragments.HomeFragment;
+import fragments.OutsideHomeFragment;
 import fragments.RelationFragment;
 import viewmodels.ViewModelPartner;
 
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private Button showHomeButton;
     private Button socialButton;
+    private Button showOutsideHomeButton;
 
 
     private ProgressBar healthbar;
@@ -91,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
     public void deselectButtons(){
         showHomeButton.setSelected(false);
         socialButton.setSelected(false);
+        showOutsideHomeButton.setSelected(false);
     }
 
     @Override
@@ -166,6 +169,9 @@ public class HomeActivity extends AppCompatActivity {
         speedSeekBar=findViewById(R.id.speedSeekBar);
         speedName=findViewById(R.id.speedName);
         switcher=findViewById(R.id.switcherHomeActivity);
+        showHomeButton=findViewById(R.id.showHomeButton);
+        socialButton=findViewById(R.id.socialButton);
+        showOutsideHomeButton=findViewById(R.id.showOutsideHomeButton);
 
         mConstraintLayout=findViewById(R.id.constraintLayout);
         mConstraintLayout.setOnTouchListener(mOnTouchListener);
@@ -179,7 +185,6 @@ public class HomeActivity extends AppCompatActivity {
         insertFragment(homeFragment1);
 
 
-        showHomeButton=findViewById(R.id.showHomeButton);
 
         showHomeButton.setOnClickListener(view ->{
 
@@ -192,7 +197,6 @@ public class HomeActivity extends AppCompatActivity {
 
         showHomeButton.setSelected(true);
 
-        socialButton=findViewById(R.id.socialButton);
         socialButton.setOnClickListener(view ->{
 
             deselectButtons();
@@ -200,6 +204,16 @@ public class HomeActivity extends AppCompatActivity {
 
             RelationFragment relationFragment = new RelationFragment();
             insertFragment(relationFragment);
+        });
+
+
+        showOutsideHomeButton.setOnClickListener( view ->{
+
+            deselectButtons();
+            showOutsideHomeButton.setSelected(true);
+
+            OutsideHomeFragment outsideHomeFragment = new OutsideHomeFragment();
+            insertFragment(outsideHomeFragment);
         });
 
         speedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

@@ -20,6 +20,11 @@ public class Acquired_Cars {
 
     private int car_id;
 
+    private String imgUrl;
+
+    private String available;
+
+
     public int getId() {
         return id;
     }
@@ -42,5 +47,21 @@ public class Acquired_Cars {
 
     public void setCar_id(int car_id) {
         this.car_id = car_id;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(String available) {
+        this.available = available;
     }
 }
