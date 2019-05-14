@@ -78,10 +78,16 @@ public class HouseListAdapter extends ArrayAdapter<House> {
 
 
             String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)house.getPrice());
-            String benefitString =String.format(Locale.ENGLISH,"%s : +%d\t %s : +%d %s",
-                    getContext().getString(R.string.benefit),
-                    house.getBonusEnergy(),getContext().getString(R.string.energyBonus),
-                    house.getBonusHealth(),getContext().getString(R.string.healthBonus));
+            String benefitString;
+
+            if(house.getId() == 2){
+                  benefitString=String.format(Locale.ENGLISH,"%s : Allows you to buy cars",getContext().getString(R.string.benefit));
+            }else{
+                  benefitString =String.format(Locale.ENGLISH,"%s : +%d\t %s : +%d %s",
+                        getContext().getString(R.string.benefit),
+                        house.getBonusEnergy(),getContext().getString(R.string.energyBonus),
+                        house.getBonusHealth(),getContext().getString(R.string.healthBonus));
+            }
 
 
             name.setText(house.getName());

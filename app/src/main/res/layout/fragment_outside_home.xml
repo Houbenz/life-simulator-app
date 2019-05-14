@@ -31,8 +31,7 @@
         app:layout_constraintHorizontal_bias="0.717"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.654"
-        app:srcCompat="@drawable/garage" />
+        app:layout_constraintVertical_bias="0.654" />
 
     <ImageView
         android:id="@+id/carPlace"
@@ -42,8 +41,7 @@
         app:layout_constraintEnd_toStartOf="@+id/garage"
         app:layout_constraintHorizontal_bias="0.649"
         app:layout_constraintStart_toEndOf="@+id/garage"
-        app:layout_constraintTop_toTopOf="@+id/garage"
-        app:srcCompat="@drawable/red_car" />
+        app:layout_constraintTop_toTopOf="@+id/garage" />
 
 
 

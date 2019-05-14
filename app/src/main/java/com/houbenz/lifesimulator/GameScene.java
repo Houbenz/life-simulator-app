@@ -1000,63 +1000,70 @@ public class GameScene extends AppCompatActivity
     }
 
     public void deliverCars(){
+
         viewModelCars.getCar().observe(this,car -> {
 
+            Acquired_Houses acquired_garage = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),2);
 
-            Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.dialog);
-            Button confirm=dialog.findViewById(R.id.confirm);
-            Button decline=dialog.findViewById(R.id.decline);
-
-            double newBalance=player.getBalance()-car.getPrice();
-
-            Acquired_Cars getACq = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId(),car.getId());
-
-            if(newBalance >= 0 && getACq == null){
-
-            confirm.setOnClickListener(view ->{
-
-                    player.setBalance(newBalance);
-                    balance.setText(player.getBalance()+"$");
-                    showCustomToast("you bought "+car.getName(),car.getImgUrl(),"green");
-                    Acquired_Cars acquired_cars = new Acquired_Cars();
-                    acquired_cars.setCar_id(car.getId());
-                    acquired_cars.setPlayer_id(player.getId());
-                    acquired_cars.setImgUrl(car.getImgUrl());
-                    acquired_cars.setAvailable("true");
-                    MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
-                    CarFragment carFragment = new CarFragment();
-                    fragmentInsertionSecond(carFragment);
-                dialog.dismiss();
-            });
-                dialog.show();
-            } else{
-                if(getACq!= null) {
-
-                    showCustomToast(car.getName()+" is selected " , car.getImgUrl(), "green");
+            if(acquired_garage == null){
 
 
-                    List<Acquired_Cars> acquired_cars = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId());
-                    for(Acquired_Cars acq : acquired_cars){
-                        acq.setAvailable("false");
-                        MainMenu.myAppDataBase.myDao().updateAcquired_car(acq);
-
-                    }
-                    getACq.setAvailable("true");
-                    MainMenu.myAppDataBase.myDao().updateAcquired_car(getACq);
-
-                }
-                else
-                    showCustomToast("Not enough money to buy "+car.getName(),car.getImgUrl(),"red");
+                House garage = MainMenu.myAppDataBase.myDao().getHouse(2);
+                showCustomToast("You must buy a "+garage.getName()+" first ! ",garage.getImgUrl(),"red");
             }
+            else {
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog);
+                Button confirm = dialog.findViewById(R.id.confirm);
+                Button decline = dialog.findViewById(R.id.decline);
 
-            decline.setOnClickListener(view1 ->{
-                dialog.dismiss();
-            });
+                double newBalance = player.getBalance() - car.getPrice();
+
+                Acquired_Cars getACq = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId(), car.getId());
+
+                if (newBalance >= 0 && getACq == null) {
+
+                    confirm.setOnClickListener(view -> {
+
+                        player.setBalance(newBalance);
+                        balance.setText(player.getBalance() + "$");
+                        showCustomToast("you bought " + car.getName(), car.getImgUrl(), "green");
+                        Acquired_Cars acquired_cars = new Acquired_Cars();
+                        acquired_cars.setCar_id(car.getId());
+                        acquired_cars.setPlayer_id(player.getId());
+                        acquired_cars.setImgUrl(car.getImgUrl());
+                        acquired_cars.setAvailable("true");
+                        MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
+                        CarFragment carFragment = new CarFragment();
+                        fragmentInsertionSecond(carFragment);
+                        dialog.dismiss();
+                    });
+                    dialog.show();
+
+                } else {
+                    if (getACq != null) {
+
+                        showCustomToast(car.getName() + " is selected ", car.getImgUrl(), "green");
 
 
+                        List<Acquired_Cars> acquired_cars = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId());
+                        for (Acquired_Cars acq : acquired_cars) {
+                            acq.setAvailable("false");
+                            MainMenu.myAppDataBase.myDao().updateAcquired_car(acq);
+
+                        }
+                        getACq.setAvailable("true");
+                        MainMenu.myAppDataBase.myDao().updateAcquired_car(getACq);
+
+                    } else
+                        showCustomToast("Not enough money to buy " + car.getName(), car.getImgUrl(), "red");
+                }
+
+                decline.setOnClickListener(view1 -> {
+                    dialog.dismiss();
+                });
+            }
         });
-
 
     }
 
@@ -1269,30 +1276,31 @@ public class GameScene extends AppCompatActivity
 
     @Override
     public void deliverHouse(House house) {
-        Acquired_Houses acquired_house1=MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),house.getId());
 
-        if(acquired_house1 ==null) {
-            double newBalance = player.getBalance() - house.getPrice();
+            Acquired_Houses acquired_house1 = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(), house.getId());
 
-            if (newBalance >= 0) {
-                player.setBalance(newBalance);
-                balance.setText(player.getBalance() + "$");
+            if (acquired_house1 == null) {
+                double newBalance = player.getBalance() - house.getPrice();
 
-                Acquired_Houses acquired_houses = new Acquired_Houses();
-                acquired_houses.setHouse_id(house.getId());
-                acquired_houses.setPlayer_id(player.getId());
-                acquired_houses.setImgUrl(house.getImgUrl());
+                if (newBalance >= 0) {
+                    player.setBalance(newBalance);
+                    balance.setText(player.getBalance() + "$");
 
-                MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
+                    Acquired_Houses acquired_houses = new Acquired_Houses();
+                    acquired_houses.setHouse_id(house.getId());
+                    acquired_houses.setPlayer_id(player.getId());
+                    acquired_houses.setImgUrl(house.getImgUrl());
 
-                showCustomToast("Congratulation you've bought " + house.getName(), house.getImgUrl(), "green");
-            } else
-                showCustomToast("insuficient funds to buy " + house.getName(), house.getImgUrl(), "red");
+                    MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
+
+                    showCustomToast("Congratulation you've bought " + house.getName(), house.getImgUrl(), "green");
+                } else
+                    showCustomToast("insuficient funds to buy " + house.getName(), house.getImgUrl(), "red");
 
 
-            HouseFragment houseFragment = new HouseFragment();
-            fragmentInsertionSecond(houseFragment);
-        }
+                HouseFragment houseFragment = new HouseFragment();
+                fragmentInsertionSecond(houseFragment);
+            }
     }
 
     public  double getIncomeFromStore(){

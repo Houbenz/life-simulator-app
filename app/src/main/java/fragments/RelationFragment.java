@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +67,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private CountDownTimer countDownTimer;
 
     private ImageView partnerImage;
+    private ImageView mariagePhotos;
     private TextView partnerName;
 
     private int dateNumber=0;
@@ -92,7 +92,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         partnerImage=fragment.findViewById(R.id.partnerImage);
         partnerName=fragment.findViewById(R.id.partnerName);
         mariage=fragment.findViewById(R.id.mariage);
-
+        mariagePhotos=fragment.findViewById(R.id.mariagephotos);
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
 
@@ -117,16 +117,27 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         if(player1.getRelationBar() < 100){
             relationBar.setProgress(player1.getRelationBar());
             progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+            if(player1.getMarried().equals("true")) {
+
+                mariagePhotos.setVisibility(View.VISIBLE);
+            }
         }
         else {
             progressText.setText("100/100");
             relationBar.setProgress(99);
-            goDate.setVisibility(View.GONE);
-            offerGift.setVisibility(View.GONE);
-            mariage.setVisibility(View.VISIBLE);
-        }
 
-        Log.i("Uoip",player1.getDating());
+            if(player1.getMarried().equals("false")) {
+                mariage.setVisibility(View.VISIBLE);
+                goDate.setVisibility(View.GONE);
+                offerGift.setVisibility(View.GONE);
+            }
+            else{
+                mariagePhotos.setVisibility(View.VISIBLE);
+                mariage.setVisibility(View.GONE);
+                goDate.setVisibility(View.VISIBLE);
+                offerGift.setVisibility(View.VISIBLE);
+            }
+        }
         if (player1.getDating().equals("true")) {
             foundPartnerConstraint.setVisibility(View.VISIBLE);
             lookPartner.setVisibility(View.GONE);
@@ -369,6 +380,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                         .setPositiveButton("Yes", ((dialog, which) -> {
 
                             player1.setDating("false");
+                            player1.setMarried("false");
+                            mariagePhotos.setVisibility(View.GONE);
                             player1.setRelationBar(0);
                             relationBar.setProgress(0);
                             progressText.setText(relationBar.getProgress() + "/100");
@@ -490,10 +503,17 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                                 numberRing.setAlpha(1f);
 
                                 dialog.dismiss();
+
+
+                                //for showing mariage congratulation
                                 marriedDialog();
                             });
 
                             viewmodel.setMarried(true);
+                            mariagePhotos.setVisibility(View.VISIBLE);
+                            mariage.setVisibility(View.GONE);
+                            offerGift.setVisibility(View.VISIBLE);
+                            goDate.setVisibility(View.VISIBLE);
                         }
                     });
                     dialog.show();
@@ -501,9 +521,15 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
         relationBar.setMaxReachedListener(()->{
-            Toast.makeText(getContext(),"You Reached Max Congratulation !! " +
-                    "progress ="+ relationBar.getProgress(),Toast.LENGTH_LONG).show();
-        });
+
+            if(player1.getMarried().equals("false")) {
+                Toast.makeText(getContext(), "You Reached Max Congratulation !! " + "progress =" + relationBar.getProgress(), Toast.LENGTH_LONG).show();
+
+                mariage.setVisibility(View.VISIBLE);
+                offerGift.setVisibility(View.GONE);
+                goDate.setVisibility(View.GONE);
+            }
+            });
 
 
         return fragment;
@@ -515,14 +541,13 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.congrat_married);
         TextView text = dialog.findViewById(R.id.cong_text);
-        text.setText("Congratulations You're now married !");
+        text.setText("Congratulations You're now married to "+partnerName.getText().toString()+" !.");
         dialog.show();
 
     }
 
     private void foundPartner(Partner partner){
 
-        Log.i("Uoip","Im executed");
             Dialog dialog = new Dialog(getActivity());
             dialog.setContentView(R.layout.found_partner);
             Button confirm = dialog.findViewById(R.id.confirm);
@@ -612,7 +637,6 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         Toast.makeText(getContext(),"Reward Delivered",Toast.LENGTH_SHORT).show();
       List<Partner> partners =MainMenu.myAppDataBase.myDao().getPartners();
 
-      Log.i("Uoip","num : "+partners.size());
         int min = 0 ;
         int max = 3;
         int random = (int)(Math.random() * max) - min;
