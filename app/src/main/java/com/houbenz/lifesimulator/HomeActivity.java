@@ -12,11 +12,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -24,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.houbenz.lifesimulator.R;
@@ -309,7 +314,13 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+    private void animateProgressBar(ProgressBar progressBar){
+        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->{
 
+            progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->{
+                progressBar.animate().rotation(0f).setDuration(150);
+            }); });
+    }
     public void insertFragment(Fragment fragment){
 
         fragmentManager = getSupportFragmentManager();
@@ -382,22 +393,41 @@ public class HomeActivity extends AppCompatActivity {
                             hungerBar.setProgress(hungerBar.getProgress() - Params.HUNGER_LOSS_PER_HOUR);
                             hungerpr.setText(hungerBar.getProgress() + "/" + hungerBar.getMax());
 
+
+
+                            if(hungerBar.getProgress() != 0) {
+                                animateProgressBar(hungerBar);
+                            }
+
+                            if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthbar.getProgress() > 30){
+                                showCustomToast("Hunger is low eat something !","","yellow");
+                            }
+
+
                             if (hungerBar.getProgress() == 0 && energyBar.getProgress() == 0) {
 
                                 healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                 healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
+                                animateProgressBar(healthbar);
 
                             } else {
                                 if (hungerBar.getProgress() == 0 && energyBar.getProgress() > 0) {
 
                                     healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR);
                                     healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
+                                    animateProgressBar(healthbar);
                                 } else {
                                     if (hungerBar.getProgress() > 0 && energyBar.getProgress() == 0) {
                                         healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                         healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
+                                        animateProgressBar(healthbar);
                                     }
                                 }
+                            }
+
+                            if(healthbar.getProgress() <30 && hungerBar.getProgress() < 30){
+                                showCustomToast("Health is low buy medicine or eat food",
+                                        "android.resource://com.houbenz.android.lifesimulator/drawable/health","red");
                             }
 
                         }
@@ -437,6 +467,51 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    public void showCustomToast(String message , String imgUrl, String type){
+
+        LayoutInflater inflater=getLayoutInflater();
+        View layout = null;
+
+        switch (type){
+            case "green":
+                layout = inflater.inflate(R.layout.custom_toast_green,(ViewGroup)findViewById(R.id.cutom_toast_green));
+                break ;
+            case "red" :
+                layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red));
+                break;
+            case "gold" :
+                layout=inflater.inflate(R.layout.custom_toast_levelup,(ViewGroup)findViewById(R.id.cutom_toast_levelup));
+                break;
+            case "yellow" :
+                layout=inflater.inflate(R.layout.custom_toast_yellow,(ViewGroup)findViewById(R.id.cutom_toast_yellow));
+                break;
+            default:layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red)); ;
+        }
+
+
+        TextView messageTextView = layout.findViewById(R.id.message);
+        ImageView imageToast = layout.findViewById(R.id.imageToast);
+
+        imageToast.setVisibility(View.GONE);
+        messageTextView.setText(message);
+
+        if (!imgUrl.equals("")) {
+            imageToast.setVisibility(View.VISIBLE);
+
+            imageToast.setImageURI(Uri.parse(imgUrl));
+            //imageToast.setBackgroundColor(getResources().getColor(R.color.white));
+        }else {
+
+            if (type.equals("gold"))
+                imageToast.setVisibility(View.VISIBLE);
+        }
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER ,0,250);
+
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 
     public void loadProgress(){
         database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);

@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -52,12 +55,14 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
         TextView acquired=learnView.findViewById(R.id.acqLearn);
         ProgressBar progressStudy=learnView.findViewById(R.id.progressStudy);
         TextView textprog = learnView.findViewById(R.id.textprogress);
+        ImageView degreeImage = learnView.findViewById(R.id.degreeImg);
 
             if(degree != null) {
 
                 String priceString =String.format(Locale.ENGLISH,"%s : %d$",getContext().getString(R.string.price),(int)degree.getPrice());
                 name.setText(degree.getName());
                 price.setText(priceString);
+                degreeImage.setImageURI(Uri.parse(degree.getImgUrl()));
 
 
                 Acquired_degree acq = MainMenu.myAppDataBase.myDao().getAcqDegr(slot,degree.getId());

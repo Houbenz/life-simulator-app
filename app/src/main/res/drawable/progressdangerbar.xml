@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/progress">
+
+        <clip
+            android:clipOrientation="vertical"
+            android:gravity="bottom">
+            <color android:color="@color/red"></color>
+
+        </clip>
+
+
+
+    </item>
+</selector>

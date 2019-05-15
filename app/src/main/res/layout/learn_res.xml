@@ -15,7 +15,6 @@
     android:orientation="vertical"
     android:paddingLeft="8dp"
     android:paddingBottom="8dp">
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -26,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/borderblack"
@@ -40,24 +39,41 @@
             android:textColor="@color/white"
             android:textSize="14dp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nameLearn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_toEndOf="@+id/degreeImg"
+            android:fontFamily="casual"
+            android:text="Name of specialty"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/degreeImg"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            app:srcCompat="@drawable/programming_licence" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/nameLearn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="casual"
-        android:text="Name of specialty"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="@color/black"
-        android:textSize="18dp"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/acqLearn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="casual"
         android:text="Acquired : No"
@@ -101,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="0dp"
         android:fontFamily="casual"
         android:text="Learn Time : 1 Hour"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"

@@ -20,7 +20,7 @@ public class Learn {
     private String name;
     private float price;
     private int id ;
-
+    private String imgURL;
     private int progress ;
 
 
@@ -93,6 +93,7 @@ public class Learn {
                 String name =jsonObject.getString("name");
                 float price =jsonObject.getLong("price");
                 Learn learn =new Learn(name,price);
+                learn.setImgURL(jsonObject.getString("uri"));
                 learn.setId(jsonObject.getInt("id"));
                 learn.setProgress(jsonObject.getInt("progress"));
                 learns.add(learn);
@@ -104,4 +105,11 @@ public class Learn {
         return learns;
     }
 
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
 }

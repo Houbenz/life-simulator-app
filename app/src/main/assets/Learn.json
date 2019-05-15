@@ -4,6 +4,7 @@
     "id":1 ,
     "name":"highschool degree","price":20
     ,"progress":20
+    ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/highschool_degree"
   }
   ,
 
@@ -11,34 +12,40 @@
     "id": 2,
     "name":"driving licence","price":20
   ,"progress":30
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/driving_licence"
   }
   ,
   {
     "id": 3,
     "name":"waiter Licence","price":20
   ,"progress":45
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/waiter_licence"
   }
   ,
   {
     "id": 4,
     "name":"teaching degree","price":20
   ,"progress":55
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/teaching_degree"
   }
   ,
   {
     "id":5 ,
     "name":"programming licence","price":20
   ,"progress":100
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/programming_licence"
   }
 ,
   {
     "id": 6,
     "name":"Piloting licence","price":20
   ,"progress":120
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/piloting_licence"
   },
   {
     "id":7 ,
     "name":"Phd","price":20
   ,"progress":200
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/phd"
   }
 ]

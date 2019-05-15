@@ -265,24 +265,40 @@ public class GameScene extends AppCompatActivity
                             hungerBar.setProgress(hungerBar.getProgress()-Params.HUNGER_LOSS_PER_HOUR);
                             hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
-                            ///
+
+                            if(hungerBar.getProgress() != 0) {
+                                animateProgressBar(hungerBar);
+                            }
+
+
+                            if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthbar.getProgress() > 30){
+                                showCustomToast("Hunger is low eat something !","","yellow");
+                            }
 
                             if(hungerBar.getProgress()==0 && energyBar.getProgress()==0){
-
                                 healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                 healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                animateProgressBar(healthbar);
 
                             }else {
                                 if(hungerBar.getProgress()==0 && energyBar.getProgress()>0){
 
                                     healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR );
                                     healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                    animateProgressBar(healthbar);
                                 }else{
                                     if(hungerBar.getProgress()>0 && energyBar.getProgress()==0){
                                         healthbar.setProgress(healthbar.getProgress() -Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
                                         healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+                                        animateProgressBar(healthbar);
                                     }
                                 }
+
+                            }
+
+                            if(healthbar.getProgress() <30 && hungerBar.getProgress() < 30){
+                                showCustomToast("Health is low buy medicine or eat food",
+                                        "android.resource://com.houbenz.android.lifesimulator/drawable/health","red");
                             }
 
                         }
@@ -330,13 +346,6 @@ public class GameScene extends AppCompatActivity
 
                             enableAllButtons(false);
 
-                            /*
-                            work.setEnabled(false);
-                            buy.setEnabled(false);
-                            sleep.setEnabled(false);
-                            bank.setEnabled(false);
-                            study.setEnabled(false);
-                            */
                             startWorking.setEnabled(false);
 
                             startWorking.setText("Learning "+learn_time +"m");
@@ -345,14 +354,6 @@ public class GameScene extends AppCompatActivity
                             if(learn_time <= 0){
                                 learning=false;
                                 learn_time=60;
-                                /*
-                                work.setEnabled(true);
-                                buy.setEnabled(true);
-                                sleep.setEnabled(true);
-                                bank.setEnabled(true);
-                                study.setEnabled(true);
-                                homeButton.setEnabled(true);
-                                */
                                 enableAllButtons(true);
 
                                 startWorking.setText(getString(R.string.startWork));
@@ -385,6 +386,14 @@ public class GameScene extends AppCompatActivity
         thread.start();
     }
 
+
+    private void animateProgressBar(ProgressBar progressBar){
+        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->{
+
+            progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->{
+                progressBar.animate().rotation(0f).setDuration(150);
+            }); });
+    }
 
     public void enableAllButtons(boolean enable){
         work.setEnabled(enable);
@@ -442,7 +451,10 @@ public class GameScene extends AppCompatActivity
            case "gold" :
                layout=inflater.inflate(R.layout.custom_toast_levelup,(ViewGroup)findViewById(R.id.cutom_toast_levelup));
                break;
-           default:;
+           case "yellow" :
+               layout=inflater.inflate(R.layout.custom_toast_yellow,(ViewGroup)findViewById(R.id.cutom_toast_yellow));
+               break;
+           default:layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red)); ;
        }
 
 

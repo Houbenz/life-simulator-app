@@ -579,7 +579,7 @@ public class MainMenu extends AppCompatActivity {
             degree.setId(learn.getId());
             degree.setName(learn.getName());
             degree.setPrice(learn.getPrice());
-
+            degree.setImgUrl(learn.getImgURL());
             degree.setProgress(learn.getProgress());
 
             if(!isUpdate)
@@ -599,7 +599,7 @@ public class MainMenu extends AppCompatActivity {
                 degree.setId(learns.get(i).getId());
                 degree.setName(learns.get(i).getName());
                 degree.setPrice(learns.get(i).getPrice());
-
+                degree.setImgUrl(learns.get(i).getImgURL());
                 degree.setProgress(learns.get(i).getProgress());
 
                 myAppDataBase.myDao().addDegree(degree);
