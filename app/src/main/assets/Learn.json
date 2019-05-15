@@ -10,14 +10,14 @@
 
   {
     "id": 2,
-    "name":"driving licence","price":20
+    "name":"driving license","price":20
   ,"progress":30
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/driving_licence"
   }
   ,
   {
     "id": 3,
-    "name":"waiter Licence","price":20
+    "name":"waiter License","price":20
   ,"progress":45
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/waiter_licence"
   }
@@ -31,14 +31,14 @@
   ,
   {
     "id":5 ,
-    "name":"programming licence","price":20
+    "name":"programming license","price":20
   ,"progress":100
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/programming_licence"
   }
 ,
   {
     "id": 6,
-    "name":"Piloting licence","price":20
+    "name":"Piloting license","price":20
   ,"progress":120
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/piloting_licence"
   },

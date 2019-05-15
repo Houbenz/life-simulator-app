@@ -53,8 +53,6 @@ public class WorkFragment extends Fragment {
 
             Work work = (Work) parent.getItemAtPosition(position);
 
-            Toast.makeText( getContext(),"you're now a "+work.getName()+"", Toast.LENGTH_SHORT).show();
-
             mWorkSelected.deliverWork(work);
 
         });
