@@ -685,7 +685,7 @@ public class GameScene extends AppCompatActivity
                 startWorking.setSelected(true);
 
                 startWorking.setText("Stop working");
-                startWorking.setTextColor(getResources().getColor(R.color.red));
+                //startWorking.setTextColor(getResources().getColor(R.color.red));
 
                 startWorkThread();
 
@@ -693,7 +693,8 @@ public class GameScene extends AppCompatActivity
 
                 duo++;
 
-
+                String firstTime=sharedPreferences.getString("firstTime","none");
+                if(firstTime.equals("none"))
                 showTuto("Time speed","use this bar to speed up time",R.id.speedSeekBar);
 
 
@@ -779,7 +780,7 @@ public class GameScene extends AppCompatActivity
                 .setTitle(title)
                 .setTargetView(findViewById(viewid))
                 .setContentText(contentText)
-                .setDismissType(DismissType.outside)
+                //.setDismissType(DismissType.outside)
                 .build()
                 .show();
     }
