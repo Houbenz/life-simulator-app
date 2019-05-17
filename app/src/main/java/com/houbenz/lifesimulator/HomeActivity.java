@@ -280,7 +280,11 @@ public class HomeActivity extends AppCompatActivity {
 
                 double newBalance =player.getBalance()-goDate;
 
-                if(newBalance >= 0) {
+                if(goDate == 2000)
+                    newBalance=player.getBalance();
+
+
+                    if(newBalance >= 0) {
                     //Show dating animation (means it works)
                     switcher.animate().alpha(0f).setDuration(250).withEndAction(()->{
                        switcher.animate().alpha(1.0f).setDuration(250);
@@ -499,7 +503,6 @@ public class HomeActivity extends AppCompatActivity {
             imageToast.setVisibility(View.VISIBLE);
 
             imageToast.setImageURI(Uri.parse(imgUrl));
-            //imageToast.setBackgroundColor(getResources().getColor(R.color.white));
         }else {
 
             if (type.equals("gold"))

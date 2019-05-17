@@ -3,6 +3,8 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -34,6 +36,8 @@ import customViews.RelationBar;
 import database.Gift;
 import database.Partner;
 import database.Player;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelPartner;
 
 import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
@@ -47,6 +51,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
     }
 
+    private SharedPreferences sharedPreferences;
     private RelationBar relationBar;
     private Button offerGift;
     private Button breakUp;
@@ -69,6 +74,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private ImageView partnerImage;
     private ImageView mariagePhotos;
     private TextView partnerName;
+    private boolean dateAd=false;
 
     private int dateNumber=0;
 
@@ -422,13 +428,18 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
             }
             else {
+
+                int randCost = (int) (Math.random() * 200) + 50;
+
+
                 Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog);
                 TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
                 Button cofirm = dialog.findViewById(R.id.confirm);
                 Button decline = dialog.findViewById(R.id.decline);
+                Button watchad = dialog.findViewById(R.id.gainmoneyAd);
 
-                int randCost = (int) (Math.random() * 250) + 50;
+
 
                 dialogTitle.setText("this date will cost you " + randCost + "$, proceed ?");
 
@@ -450,6 +461,14 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                 });
 
+                watchad.setOnClickListener(v2 ->{
+                    if(mRewardVideoAd.isLoaded()){
+                        dateAd=true;
+                        mRewardVideoAd.show();
+                    }
+                    dialog.dismiss();
+                });
+
                 decline.setOnClickListener(v1 -> {
                     dialog.cancel();
                 });
@@ -457,8 +476,15 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 dialog.setOnDismissListener(dialog1 -> {
                     dialog.cancel();
                 });
-
                 dialog.show();
+
+                if(player1.getBalance() < randCost){
+                    cofirm.setEnabled(false);
+                    watchad.setVisibility(View.VISIBLE);
+                }else {
+                    cofirm.setEnabled(true);
+                    watchad.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -523,18 +549,37 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         relationBar.setMaxReachedListener(()->{
 
             if(player1.getMarried().equals("false")) {
-                Toast.makeText(getContext(), "You Reached Max Congratulation !! " + "progress =" + relationBar.getProgress(), Toast.LENGTH_LONG).show();
 
                 mariage.setVisibility(View.VISIBLE);
                 offerGift.setVisibility(View.GONE);
                 goDate.setVisibility(View.GONE);
+
             }
             });
+        sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
 
+        String firstTime=sharedPreferences.getString("firstTimePartner","none");
+
+        if(firstTime.equals("none")) {
+            showTuto();
+            sharedPreferences.edit().putString("firstTimePartner","finished").apply();
+        }
 
         return fragment;
     }
 
+
+
+    private void showTuto(){
+
+        new GuideView.Builder(getContext())
+                .setTitle("Buying")
+                .setContentText("when you press the button the player will start looking for a partner," +
+                        " after a brief a period of time you will meet someone !")
+                .setTargetView(lookPartner)
+                .build()
+                .show();
+    }
 
     private void marriedDialog(){
 
@@ -583,6 +628,28 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 this.partnerImage.setImageURI(Uri.parse(partner.getImage()));
 
                 viewmodel.setFoundPartner(true);
+
+
+                String firstTime =sharedPreferences.getString("firstTimeDate","none");
+
+
+                if(firstTime.equals("none")) {
+                    new GuideView.Builder(getContext())
+                            .setTitle("Dating")
+                            .setContentText("click here to offer gift you've bought to your new Girlfriend !")
+                            .setTargetView(offerGift)
+                            .setGuideListener(view1 ->
+                                    new GuideView.Builder(getContext())
+                                            .setTitle("Dating")
+                                            .setContentText("Click here to go on date with your new partner")
+                                            .setTargetView(goDate)
+                                            .build()
+                                            .show())
+                            .build()
+                            .show();
+
+                    sharedPreferences.edit().putString("firstTimeDate","finished");
+                }
 
                 dialog.cancel();
                 dialog.dismiss();
@@ -634,13 +701,31 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     @Override
     public void onRewarded(RewardItem rewardItem) {
 
-        Toast.makeText(getContext(),"Reward Delivered",Toast.LENGTH_SHORT).show();
-      List<Partner> partners =MainMenu.myAppDataBase.myDao().getPartners();
+        if(!dateAd) {
+            List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
 
-        int min = 0 ;
-        int max = 3;
-        int random = (int)(Math.random() * max) - min;
-        foundPartner(partners.get(random));
+            int min = 0;
+            int max = 3;
+            int random = (int) (Math.random() * max) - min;
+            foundPartner(partners.get(random));
+        }
+        else{
+
+            //don't mind the 22 its just for the code to work properly
+            viewmodel.setGoDate(2000);
+
+            dateNumber++;
+
+            relationBar.setProgress(relationBar.getProgress() + 10);
+
+            progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+            player1.setRelationBar(relationBar.getProgress());
+
+
+            viewmodel.setRelationBar(relationBar.getProgress());
+
+            MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+        }
     }
 
     @Override
