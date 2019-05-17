@@ -42,7 +42,7 @@
   {
     "id": 6,
     "name":"Table with laptop",
-    "price":4500,
+    "price":3500,
     "fournitureType":"table",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }

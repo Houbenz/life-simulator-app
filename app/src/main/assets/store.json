@@ -7,19 +7,19 @@
   ,
   {
     "id":2 ,
-    "name":"Medium Store","price":50000,"income":600,
+    "name":"Medium Store","price":25000,"income":600,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/medium_store"
   }
   ,
   {
     "id":3 ,
-    "name":"Restaurant","price":150000,"income":1300,
+    "name":"Restaurant","price":50000,"income":1300,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/restaurant"
   }
   ,
   {
     "id":4 ,
-    "name":"Super Market","price":300000,"income":2500,
+    "name":"Super Market","price":100000,"income":2500,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/super_market"
   }
 ]
