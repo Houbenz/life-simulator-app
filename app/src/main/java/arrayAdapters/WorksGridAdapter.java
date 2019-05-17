@@ -2,6 +2,7 @@ package arrayAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,9 @@ import java.util.Locale;
 
 import database.Acquired_degree;
 import database.Work;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class WorksGridAdapter extends ArrayAdapter<Work> {
 
@@ -113,6 +117,8 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
                 }
             }
         }
+
+
         }
             return workView;
 

@@ -2,6 +2,7 @@ package fragments;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
@@ -17,6 +18,9 @@ import java.util.List;
 
 import arrayAdapters.DegreeListAdapter;
 import database.Degree;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +28,8 @@ import database.Degree;
 public class DegreeFragment extends Fragment {
 
     private OnDegreeClick monDegreeClick;
-
+    private ListView learnList;
+    private SharedPreferences sharedPreferences;
     private int itemPosition;
     private int y ;
 
@@ -43,9 +48,11 @@ public class DegreeFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_degree, container, false);
 
 
+        sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
+
         int slot = getArguments().getInt("slot");
 
-        ListView learnList =fragment.findViewById(R.id.learnView);
+         learnList =fragment.findViewById(R.id.learnView);
 
         List<Degree> degrees = MainMenu.myAppDataBase.myDao().getDegrees();
 
@@ -66,9 +73,29 @@ public class DegreeFragment extends Fragment {
             monDegreeClick.deliverDegreeItemPosition(learnList.getFirstVisiblePosition(),top);
         });
 
+
+        String firstTime=sharedPreferences.getString("firstTimeLearn","none");
+
+        if(firstTime.equals("none")) {
+            showTuto("Learning", "When the degree reaches the max, the player owns it", 0);
+            sharedPreferences.edit().putString("firstTimeLearn","finished").apply();
+        }
             return fragment;
     }
 
+    private void showTuto(String title,String contentText,int type){
+        new GuideView.Builder(getContext())
+                .setTitle(title)
+                .setTargetView(learnList)
+                .setContentText(contentText)
+                .setDismissType(DismissType.outside)
+                .setGuideListener(view ->{
+                    if(type==0)
+                    showTuto("Learning","click on Highschool degree to begin learning",1);
+                })
+                .build()
+                .show();
+    }
 
     public interface OnDegreeClick {
 

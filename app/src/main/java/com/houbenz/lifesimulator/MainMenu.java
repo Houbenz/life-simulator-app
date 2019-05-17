@@ -4,16 +4,13 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Room;
-import androidx.room.migration.Migration;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,15 +18,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.games.Games;
 
 import org.json.JSONArray;
@@ -58,17 +52,9 @@ import database.MyAppDataBase;
 import database.Partner;
 import database.Player;
 import database.VersionDB;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 
-import static database.Migration.MIGRATION_14_15;
-import static database.Migration.MIGRATION_15_16;
-import static database.Migration.MIGRATION_16_17;
-import static database.Migration.MIGRATION_17_18;
-import static database.Migration.MIGRATION_18_19;
-import static database.Migration.MIGRATION_19_20;
-import static database.Migration.MIGRATION_20_21;
-import static database.Migration.MIGRATION_21_22;
-import static database.Migration.MIGRATION_22_23;
-import static database.Migration.MIGRATION_23_24;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -257,8 +243,6 @@ public class MainMenu extends AppCompatActivity {
 
 
         //startSignInIntent();
-
-
     }
 
     private void startSignInIntent(){

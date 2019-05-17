@@ -2,6 +2,8 @@ package com.houbenz.lifesimulator;
 
 import android.app.Dialog;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -71,6 +73,8 @@ import fragments.SleepFragment;
 import fragments.StoreFragment;
 import fragments.WithdrawFragment;
 import fragments.WorkFragment;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelCars;
 import viewmodels.ViewModelGift;
 
@@ -510,6 +514,9 @@ public class GameScene extends AppCompatActivity
 
         mainText=findViewById(R.id.mainText);
 
+
+        sharedPreferences=getApplicationContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
+
         //for the car
         viewModelCars=ViewModelProviders.of(this).get(ViewModelCars.class);
         deliverCars();
@@ -687,6 +694,8 @@ public class GameScene extends AppCompatActivity
                 duo++;
 
 
+                showTuto("Time speed","use this bar to speed up time",R.id.speedSeekBar);
+
 
             }
             else {
@@ -700,6 +709,12 @@ public class GameScene extends AppCompatActivity
                 speed=Params.TIME_SPEED_NORMAL;
                 startWorking.setText(getString(R.string.startwork));
                 startWorking.setTextColor(getResources().getColor(R.color.green));
+
+                String firstTime=sharedPreferences.getString("firstTime","none");
+                if(firstTime.equals("none")) {
+                    showTuto("Learning", "click here to go to studying section", R.id.study);
+                    sharedPreferences.edit().putString("firstTime", "finished").apply();
+                }
 
                 duo++;
             }
@@ -750,8 +765,24 @@ public class GameScene extends AppCompatActivity
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        String firstTime = sharedPreferences.getString("firstTime","none");
+
+        if(firstTime.equals("none"))
+        showTuto("work","click here to go to work session",R.id.work);
+
     }
 
+
+    private void showTuto(String title,String contentText,int viewid ){
+        new GuideView.Builder(this)
+                .setTitle(title)
+                .setTargetView(findViewById(viewid))
+                .setContentText(contentText)
+                .setDismissType(DismissType.outside)
+                .build()
+                .show();
+    }
 
     public void deselectButtons(){
         work.setSelected(false);
@@ -1095,6 +1126,12 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverWork(Work work) {
 
+        String firstTime = sharedPreferences.getString("firstTime","none");
+
+        if(firstTime.equals("none")){
+            showTuto("Start working","click here to begin working",R.id.startWorking);
+
+        }
 
         if(!work.getName().equals(player.getWork()))
         {

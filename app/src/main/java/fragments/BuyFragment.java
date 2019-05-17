@@ -2,6 +2,7 @@ package fragments;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import java.util.List;
 
 import arrayAdapters.BuyGridAdapter;
 import database.MainFragments;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 
 
 /**
@@ -29,7 +32,8 @@ public class BuyFragment extends Fragment {
     OnMainFragmentClicked mBuySelected;
 
 
-
+    private SharedPreferences sharedPreferences;
+    private GridView gridView;
 
     public BuyFragment() {
         // Required empty public constructor
@@ -42,9 +46,12 @@ public class BuyFragment extends Fragment {
 
 
 
+        sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
+
+
         View fragmentLay= inflater.inflate(R.layout.fragment_buy, container, false);
 
-        GridView gridView=(GridView)fragmentLay.findViewById(R.id.gridBuy);
+         gridView=(GridView)fragmentLay.findViewById(R.id.gridBuy);
 
 
         List<MainFragments> mainFragments =MainMenu.myAppDataBase.myDao().getMainFragments();
@@ -62,7 +69,29 @@ public class BuyFragment extends Fragment {
 
         });
 
+
+
+        String firstTime=sharedPreferences.getString("firstTimeBuy","none");
+
+        if(firstTime.equals("none")) {
+            showTuto();
+            sharedPreferences.edit().putString("firstTimeBuy","finished").apply();
+        }
+
         return fragmentLay;
+    }
+
+
+    private void showTuto(){
+
+        new GuideView.Builder(getContext())
+                .setTitle("Buying")
+                .setContentText("From this section you can buy things, Food, medicines," +
+                        " and other stuff like cars !, beware don't spend too much ")
+                .setDismissType(DismissType.outside)
+                .setTargetView(gridView)
+                .build()
+                .show();
     }
 
     public interface OnMainFragmentClicked {
