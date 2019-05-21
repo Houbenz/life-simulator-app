@@ -68,14 +68,14 @@ public class OutsideHomeFragment extends Fragment {
             Acquired_Houses acquired_garage = MainMenu.myAppDataBase.myDao().getAcqHouse(slot,2);
 
             if(acquired_garage!=null){
-                garage.setImageURI(Uri.parse(acquired_garage.getImgUrl()));
+                garage.setImageURI(Uri.parse(acquired_garage.getImgUrl()+"x"));
             }
 
            List<Acquired_Cars> acquired_cars=MainMenu.myAppDataBase.myDao().getAcquiredCars(slot);
             for(Acquired_Cars acqCar : acquired_cars){
                 if(acqCar != null){
                     if(acqCar.getAvailable().equals("true")){
-                        carPlace.setImageURI(Uri.parse(acqCar.getImgUrl()));
+                        carPlace.setImageURI(Uri.parse(acqCar.getImgUrl()+"x"));
                     }
                 }
             }

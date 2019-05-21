@@ -82,28 +82,28 @@ public class HomeFragment extends Fragment {
 
                    case "table":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            tablePlace.setImageURI(uri);
                        }
                        break;
 
                    case "tv":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            tvPlace.setImageURI(uri);
                        }
                        break;
 
                    case "chair":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            chair.setImageURI(uri);
                        }
                        break;
 
                    case "computer":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            tablePlace.setImageURI(uri);
                        }
                        break;
@@ -111,14 +111,14 @@ public class HomeFragment extends Fragment {
 
                    case "couch":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            couch.setImageURI(uri);
                        }
                        break;
 
                    case "salonTable":
                        if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl());
+                           uri = Uri.parse(furniture.getImgurl()+"x");
                            salonTable.setImageURI(uri);
                        }
                        break;
