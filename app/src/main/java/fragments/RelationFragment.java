@@ -25,6 +25,7 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.houbenz.lifesimulator.GameScene;
+import com.houbenz.lifesimulator.HomeActivity;
 import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     public RelationFragment() {
 
     }
-
     private SharedPreferences sharedPreferences;
     private RelationBar relationBar;
     private Button offerGift;
@@ -671,8 +671,13 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
     private void loadRewardAd(){
-        mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
+
+        if(HomeActivity.numberAd < 2 ) {
+            mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
+            HomeActivity.numberAd++;
+        }
     }
+
 
 
     @Override

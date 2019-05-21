@@ -831,7 +831,7 @@ public class MainMenu extends AppCompatActivity {
                     car.setPrice(jsonObject.getDouble("price"));
                     car.setImgUrl(jsonObject.getString("uri"));
 
-                        MainMenu.myAppDataBase.myDao().updateCar(car);
+                        MainMenu.myAppDataBase.myDao().addCar(car);
                 }
 
         } catch (IOException | JSONException e) {

@@ -17,6 +17,7 @@ import java.util.List;
 
 import arrayAdapters.CarListAdapter;
 import database.Car;
+import database.Degree;
 import viewmodels.ViewModelCars;
 
 
@@ -58,7 +59,6 @@ public class CarFragment extends Fragment {
 
         return  fragment;
     }
-
 
 
 
