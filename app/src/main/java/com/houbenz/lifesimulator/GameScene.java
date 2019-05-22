@@ -16,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1603,8 +1602,6 @@ public class GameScene extends AppCompatActivity
 
     private void loadRewardAd(){
 
-
-        Log.i("TAG1","num "+ numberAd);
         if(numberAd < 2) {
             mRewardVideoAdDoubleIncome.loadAd(AD_VIDEO_ID, new AdRequest.Builder().build());
             numberAd++;
