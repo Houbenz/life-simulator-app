@@ -46,7 +46,8 @@
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
                     android:text="Show Home"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14dp" />
 
                 <Button
                     android:id="@+id/showOutsideHomeButton"
@@ -57,6 +58,7 @@
                     android:fontFamily="casual"
                     android:text="Show Outside Home"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:visibility="visible" />
 
                 <Button
@@ -68,6 +70,7 @@
                     android:fontFamily="casual"
                     android:text="Social"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:visibility="visible" />
 
                 <Button
@@ -125,7 +128,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:fontFamily="casual"
-                    android:text="10:12" />
+                    android:text="10:12"
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/dayView"
@@ -133,7 +137,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:fontFamily="casual"
-                    android:text="Day: 12" />
+                    android:text="Day: 12"
+                    android:textSize="14dp" />
 
                 <SeekBar
                     android:id="@+id/speedSeekBar"
@@ -148,7 +153,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:fontFamily="casual"
-                    android:text="Speed  x1" />
+                    android:text="Speed  x1"
+                    android:textSize="14dp" />
 
 
                 <TextView
@@ -160,7 +166,8 @@
                     android:fontFamily="casual"
                     android:text="500000$"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/levelNumber"
@@ -173,6 +180,7 @@
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/gold"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
 
@@ -216,7 +224,7 @@
                     android:fontFamily="casual"
                     android:text="100/100"
                     android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textSize="8sp"
+                    android:textSize="8dp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -245,7 +253,7 @@
                     android:fontFamily="casual"
                     android:text="100/100"
                     android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textSize="8sp"
+                    android:textSize="8dp"
                     android:textStyle="bold" />
 
 
@@ -275,7 +283,7 @@
                     android:fontFamily="casual"
                     android:text="100/100"
                     android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textSize="8sp"
+                    android:textSize="8dp"
                     android:textStyle="bold" />
 
             </LinearLayout>

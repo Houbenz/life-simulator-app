@@ -27,29 +27,31 @@
 
         <Button
             android:id="@+id/newgame"
-            android:background="@drawable/custom_button"
-            android:textColor="@color/white"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
+            android:background="@drawable/custom_button"
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/buttonNewGame"
             android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/loadgame"
-            android:background="@drawable/main_menu_buttons"
-            android:textColor="@color/white"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
+            android:background="@drawable/main_menu_buttons"
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/buttonLoadGame"
+            android:textColor="@color/white"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <Button
@@ -68,18 +70,19 @@
 
         <Button
             android:id="@+id/credits"
-            android:background="@drawable/main_menu_buttons"
-            android:textColor="@color/white"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
+            android:background="@drawable/main_menu_buttons"
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/score"
+            android:textColor="@color/white"
+            android:textSize="14dp"
             android:textStyle="bold"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -98,6 +101,7 @@
         android:text="@string/GameTitle"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="34dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"

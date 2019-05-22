@@ -16,6 +16,7 @@
         android:fontFamily="casual"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="14dp"
         android:textStyle="bold"
         tools:text="@string/nameInputTitle" />
 
@@ -34,6 +35,7 @@
             android:fontFamily="casual"
             android:hint="@string/hintCaracterName"
             android:maxLength="8"
+            android:textSize="18dp"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,10 +54,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:fontFamily="casual"
             android:text="@string/confirmDialog"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <Button
@@ -64,10 +67,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:fontFamily="casual"
             android:text="@string/closeDialog"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
 

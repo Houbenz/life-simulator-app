@@ -114,7 +114,7 @@
                         android:fontFamily="casual"
                         android:text="100/100"
                         android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:textSize="10sp"
+                        android:textSize="10dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -125,7 +125,7 @@
                         android:fontFamily="casual"
                         android:text="100/100"
                         android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:textSize="10sp"
+                        android:textSize="10dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -136,7 +136,7 @@
                         android:fontFamily="casual"
                         android:text="100/100"
                         android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:textSize="10sp"
+                        android:textSize="10dp"
                         android:textStyle="bold" />
 
 
@@ -167,6 +167,7 @@
                     android:text="@string/workButton"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
 
@@ -180,6 +181,7 @@
                     android:text="@string/buyButton"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
 
@@ -193,6 +195,7 @@
                     android:text="@string/sleepButton"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <Button
@@ -205,6 +208,7 @@
                     android:text="@string/bankName"
                     android:textAppearance="@style/TextAppearance.AppCompat"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <Button
@@ -217,6 +221,7 @@
                     android:text="@string/study"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -242,6 +247,7 @@
                     android:text="@string/startWork"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="@color/green"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <Button
@@ -257,7 +263,7 @@
                     android:text="@string/doubleEarn"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
+                    android:textSize="10dp"
                     android:textStyle="bold"
                     android:visibility="invisible" />
 
@@ -271,6 +277,7 @@
                     android:gravity="center"
                     android:text="@string/none"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -283,6 +290,7 @@
                     android:gravity="center"
                     android:text="@string/balanceTitle"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -296,7 +304,7 @@
                     android:text="0$"
                     android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textSize="18sp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -368,7 +376,8 @@
                         android:fontFamily="casual"
                         android:text="Houbenz"
                         android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="14dp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -382,7 +391,8 @@
                         android:fontFamily="casual"
                         android:text="00:00"
                         android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="14dp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -396,7 +406,8 @@
                         android:fontFamily="casual"
                         android:text="Day 000"
                         android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="14dp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -412,6 +423,7 @@
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/colorAccent"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -458,7 +470,7 @@
                     android:fontFamily="casual"
                     android:text="worker"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="11sp"
+                    android:textSize="11dp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
@@ -491,6 +503,7 @@
                     android:text="speed"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14dp"
                     android:textStyle="italic" />
 
 
@@ -503,6 +516,7 @@
                     android:text="@string/home"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/white"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
             </LinearLayout>

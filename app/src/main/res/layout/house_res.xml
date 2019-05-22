@@ -27,7 +27,7 @@
         android:fontFamily="casual"
         android:text="Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +43,7 @@
         android:fontFamily="casual"
         android:text="Price"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/comImage"
         app:layout_constraintTop_toTopOf="parent" />
@@ -56,6 +57,7 @@
         android:fontFamily="casual"
         android:text="Benefit"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/comImage"
         app:layout_constraintTop_toBottomOf="@+id/price" />
@@ -70,6 +72,7 @@
         android:fontFamily="casual"
         android:text="Owned : No"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="14dp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/comImage"

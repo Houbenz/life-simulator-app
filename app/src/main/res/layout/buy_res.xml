@@ -23,7 +23,8 @@
             android:fontFamily="casual"
             android:text="Buy_Name"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="14dp" />
 
         <ImageView
             android:id="@+id/buyImg"

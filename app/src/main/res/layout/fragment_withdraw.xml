@@ -26,6 +26,7 @@
             android:text="@string/bankTitleW"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -52,7 +53,7 @@
                 android:textAlignment="viewEnd"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/colorAccent"
-                android:textSize="10sp"
+                android:textSize="10dp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
@@ -62,7 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/withdraw"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/bankBalanceW"
@@ -73,7 +75,7 @@
             android:text="Balance :100$"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="18sp" />
+            android:textSize="18dp" />
 
 
         <TextView
@@ -86,7 +88,7 @@
             android:text="@string/intersetText"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="12sp"
+            android:textSize="12dp"
             android:textStyle="bold" />
 
     </LinearLayout>

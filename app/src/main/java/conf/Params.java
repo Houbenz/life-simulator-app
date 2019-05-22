@@ -17,7 +17,7 @@ public class Params {
     public static final int ENERGY_GAIN_PER_HOUR=8;
 
 
-    public static final double START_BALANCE = 120000;
+    public static final double START_BALANCE = 120;
 
 
     //for hunger loss (gains are directly from food.json file)

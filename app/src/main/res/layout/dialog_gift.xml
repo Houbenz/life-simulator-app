@@ -39,6 +39,7 @@
             android:text="Jewelery"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <TextView
@@ -59,11 +60,12 @@
 
         <Button
             android:id="@+id/giftJewlery"
-            android:textColor="@color/white"
-            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="gift" />
+            android:background="@drawable/main_menu_buttons"
+            android:text="gift"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
 
     </LinearLayout>
 
@@ -91,6 +93,7 @@
             android:text="Chocolate"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <TextView
@@ -111,11 +114,12 @@
 
         <Button
             android:id="@+id/giftChocolate"
-            android:textColor="@color/white"
-            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="gift" />
+            android:background="@drawable/main_menu_buttons"
+            android:text="gift"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -141,6 +145,7 @@
             android:text="Roses"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <TextView
@@ -161,11 +166,12 @@
 
         <Button
             android:id="@+id/giftRoses"
-            android:textColor="@color/white"
-            android:background="@drawable/main_menu_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="gift" />
+            android:background="@drawable/main_menu_buttons"
+            android:text="gift"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
     </LinearLayout>
 
 </LinearLayout>

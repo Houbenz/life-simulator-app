@@ -75,6 +75,7 @@
             android:text="@string/workTime"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textColor="@color/black"
+            android:textSize="14dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
