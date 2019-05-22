@@ -573,7 +573,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private void showTuto(){
 
         new GuideView.Builder(getContext())
-                .setTitle("Buying")
+                .setTitle("Dating")
                 .setContentText("when you press the button the player will start looking for a partner," +
                         " after a brief a period of time you will meet someone !")
                 .setTargetView(lookPartner)

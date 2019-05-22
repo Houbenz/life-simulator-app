@@ -15,7 +15,7 @@
         android:fontFamily="casual"
         android:padding="8dp"
         android:text="Start looking for a partner"
-        android:textSize="14do"
+        android:textSize="14dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
