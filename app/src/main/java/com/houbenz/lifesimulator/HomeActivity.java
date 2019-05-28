@@ -87,8 +87,6 @@ public class HomeActivity extends AppCompatActivity {
     private ViewSwitcher switcher;
     private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
-
-    public static int numberAd = 0 ;
     private View.OnTouchListener mOnTouchListener = (v, event) ->{
 
         hideSystemUI();

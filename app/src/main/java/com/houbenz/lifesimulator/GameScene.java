@@ -155,8 +155,6 @@ public class GameScene extends AppCompatActivity
 
     private int slot ;
 
-    private int numberAd = 0 ;
-
     private boolean ignore=true;
 
 
@@ -1601,11 +1599,8 @@ public class GameScene extends AppCompatActivity
 
 
     private void loadRewardAd(){
-
-        if(numberAd < 2) {
             mRewardVideoAdDoubleIncome.loadAd(AD_VIDEO_ID, new AdRequest.Builder().build());
-            numberAd++;
-        }
+
     }
     @Override
     public void onRewardedVideoAdLoaded() {

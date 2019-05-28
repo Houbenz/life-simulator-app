@@ -671,11 +671,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
     private void loadRewardAd(){
-
-        if(HomeActivity.numberAd < 2 ) {
             mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
-            HomeActivity.numberAd++;
-        }
     }
 
 
