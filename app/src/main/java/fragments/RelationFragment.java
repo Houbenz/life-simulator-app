@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.appodeal.ads.Appodeal;
+import com.appodeal.ads.RewardedVideoCallbacks;
 import com.houbenz.lifesimulator.GameScene;
-import com.houbenz.lifesimulator.HomeActivity;
 import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.ArrayList;
@@ -38,15 +35,13 @@ import database.Gift;
 import database.Partner;
 import database.Player;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
-import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelPartner;
 
-import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
 
 
-public class RelationFragment extends Fragment implements RewardedVideoAdListener {
+public class RelationFragment extends Fragment {
 
-    private RewardedVideoAd mRewardVideoAd;
+   // private RewardedVideoAd mRewardVideoAd;
 
     public RelationFragment() {
 
@@ -99,6 +94,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         partnerName=fragment.findViewById(R.id.partnerName);
         mariage=fragment.findViewById(R.id.mariage);
         mariagePhotos=fragment.findViewById(R.id.mariagephotos);
+
+        /*
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
 
@@ -111,6 +108,55 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         mRewardVideoAd.setRewardedVideoAdListener(this);
 
         loadRewardAd();
+           */
+
+
+        Appodeal.setTesting(true);
+        Appodeal.disableLocationPermissionCheck();
+        Appodeal.initialize(getActivity(),GameScene.appodeal_app_ID,Appodeal.REWARDED_VIDEO);
+        Appodeal.setRewardedVideoCallbacks(new RewardedVideoCallbacks() {
+            @Override
+            public void onRewardedVideoLoaded(boolean b) {
+                if(player1.getDating().equals("false")) {
+                    adButtonFindPartner.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onRewardedVideoFailedToLoad() { }
+            @Override
+            public void onRewardedVideoShown() {
+                countDownTimer.cancel();
+            }
+            @Override
+            public void onRewardedVideoFinished(double v, String s) {
+                if(!dateAd) {
+                    List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
+
+                    int min = 0;
+                    int max = 3;
+                    int random = (int) (Math.random() * max) - min;
+                    foundPartner(partners.get(random));
+                }
+                else{
+
+                    viewmodel.setGoDate(2000);
+
+                    dateNumber++;
+
+                    relationBar.setProgress(relationBar.getProgress() + 10);
+
+                    progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+                    player1.setRelationBar(relationBar.getProgress());
+                    viewmodel.setRelationBar(relationBar.getProgress());
+
+                    MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+                }
+            }
+            @Override
+            public void onRewardedVideoClosed(boolean b) {}
+            @Override
+            public void onRewardedVideoExpired() { }
+        });
 
         viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
 
@@ -144,15 +190,22 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 offerGift.setVisibility(View.VISIBLE);
             }
         }
-        if (player1.getDating().equals("true")) {
-            foundPartnerConstraint.setVisibility(View.VISIBLE);
-            lookPartner.setVisibility(View.GONE);
-            visitText.setVisibility(View.GONE);
+        if (player1.getDating().equals("true") ) {
+            adButtonFindPartner.setVisibility(View.GONE);
             Partner partner=MainMenu.myAppDataBase.myDao().getDatingPartner();
 
-            partnerName.setText(partner.getName());
-            partnerImage.setImageURI(Uri.parse(partner.getImage()));
+            List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
+            for(Partner az : partners){
+                Log.i("LOZ",az.getImage() +" "+ az.getDating()+ " "+ az.getId());
+            }
+            if(partner != null) {
 
+                foundPartnerConstraint.setVisibility(View.VISIBLE);
+                lookPartner.setVisibility(View.GONE);
+                visitText.setVisibility(View.GONE);
+                partnerName.setText(partner.getName());
+                partnerImage.setImageURI(Uri.parse(partner.getImage()));
+            }
         }
 
 
@@ -408,7 +461,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                             viewmodel.setBreakUp(true);
 
-                            loadRewardAd();
+                            //loadRewardAd();
+
                         })).setNegativeButton("No", ((dialog, which) -> {
                     dialog.cancel();
                     dialog.dismiss();
@@ -462,9 +516,15 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 });
 
                 watchad.setOnClickListener(v2 ->{
-                    if(mRewardVideoAd.isLoaded()){
+                    /*if(mRewardVideoAd.isLoaded()){
                         dateAd=true;
                         mRewardVideoAd.show();
+                    }*/
+
+                    if(Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)){
+
+                        dateAd=true;
+                        Appodeal.show(getActivity(),Appodeal.REWARDED_VIDEO);
                     }
                     dialog.dismiss();
                 });
@@ -490,8 +550,11 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
         adButtonFindPartner.setOnClickListener(v -> {
 
-            if(mRewardVideoAd.isLoaded()){
+            /*if(mRewardVideoAd.isLoaded()){
                 mRewardVideoAd.show();
+            }*/
+            if(Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)){
+                Appodeal.show(getActivity(),Appodeal.REWARDED_VIDEO);
             }
         });
 
@@ -669,13 +732,19 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
         }
 
-
+/*
     private void loadRewardAd(){
             mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
     }
+*/
+
+public void setRewardAppodeal(){
 
 
+}
 
+
+   /*
     @Override
     public void onRewardedVideoAdLoaded() {
         if(player1.getDating().equals("false")) {
@@ -684,9 +753,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     }
 
     @Override
-    public void onRewardedVideoAdOpened() {
-
-    }
+    public void onRewardedVideoAdOpened() { }
 
     @Override
     public void onRewardedVideoStarted() {
@@ -695,9 +762,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
     @Override
     public void onRewardedVideoAdClosed() {
-
-        loadRewardAd();
-    }
+        loadRewardAd(); }
 
     @Override
     public void onRewarded(RewardItem rewardItem) {
@@ -711,7 +776,6 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             foundPartner(partners.get(random));
         }
         else{
-
             //don't mind the 22 its just for the code to work properly
             viewmodel.setGoDate(2000);
 
@@ -726,24 +790,15 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             viewmodel.setRelationBar(relationBar.getProgress());
 
             MainMenu.myAppDataBase.myDao().updatePlayer(player1);
-        }
-    }
-
+        } }
     @Override
-    public void onRewardedVideoAdLeftApplication() {
-
-    }
-
+    public void onRewardedVideoAdLeftApplication() { }
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        loadRewardAd();
-    }
-
+        loadRewardAd(); }
     @Override
-    public void onRewardedVideoCompleted() {
-
-    }
-
+    public void onRewardedVideoCompleted() { }
+*/
 
     @Override
     public void onDetach() {

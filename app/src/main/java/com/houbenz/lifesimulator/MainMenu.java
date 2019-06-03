@@ -927,9 +927,13 @@ public class MainMenu extends AppCompatActivity {
 
                 if(!isUpdate)
                     myAppDataBase.myDao().addPartner(partner);
-                else
+                else {
+                    Partner par = myAppDataBase.myDao().getDatingPartner();
+                    if(par.getId() == partner.getId())
+                        partner.setDating("true");
                     myAppDataBase.myDao().updatePartner(partner);
-            }
+                     }
+                }
 
 
             int oldRows = myAppDataBase.myDao().partnerNumber();

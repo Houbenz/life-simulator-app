@@ -30,11 +30,8 @@ import android.widget.ViewSwitcher;
 
 
 import com.android.houbenz.lifesimulator.R;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.appodeal.ads.Appodeal;
+import com.appodeal.ads.RewardedVideoCallbacks;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
@@ -73,8 +70,8 @@ import fragments.SleepFragment;
 import fragments.StoreFragment;
 import fragments.WithdrawFragment;
 import fragments.WorkFragment;
+import io.presage.finder.model.App;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
-import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelCars;
 import viewmodels.ViewModelGift;
 
@@ -83,7 +80,7 @@ public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnMainFragmentClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked
-    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit,RewardedVideoAdListener
+    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit
 {
 
     private Button buy;
@@ -158,7 +155,7 @@ public class GameScene extends AppCompatActivity
     private boolean ignore=true;
 
 
-    private RewardedVideoAd mRewardVideoAdDoubleIncome;
+   // private RewardedVideoAd mRewardVideoAdDoubleIncome;
 
     private ConstraintLayout constraintLayout;
 
@@ -176,6 +173,10 @@ public class GameScene extends AppCompatActivity
     private boolean learning =false;
     private int learn_time=Params.LEARN_TIME;
 
+
+
+    public final static String appodeal_app_ID ="d759df7a087f4d49bb559c217f05ba70ba91fede02cbfb55";
+    /*
     //this is the original app ad id
     public final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
@@ -192,7 +193,7 @@ public class GameScene extends AppCompatActivity
 
     //this is the test for FINDPARTNER AD VIDEO ID
    // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
-
+*/
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
             hideSystemUI();
@@ -419,13 +420,13 @@ public class GameScene extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        mRewardVideoAdDoubleIncome.resume(this);
+       // mRewardVideoAdDoubleIncome.resume(this);
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        mRewardVideoAdDoubleIncome.destroy(this);
+      //  mRewardVideoAdDoubleIncome.destroy(this);
         super.onDestroy();
         threadRun=false;
     }
@@ -524,16 +525,66 @@ public class GameScene extends AppCompatActivity
         deliverGift();
 
 
+        doubleEarn.setVisibility(View.VISIBLE);
+
+        instantDollarButton.setVisibility(View.VISIBLE);
+
+        //AppoDeal **********************************************************
+        Appodeal.initialize(this, appodeal_app_ID, Appodeal.REWARDED_VIDEO);
+        Appodeal.setTesting(true);
+        Appodeal.disableLocationPermissionCheck();
+
+        Appodeal.setRewardedVideoCallbacks(new RewardedVideoCallbacks() {
+            @Override
+            public void onRewardedVideoLoaded(boolean b) {
+
+                if(!player.getWork().equals(getString(R.string.none)))
+                    doubleEarn.setVisibility(View.VISIBLE);
+
+                instantDollarButton.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onRewardedVideoFailedToLoad() { }
+            @Override
+            public void onRewardedVideoShown() { }
+            @Override
+            public void onRewardedVideoFinished(double v, String s) {
+                if(doubleEarnClicked) {
+                    doubleEarnThread();
+                    showCustomToast("you now earn double : "+ player.getWork_income()+"$","","green");
+                }
+                else{
+                    player.setBalance(player.getBalance()+100);
+                    balance.setText(player.getBalance()+"$");
+                    showCustomToast("you earned : 100$","","green");
+                }
+            }
+
+            @Override
+            public void onRewardedVideoClosed(boolean b) {
+                //instantDollarButton.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onRewardedVideoExpired() {
+
+            }
+        });
+        //******************************************
+
+
+
+        /*
         try {
             MobileAds.initialize(this, APP_ADS_ID);
 
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),"not loading :/",Toast.LENGTH_LONG).show();
         }
-        mRewardVideoAdDoubleIncome =MobileAds.getRewardedVideoAdInstance(this);
+       mRewardVideoAdDoubleIncome =MobileAds.getRewardedVideoAdInstance(this);
         mRewardVideoAdDoubleIncome.setRewardedVideoAdListener(this);
-        loadRewardAd();
-
+        //loadRewardAd();
+        */
 
 
         mpIncome = MediaPlayer.create(this,R.raw.money_gain);
@@ -721,18 +772,31 @@ public class GameScene extends AppCompatActivity
 
 
         doubleEarn.setOnClickListener(v -> {
+
+
+            if(Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)){
+                doubleEarnClicked=true;
+                Appodeal.show(this,Appodeal.REWARDED_VIDEO);}
+
+            /*
             if(mRewardVideoAdDoubleIncome.isLoaded()) {
                 doubleEarnClicked=true;
                 mRewardVideoAdDoubleIncome.show();
-            }
+            }*/
         });
 
         instantDollarButton.setOnClickListener(v ->{
-           if(mRewardVideoAdDoubleIncome.isLoaded()){
+
+            if(Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)){
+                doubleEarnClicked=false;
+                Appodeal.show(this,Appodeal.REWARDED_VIDEO);}
+
+
+          /* if(mRewardVideoAdDoubleIncome.isLoaded()){
                doubleEarnClicked=false;
                mRewardVideoAdDoubleIncome.show();
            }
-
+          */
         });
 
         speedSeekBar=(SeekBar)findViewById(R.id.speedSeekBar);
@@ -826,7 +890,7 @@ public class GameScene extends AppCompatActivity
                 income.setText(player.getWork_income() + "$");
                 doubleEarn.setEnabled(true);
                 doubleEarn.setText(getString(R.string.doubleEarn));
-                loadRewardAd();
+                //loadRewardAd();
 
             });
 
@@ -1156,9 +1220,10 @@ public class GameScene extends AppCompatActivity
 
         showCustomToast("you're now a "+work.getName(),work.getImgPath(),"green");
 
-        if(mRewardVideoAdDoubleIncome.isLoaded())
-            doubleEarn.setVisibility(View.VISIBLE);
 
+        //replaced admob one
+        if(Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
+            doubleEarn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1597,11 +1662,13 @@ public class GameScene extends AppCompatActivity
         fragmentInsertionSecond(houseFragment);
     }
 
-
+/*
     private void loadRewardAd(){
             mRewardVideoAdDoubleIncome.loadAd(AD_VIDEO_ID, new AdRequest.Builder().build());
 
     }
+    */
+/*
     @Override
     public void onRewardedVideoAdLoaded() {
 
@@ -1640,7 +1707,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void onRewardedVideoCompleted() { }
 
-
+*/
     public void loadProgress(){
         database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
         jobName.setText(loaded_player.getWork());
