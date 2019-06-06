@@ -17,4 +17,13 @@
     "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/garage"
   }
 
+,
+  {
+    "id": 3,
+    "name":"Small house 2222",
+    "price":1000,
+    "bonusE":5,
+    "bonusH":5,
+    "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/small_house"
+  }
 ]

@@ -341,7 +341,7 @@ public class MainMenu extends AppCompatActivity {
     }
 
     //Pour entrer le nom du joueur puis sauvgarder la premiere session
-    public void dialogInputCreate(final int slotNumber){
+    public void dialogInputCreate(int slotNumber){
 
         final Dialog putText = new Dialog(MainMenu.this);
 
@@ -407,7 +407,7 @@ public class MainMenu extends AppCompatActivity {
 
 
     //pour ecraser une partie lorsque le joueur utilise une slot deja prise
-    public void overwriteSlotDilaog(final int slotNumber) {
+    public void overwriteSlotDilaog(int slotNumber) {
 
         final AlertDialog.Builder overwriteDialog = new AlertDialog.Builder(MainMenu.this);
 
@@ -929,12 +929,12 @@ public class MainMenu extends AppCompatActivity {
                     myAppDataBase.myDao().addPartner(partner);
                 else {
                     Partner par = myAppDataBase.myDao().getDatingPartner();
-                    if(par.getId() == partner.getId())
-                        partner.setDating("true");
+
+                        if (par != null && par.getId() == partner.getId())
+                            partner.setDating("true");
+                    }
                     myAppDataBase.myDao().updatePartner(partner);
                      }
-                }
-
 
             int oldRows = myAppDataBase.myDao().partnerNumber();
             int newRows = jsonArray.length() - oldRows;

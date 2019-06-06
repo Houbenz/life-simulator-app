@@ -1,6 +1,8 @@
 package fragments;
 
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import database.Acquired_Cars;
 import database.Acquired_Houses;
 import database.House;
 
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +84,37 @@ public class OutsideHomeFragment extends Fragment {
             }
         }
 
+        View mainConsLayout = fragment.findViewById(R.id.mainConsLayout);
+
+        CountDownTimer count = new CountDownTimer(500,250) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                outsideView.setImageBitmap(getBitmap(mainConsLayout));
+            }
+
+            @Override
+            public void onFinish() {
+
+            removeAllImages();
+
+            }
+        };
+        count.start();
+
+
         return fragment;
     }
 
+
+    private void removeAllImages(){
+        carPlace.setVisibility(View.GONE);
+        garage.setVisibility(View.GONE);
+    }
+
+    private Bitmap getBitmap(View v) {
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(),v.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        v.draw(canvas);
+        return bitmap;
+    }
 }

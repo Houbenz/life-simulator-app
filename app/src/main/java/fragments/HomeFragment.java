@@ -1,11 +1,16 @@
 package fragments;
 
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +40,7 @@ public class HomeFragment extends Fragment {
     private ImageView tvPlace;
     private ImageView couch;
     private ImageView chair;
-    private ViewModelFourHome viewModel;
+    private ImageView room;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -45,8 +50,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        viewModel= ViewModelProviders.of(getActivity()).get(ViewModelFourHome.class);
 
         View fragment;
 
@@ -72,6 +75,7 @@ public class HomeFragment extends Fragment {
            tvPlace=fragment.findViewById(R.id.tvPlace);
            couch=fragment.findViewById(R.id.couch);
            chair=fragment.findViewById(R.id.chair);
+           room=fragment.findViewById(R.id.room);
 
            //get all acquired furnitures
            List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
@@ -129,9 +133,43 @@ public class HomeFragment extends Fragment {
                }
 
            }
-       }
 
+
+       View introLayout = fragment.findViewById(R.id.introLayout);
+
+
+        CountDownTimer count = new CountDownTimer(500,250) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                room.setImageBitmap(getBitmap(introLayout));
+            }
+
+            @Override
+            public void onFinish() {
+
+                removeAllImages();
+            }
+        };
+        count.start();
+
+
+       }
         return fragment;
     }
 
+
+    private Bitmap getBitmap(@NonNull View v) {
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(),v.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        v.draw(canvas);
+        return bitmap;
+    }
+
+    private void removeAllImages(){
+        chair.setVisibility(View.GONE);
+        tvPlace.setVisibility(View.GONE);
+        tablePlace.setVisibility(View.GONE);
+        couch.setVisibility(View.GONE);
+        salonTable.setVisibility(View.GONE);
+    }
 }

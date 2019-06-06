@@ -531,7 +531,6 @@ public class GameScene extends AppCompatActivity
 
         //AppoDeal **********************************************************
         Appodeal.initialize(this, appodeal_app_ID, Appodeal.REWARDED_VIDEO);
-        Appodeal.setTesting(true);
         Appodeal.disableLocationPermissionCheck();
 
         Appodeal.setRewardedVideoCallbacks(new RewardedVideoCallbacks() {
@@ -572,8 +571,6 @@ public class GameScene extends AppCompatActivity
         });
         //******************************************
 
-
-
         /*
         try {
             MobileAds.initialize(this, APP_ADS_ID);
@@ -600,7 +597,7 @@ public class GameScene extends AppCompatActivity
          constraintLayout.setOnTouchListener(mOnTouchListener);
 
 
-        slot =getIntent().getIntExtra("slotNumber",0);
+        slot =getIntent().getIntExtra("slotNumber",1);
 
             healthbar=findViewById(R.id.healthBar);
             energyBar=findViewById(R.id.energyBar);

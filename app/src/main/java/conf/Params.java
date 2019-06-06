@@ -17,7 +17,7 @@ public class Params {
     public static final int ENERGY_GAIN_PER_HOUR=8;
 
 
-    public static final double START_BALANCE = 12000;
+    public static final double START_BALANCE = 200000;
 
 
     //for hunger loss (gains are directly from food.json file)
@@ -52,8 +52,8 @@ public class Params {
     public static final int LEARN_TIME = 60 ;
 
 
-    public static final int MIN_TIME_LOOKING_FOR_PARTNER=10000;
-    public static final int MAX_TIME_LOOKING_FOR_PARTNER=50000;
+    public static final int MIN_TIME_LOOKING_FOR_PARTNER=20000;
+    public static final int MAX_TIME_LOOKING_FOR_PARTNER=70000;
 
     public static final int CHOCOLATE_BONUS=1;
     public static final int ROSES_BONUS=5;

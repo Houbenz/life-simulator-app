@@ -38,6 +38,7 @@ import androidx.lifecycle.ViewModelProviders;
 import beans.Level;
 import conf.Params;
 import database.Player;
+import fragments.Home2Fragment;
 import fragments.HomeFragment;
 import fragments.OutsideHomeFragment;
 import fragments.RelationFragment;
@@ -56,6 +57,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView time;
 
     private Button showHomeButton;
+    private Button showSecondHomeButton;
     private Button socialButton;
     private Button showOutsideHomeButton;
 
@@ -95,6 +97,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void deselectButtons(){
         showHomeButton.setSelected(false);
+        showSecondHomeButton.setSelected(false);
         socialButton.setSelected(false);
         showOutsideHomeButton.setSelected(false);
     }
@@ -173,6 +176,7 @@ public class HomeActivity extends AppCompatActivity {
         speedName=findViewById(R.id.speedName);
         switcher=findViewById(R.id.switcherHomeActivity);
         showHomeButton=findViewById(R.id.showHomeButton);
+        showSecondHomeButton=findViewById(R.id.showSecondHomeButton);
         socialButton=findViewById(R.id.socialButton);
         showOutsideHomeButton=findViewById(R.id.showOutsideHomeButton);
 
@@ -187,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
         HomeFragment homeFragment1 = new HomeFragment();
         insertFragment(homeFragment1);
 
-
+        showHomeButton.setSelected(true);
 
         showHomeButton.setOnClickListener(view ->{
 
@@ -197,8 +201,6 @@ public class HomeActivity extends AppCompatActivity {
             HomeFragment homeFragment = new HomeFragment();
             insertFragment(homeFragment);
         });
-
-        showHomeButton.setSelected(true);
 
         socialButton.setOnClickListener(view ->{
 
@@ -217,6 +219,15 @@ public class HomeActivity extends AppCompatActivity {
 
             OutsideHomeFragment outsideHomeFragment = new OutsideHomeFragment();
             insertFragment(outsideHomeFragment);
+        });
+
+
+        showSecondHomeButton.setOnClickListener(view ->{
+            deselectButtons();
+            showSecondHomeButton.setSelected(true);
+
+            Home2Fragment home2Fragment = new Home2Fragment();
+            insertFragment(home2Fragment);
         });
 
         speedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

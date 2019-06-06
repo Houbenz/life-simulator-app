@@ -42,7 +42,7 @@
   {
     "id": 6,
     "name":"Table with laptop",
-    "price":3500,
+    "price":2500,
     "fournitureType":"table",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
@@ -53,6 +53,30 @@
     "price":300,
     "fournitureType":"couch",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
+  }
+,
+  {
+    "id": 8,
+    "name":"bed",
+    "price":300,
+    "fournitureType":"bed",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/bed"
+  }
+,
+  {
+    "id": 9,
+    "name":"Wardrobe",
+    "price":400,
+    "fournitureType":"wardrobe",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/wardrobe"
+  }
+,
+  {
+    "id": 10,
+    "name":"Computer & Table",
+    "price":1500,
+    "fournitureType":"computer table",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/computer_table"
   }
 
 ]

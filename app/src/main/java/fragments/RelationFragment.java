@@ -110,8 +110,6 @@ public class RelationFragment extends Fragment {
         loadRewardAd();
            */
 
-
-        Appodeal.setTesting(true);
         Appodeal.disableLocationPermissionCheck();
         Appodeal.initialize(getActivity(),GameScene.appodeal_app_ID,Appodeal.REWARDED_VIDEO);
         Appodeal.setRewardedVideoCallbacks(new RewardedVideoCallbacks() {
