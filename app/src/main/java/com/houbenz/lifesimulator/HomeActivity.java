@@ -40,6 +40,7 @@ import conf.Params;
 import database.Player;
 import fragments.Home2Fragment;
 import fragments.HomeFragment;
+import fragments.OutsideHome2Fragment;
 import fragments.OutsideHomeFragment;
 import fragments.RelationFragment;
 import viewmodels.ViewModelPartner;
@@ -60,6 +61,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button showSecondHomeButton;
     private Button socialButton;
     private Button showOutsideHomeButton;
+    private Button showOutsideHome2Button;
 
 
     private ProgressBar healthbar;
@@ -100,6 +102,7 @@ public class HomeActivity extends AppCompatActivity {
         showSecondHomeButton.setSelected(false);
         socialButton.setSelected(false);
         showOutsideHomeButton.setSelected(false);
+        showOutsideHome2Button.setSelected(false);
     }
 
     @Override
@@ -179,6 +182,7 @@ public class HomeActivity extends AppCompatActivity {
         showSecondHomeButton=findViewById(R.id.showSecondHomeButton);
         socialButton=findViewById(R.id.socialButton);
         showOutsideHomeButton=findViewById(R.id.showOutsideHomeButton);
+        showOutsideHome2Button=findViewById(R.id.showOutsideHome2Button);
 
         mConstraintLayout=findViewById(R.id.constraintLayout);
         mConstraintLayout.setOnTouchListener(mOnTouchListener);
@@ -219,6 +223,15 @@ public class HomeActivity extends AppCompatActivity {
 
             OutsideHomeFragment outsideHomeFragment = new OutsideHomeFragment();
             insertFragment(outsideHomeFragment);
+        });
+
+        showOutsideHome2Button.setOnClickListener( view ->{
+
+            deselectButtons();
+            showOutsideHome2Button.setSelected(true);
+
+            OutsideHome2Fragment outsideHome2Fragment = new OutsideHome2Fragment();
+            insertFragment(outsideHome2Fragment);
         });
 
 

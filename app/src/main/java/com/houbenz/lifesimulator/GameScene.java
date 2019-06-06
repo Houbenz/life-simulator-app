@@ -1119,12 +1119,14 @@ public class GameScene extends AppCompatActivity
         viewModelCars.getCar().observe(this,car -> {
 
             Acquired_Houses acquired_garage = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),2);
+            Acquired_Houses acquired_secondhome = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),3);
 
-            if(acquired_garage == null){
+            if(acquired_garage == null && acquired_secondhome==null){
 
 
                 House garage = MainMenu.myAppDataBase.myDao().getHouse(2);
-                showCustomToast("You must buy a "+garage.getName()+" first ! ",garage.getImgUrl(),"red");
+                House house2 = MainMenu.myAppDataBase.myDao().getHouse(3);
+                showCustomToast("You must buy a "+garage.getName()+" or "+house2.getName()+" first ! ",garage.getImgUrl(),"red");
             }
             else {
                 Dialog dialog = new Dialog(this);

@@ -4,6 +4,8 @@ package fragments;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Dialog;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -11,14 +13,19 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.houbenz.lifesimulator.MainMenu;
 import com.android.houbenz.lifesimulator.R;
 
+import java.io.File;
 import java.util.List;
 
 import database.Acquired_Furnitures;
@@ -26,6 +33,7 @@ import database.Acquired_Houses;
 import viewmodels.ViewModelFourHome;
 
 import static com.houbenz.lifesimulator.MainMenu.myAppDataBase;
+import static fragments.Home2Fragment.savePicture;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +49,7 @@ public class HomeFragment extends Fragment {
     private ImageView couch;
     private ImageView chair;
     private ImageView room;
+    private View introLayout;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -135,7 +144,7 @@ public class HomeFragment extends Fragment {
            }
 
 
-       View introLayout = fragment.findViewById(R.id.introLayout);
+        introLayout = fragment.findViewById(R.id.introLayout);
 
 
         CountDownTimer count = new CountDownTimer(500,250) {
@@ -153,7 +162,40 @@ public class HomeFragment extends Fragment {
         count.start();
 
 
+        introLayout.setOnLongClickListener(v -> {
+
+            Dialog dialog = new Dialog(getContext());
+
+            dialog.setContentView(R.layout.dialog);
+            TextView title = dialog.findViewById(R.id.dialogTitle);
+            Button confirm = dialog.findViewById(R.id.confirm);
+            Button cancel = dialog.findViewById(R.id.decline);
+            title.setText("would you like to save the image ?");
+
+            confirm.setOnClickListener(v1->{
+
+                //this is a static method from home2Fragment
+                addImageGallery(savePicture(introLayout,"Home1 inside.jpeg"));
+
+                Toast.makeText(getContext(),"Picture save Succesfully",Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            });
+
+            cancel.setOnClickListener(v2->{
+                dialog.dismiss();
+            });
+            dialog.setOnDismissListener(dialog1 -> {
+
+                dialog.dismiss();
+            });
+
+            dialog.show();
+            return  false;
+        });
        }
+
+
+
         return fragment;
     }
 
@@ -171,5 +213,11 @@ public class HomeFragment extends Fragment {
         tablePlace.setVisibility(View.GONE);
         couch.setVisibility(View.GONE);
         salonTable.setVisibility(View.GONE);
+    }
+    private void addImageGallery(@NonNull File file ) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg"); // or image/png
+        getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 }

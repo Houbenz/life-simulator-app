@@ -1,12 +1,15 @@
 package fragments;
 
 
+import android.app.Dialog;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import database.Acquired_Cars;
@@ -14,17 +17,23 @@ import database.Acquired_Houses;
 import database.House;
 
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
 import com.houbenz.lifesimulator.MainMenu;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static fragments.Home2Fragment.savePicture;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,12 +41,10 @@ import java.util.List;
 public class OutsideHomeFragment extends Fragment {
 
 
-    ImageView outsideView;
-    ImageView carPlace;
-    ImageView garage;
-
-    private final String HOUSE_GARAGE="android.resource://com.houbenz.android.lifesimulator/drawable/outside_house_with_garage";
-    private final String HOUSE_NO_GARAGE="android.resource://com.houbenz.android.lifesimulator/drawable/outside_house_no_garage";
+    private ImageView outsideView;
+    private ImageView carPlace;
+    private ImageView garage;
+    private View mainConsLayout;
 
     public OutsideHomeFragment() {
         // Required empty public constructor
@@ -72,7 +79,7 @@ public class OutsideHomeFragment extends Fragment {
 
             if(acquired_garage!=null){
                 garage.setImageURI(Uri.parse(acquired_garage.getImgUrl()+"x"));
-            }
+
 
            List<Acquired_Cars> acquired_cars=MainMenu.myAppDataBase.myDao().getAcquiredCars(slot);
             for(Acquired_Cars acqCar : acquired_cars){
@@ -82,9 +89,9 @@ public class OutsideHomeFragment extends Fragment {
                     }
                 }
             }
-        }
+            }
 
-        View mainConsLayout = fragment.findViewById(R.id.mainConsLayout);
+         mainConsLayout = fragment.findViewById(R.id.mainConsLayout);
 
         CountDownTimer count = new CountDownTimer(500,250) {
             @Override
@@ -102,6 +109,38 @@ public class OutsideHomeFragment extends Fragment {
         count.start();
 
 
+            mainConsLayout.setOnLongClickListener(v -> {
+
+                Dialog dialog = new Dialog(getContext());
+
+                dialog.setContentView(R.layout.dialog);
+                TextView title = dialog.findViewById(R.id.dialogTitle);
+                Button confirm = dialog.findViewById(R.id.confirm);
+                Button cancel = dialog.findViewById(R.id.decline);
+                title.setText("would you like to save the image ?");
+
+                confirm.setOnClickListener(v1->{
+
+                    //this is a static method from home2Fragment
+                   addImageGallery(savePicture(mainConsLayout,"Home Outside.jpeg"));
+
+                    Toast.makeText(getContext(),"Picture save Succesfully",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                });
+
+                cancel.setOnClickListener(v2->{
+                    dialog.dismiss();
+                });
+                dialog.setOnDismissListener(dialog1 -> {
+
+                    dialog.dismiss();
+                });
+
+                dialog.show();
+                return  false;
+            });
+        }
+
         return fragment;
     }
 
@@ -116,5 +155,12 @@ public class OutsideHomeFragment extends Fragment {
         Canvas canvas = new Canvas(bitmap);
         v.draw(canvas);
         return bitmap;
+    }
+
+    private void addImageGallery(@NonNull File file ) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg"); // or image/png
+        getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 }
