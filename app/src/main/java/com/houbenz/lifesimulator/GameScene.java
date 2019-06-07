@@ -185,18 +185,18 @@ public class GameScene extends AppCompatActivity
     public final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
      //this is the original video double income ad id
-     //private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
+     private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
 
 
     //this is the original FINDPARTNER AD VIDEO ID
-    //public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
+    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
 
 
     //this is for test video double ad income ad
-    private final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
+    // final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
 
     //this is the test for FINDPARTNER AD VIDEO ID
-    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
+   // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
 
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
