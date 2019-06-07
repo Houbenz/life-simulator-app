@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProviders;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,6 +35,8 @@ import java.util.List;
 
 import database.Acquired_Furnitures;
 import database.Acquired_Houses;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelFourHome;
 
 import static com.houbenz.lifesimulator.MainMenu.myAppDataBase;
@@ -44,8 +48,7 @@ import static fragments.Home2Fragment.savePicture;
 public class HomeFragment extends Fragment {
 
 
-
-   // private ImageView room;
+    // private ImageView room;
     private ImageView salonTable;
     private ImageView tablePlace;
     private ImageView tvPlace;
@@ -53,6 +56,9 @@ public class HomeFragment extends Fragment {
     private ImageView chair;
     private ImageView room;
     private View introLayout;
+
+    private SharedPreferences sharedPreferences;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -66,142 +72,149 @@ public class HomeFragment extends Fragment {
         View fragment;
 
 
-
+        sharedPreferences = getContext().getSharedPreferences("myshared", Context.MODE_PRIVATE);
 
         int slot = getArguments().getInt("slot");
 
 
-       Acquired_Houses acquired_houses = MainMenu.myAppDataBase.myDao().getAcqHouse(slot,1);
+        Acquired_Houses acquired_houses = MainMenu.myAppDataBase.myDao().getAcqHouse(slot, 1);
 
-       if(acquired_houses == null){
-
-
-           fragment =inflater.inflate(R.layout.fragment_home_not_owned, container, false);
-
-       }else {
-
-           fragment =inflater.inflate(R.layout.fragment_home, container, false);
-
-           salonTable=fragment.findViewById(R.id.salontable);
-           tablePlace=fragment.findViewById(R.id.tablePlace);
-           tvPlace=fragment.findViewById(R.id.tvPlace);
-           couch=fragment.findViewById(R.id.couch);
-           chair=fragment.findViewById(R.id.chair);
-           room=fragment.findViewById(R.id.room);
-
-           //get all acquired furnitures
-           List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
-
-           for (Acquired_Furnitures furniture : acquired_furnituresList) {
-               Uri uri;
-               switch (furniture.getFurnitureType()) {
-
-                   case "table":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           tablePlace.setImageURI(uri);
-                       }
-                       break;
-
-                   case "tv":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           tvPlace.setImageURI(uri);
-                       }
-                       break;
-
-                   case "chair":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           chair.setImageURI(uri);
-                       }
-                       break;
-
-                   case "computer":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           tablePlace.setImageURI(uri);
-                       }
-                       break;
+        if (acquired_houses == null) {
 
 
-                   case "couch":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           couch.setImageURI(uri);
-                       }
-                       break;
+            fragment = inflater.inflate(R.layout.fragment_home_not_owned, container, false);
 
-                   case "salonTable":
-                       if (furniture.getAvailable().equals("true")) {
-                           uri = Uri.parse(furniture.getImgurl()+"x");
-                           salonTable.setImageURI(uri);
-                       }
-                       break;
-                   default:
-                       ;
+        } else {
+
+            fragment = inflater.inflate(R.layout.fragment_home, container, false);
+
+            salonTable = fragment.findViewById(R.id.salontable);
+            tablePlace = fragment.findViewById(R.id.tablePlace);
+            tvPlace = fragment.findViewById(R.id.tvPlace);
+            couch = fragment.findViewById(R.id.couch);
+            chair = fragment.findViewById(R.id.chair);
+            room = fragment.findViewById(R.id.room);
+
+            //get all acquired furnitures
+            List<Acquired_Furnitures> acquired_furnituresList = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(slot);
+
+            for (Acquired_Furnitures furniture : acquired_furnituresList) {
+                Uri uri;
+                switch (furniture.getFurnitureType()) {
+
+                    case "table":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            tablePlace.setImageURI(uri);
+                        }
+                        break;
+
+                    case "tv":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            tvPlace.setImageURI(uri);
+                        }
+                        break;
+
+                    case "chair":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            chair.setImageURI(uri);
+                        }
+                        break;
+
+                    case "computer":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            tablePlace.setImageURI(uri);
+                        }
+                        break;
 
 
-               }
+                    case "couch":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            couch.setImageURI(uri);
+                        }
+                        break;
 
-           }
-
-
-        introLayout = fragment.findViewById(R.id.introLayout);
-
-
-        CountDownTimer count = new CountDownTimer(500,250) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                room.setImageBitmap(getBitmap(introLayout));
-            }
-
-            @Override
-            public void onFinish() {
-
-                removeAllImages();
-            }
-        };
-        count.start();
+                    case "salonTable":
+                        if (furniture.getAvailable().equals("true")) {
+                            uri = Uri.parse(furniture.getImgurl() + "x");
+                            salonTable.setImageURI(uri);
+                        }
+                        break;
+                    default:
+                        ;
 
 
-        introLayout.setOnLongClickListener(v -> {
-
-            if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED){
-
-            Dialog dialog = new Dialog(getContext());
-
-            dialog.setContentView(R.layout.dialog);
-            TextView title = dialog.findViewById(R.id.dialogTitle);
-            Button confirm = dialog.findViewById(R.id.confirm);
-            Button cancel = dialog.findViewById(R.id.decline);
-            title.setText("would you like to save the image ?");
-
-            confirm.setOnClickListener(v1->{
-
-                //this is a static method from home2Fragment
-                addImageGallery(savePicture(introLayout,"Home1 inside.jpeg"));
-
-                Toast.makeText(getContext(),"Picture save Succesfully",Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            });
-
-            cancel.setOnClickListener(v2->{
-                dialog.dismiss();
-            });
-            dialog.setOnDismissListener(dialog1 -> {
-
-                dialog.dismiss();
-            });
-
-            dialog.show();
+                }
 
             }
-            return  false;
-        });
-       }
 
+
+            introLayout = fragment.findViewById(R.id.introLayout);
+
+
+            CountDownTimer count = new CountDownTimer(500, 250) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    room.setImageBitmap(getBitmap(introLayout));
+                }
+
+                @Override
+                public void onFinish() {
+
+                    removeAllImages();
+                }
+            };
+            count.start();
+
+
+            introLayout.setOnLongClickListener(v -> {
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+
+                    Dialog dialog = new Dialog(getContext());
+
+                    dialog.setContentView(R.layout.dialog);
+                    TextView title = dialog.findViewById(R.id.dialogTitle);
+                    Button confirm = dialog.findViewById(R.id.confirm);
+                    Button cancel = dialog.findViewById(R.id.decline);
+                    title.setText("would you like to save the image ?");
+
+                    confirm.setOnClickListener(v1 -> {
+
+                        //this is a static method from home2Fragment
+                        addImageGallery(savePicture(introLayout, "Home1 inside.jpeg"));
+
+                        Toast.makeText(getContext(), "Picture save Succesfully", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+
+                    cancel.setOnClickListener(v2 -> {
+                        dialog.dismiss();
+                    });
+                    dialog.setOnDismissListener(dialog1 -> {
+
+                        dialog.dismiss();
+                    });
+
+                    dialog.show();
+
+                }
+                return false;
+            });
+
+
+            String firstTime = sharedPreferences.getString("firstTimePic", "none");
+            if (firstTime.equals("none")) {
+                Toast.makeText(getContext(), "you cas save this picture by long clicking on it !", Toast.LENGTH_LONG).show();
+                sharedPreferences.edit().putString("firstTimePic", "done").apply();
+            }
+
+        }
 
 
         return fragment;
@@ -209,20 +222,21 @@ public class HomeFragment extends Fragment {
 
 
     private Bitmap getBitmap(@NonNull View v) {
-        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(),v.getHeight(),Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         v.draw(canvas);
         return bitmap;
     }
 
-    private void removeAllImages(){
+    private void removeAllImages() {
         chair.setVisibility(View.GONE);
         tvPlace.setVisibility(View.GONE);
         tablePlace.setVisibility(View.GONE);
         couch.setVisibility(View.GONE);
         salonTable.setVisibility(View.GONE);
     }
-    private void addImageGallery(@NonNull File file ) {
+
+    private void addImageGallery(@NonNull File file) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg"); // or image/png

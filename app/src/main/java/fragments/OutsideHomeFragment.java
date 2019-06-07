@@ -4,6 +4,8 @@ package fragments;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -50,6 +52,7 @@ public class OutsideHomeFragment extends Fragment {
     private ImageView garage;
     private View mainConsLayout;
 
+    private SharedPreferences sharedPreferences;
     public OutsideHomeFragment() {
         // Required empty public constructor
     }
@@ -57,6 +60,11 @@ public class OutsideHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
+
+        sharedPreferences = getContext().getSharedPreferences("myshared", Context.MODE_PRIVATE);
 
         View fragment;
 
@@ -150,7 +158,11 @@ public class OutsideHomeFragment extends Fragment {
                 return  false;
             });
 
-
+            String firstTime = sharedPreferences.getString("firstTimePic", "none");
+            if (firstTime.equals("none")) {
+                Toast.makeText(getContext(), "you cas save this picture by long clicking on it !", Toast.LENGTH_LONG).show();
+                sharedPreferences.edit().putString("firstTimePic", "done").apply();
+            }
         }
 
         return fragment;

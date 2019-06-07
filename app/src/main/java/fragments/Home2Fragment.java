@@ -4,7 +4,9 @@ package fragments;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -49,6 +51,7 @@ public class Home2Fragment extends Fragment {
     private ImageView bed;
     private View introLayout;
 
+    private SharedPreferences sharedPreferences;
     public Home2Fragment() {
     }
 
@@ -58,6 +61,7 @@ public class Home2Fragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
+        sharedPreferences = getContext().getSharedPreferences("myshared", Context.MODE_PRIVATE);
         int slot = getArguments().getInt("slot");
         View fragment;
 
@@ -168,6 +172,13 @@ public class Home2Fragment extends Fragment {
             }
             return  false;
         });
+
+
+            String firstTime = sharedPreferences.getString("firstTimePic", "none");
+            if (firstTime.equals("none")) {
+                Toast.makeText(getContext(), "you cas save this picture by long clicking on it !", Toast.LENGTH_LONG).show();
+                sharedPreferences.edit().putString("firstTimePic", "done").apply();
+            }
         }
         return fragment;
     }
