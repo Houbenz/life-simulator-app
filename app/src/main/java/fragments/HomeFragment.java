@@ -2,10 +2,13 @@ package fragments;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -164,6 +167,9 @@ public class HomeFragment extends Fragment {
 
         introLayout.setOnLongClickListener(v -> {
 
+            if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED){
+
             Dialog dialog = new Dialog(getContext());
 
             dialog.setContentView(R.layout.dialog);
@@ -190,6 +196,8 @@ public class HomeFragment extends Fragment {
             });
 
             dialog.show();
+
+            }
             return  false;
         });
        }

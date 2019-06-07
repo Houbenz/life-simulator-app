@@ -1,8 +1,10 @@
 package fragments;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import database.Acquired_Cars;
 import database.Acquired_Houses;
@@ -33,6 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.houbenz.lifesimulator.MainMenu.MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE;
 import static fragments.Home2Fragment.savePicture;
 
 /**
@@ -111,6 +115,11 @@ public class OutsideHomeFragment extends Fragment {
 
             mainConsLayout.setOnLongClickListener(v -> {
 
+
+                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED){
+
+
                 Dialog dialog = new Dialog(getContext());
 
                 dialog.setContentView(R.layout.dialog);
@@ -122,7 +131,7 @@ public class OutsideHomeFragment extends Fragment {
                 confirm.setOnClickListener(v1->{
 
                     //this is a static method from home2Fragment
-                   addImageGallery(savePicture(mainConsLayout,"Home Outside.jpeg"));
+                    addImageGallery(savePicture(mainConsLayout,"Home Outside.jpeg"));
 
                     Toast.makeText(getContext(),"Picture save Succesfully",Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
@@ -137,8 +146,11 @@ public class OutsideHomeFragment extends Fragment {
                 });
 
                 dialog.show();
+                }
                 return  false;
             });
+
+
         }
 
         return fragment;
@@ -162,5 +174,26 @@ public class OutsideHomeFragment extends Fragment {
         values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg"); // or image/png
         getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
+
+
+
+
+    //get permission and save picture
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode){
+
+            case MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+
+
+                }
+                return;
+            }
+        }
     }
 }

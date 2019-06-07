@@ -1,9 +1,14 @@
 package com.houbenz.lifesimulator;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +18,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -82,6 +89,8 @@ public class MainMenu extends AppCompatActivity {
     private static final int RC_SIGN_IN = 106 ;
     private static final int RC_LEADERBOARD_SCORE =1005;
 
+    public static final int  MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE=11;
+
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v, event) -> {
 
@@ -92,13 +101,29 @@ public class MainMenu extends AppCompatActivity {
     };
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+
+
+
+        //asks for permission
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                 != PackageManager.PERMISSION_GRANTED){
+
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+
+                //todo
+
+            }else{
+
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE);
+
+            }
+        }
 
 
 

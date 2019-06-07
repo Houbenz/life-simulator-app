@@ -1,14 +1,17 @@
 package fragments;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import database.Acquired_Cars;
 import database.Acquired_Houses;
@@ -96,33 +99,35 @@ public class OutsideHome2Fragment extends Fragment {
 
 
                 mainConsLayout.setOnLongClickListener(v -> {
+                    if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Dialog dialog = new Dialog(getContext());
 
-                    Dialog dialog = new Dialog(getContext());
+                        dialog.setContentView(R.layout.dialog);
+                        TextView title = dialog.findViewById(R.id.dialogTitle);
+                        Button confirm = dialog.findViewById(R.id.confirm);
+                        Button cancel = dialog.findViewById(R.id.decline);
+                        title.setText("would you like to save the image ?");
 
-                    dialog.setContentView(R.layout.dialog);
-                    TextView title = dialog.findViewById(R.id.dialogTitle);
-                    Button confirm = dialog.findViewById(R.id.confirm);
-                    Button cancel = dialog.findViewById(R.id.decline);
-                    title.setText("would you like to save the image ?");
+                        confirm.setOnClickListener(v1 -> {
 
-                    confirm.setOnClickListener(v1->{
+                            //this is a static method from home2Fragment
+                            addImageGallery(savePicture(mainConsLayout, "Home2 Outside.jpeg"));
 
-                        //this is a static method from home2Fragment
-                       addImageGallery(savePicture(mainConsLayout,"Home2 Outside.jpeg"));
+                            Toast.makeText(getContext(), "Picture save Succesfully", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        });
 
-                        Toast.makeText(getContext(),"Picture save Succesfully",Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    });
+                        cancel.setOnClickListener(v2 -> {
+                            dialog.dismiss();
+                        });
+                        dialog.setOnDismissListener(dialog1 -> {
 
-                    cancel.setOnClickListener(v2->{
-                        dialog.dismiss();
-                    });
-                    dialog.setOnDismissListener(dialog1 -> {
+                            dialog.dismiss();
+                        });
 
-                        dialog.dismiss();
-                    });
-
-                    dialog.show();
+                        dialog.show();
+                    }
                     return  false;
                 });
         }

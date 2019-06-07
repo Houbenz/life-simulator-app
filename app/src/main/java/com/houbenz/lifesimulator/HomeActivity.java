@@ -1,13 +1,17 @@
 package com.houbenz.lifesimulator;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -44,6 +48,8 @@ import fragments.OutsideHome2Fragment;
 import fragments.OutsideHomeFragment;
 import fragments.RelationFragment;
 import viewmodels.ViewModelPartner;
+
+import static com.houbenz.lifesimulator.MainMenu.MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -183,6 +189,25 @@ public class HomeActivity extends AppCompatActivity {
         socialButton=findViewById(R.id.socialButton);
         showOutsideHomeButton=findViewById(R.id.showOutsideHomeButton);
         showOutsideHome2Button=findViewById(R.id.showOutsideHome2Button);
+
+
+
+        //Asks for permission
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+
+                //todo
+
+            }else{
+
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE);
+
+            }
+        }
+
 
         mConstraintLayout=findViewById(R.id.constraintLayout);
         mConstraintLayout.setOnTouchListener(mOnTouchListener);
