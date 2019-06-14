@@ -16,6 +16,8 @@ public class Work {
     private int work_time;
     private String imgPath;
     private int lvlToWork;
+    private int degree_id;
+
 
 
     public int getId() {
@@ -72,5 +74,13 @@ public class Work {
 
     public void setLvlToWork(int lvlToWork) {
         this.lvlToWork = lvlToWork;
+    }
+
+    public int getDegree_id() {
+        return degree_id;
+    }
+
+    public void setDegree_id(int degree_id) {
+        this.degree_id = degree_id;
     }
 }

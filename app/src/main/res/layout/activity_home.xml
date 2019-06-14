@@ -46,7 +46,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
-                    android:text="Home 1"
+                    android:text="@string/Home_one"
                     android:textColor="@color/white"
                     android:textSize="14dp" />
 
@@ -58,7 +58,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
-                    android:text="Home 2"
+                    android:text="@string/home_two"
                     android:textColor="@color/white"
                     android:textSize="14dp" />
 
@@ -69,7 +69,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
-                    android:text="Show Home1 outside"
+                    android:text="@string/home_one_outside"
                     android:textColor="@color/white"
                     android:textSize="14dp"
                     android:visibility="visible" />
@@ -81,7 +81,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
-                    android:text="Show Home2 outside"
+                    android:text="@string/home_two_outside"
                     android:textColor="@color/white"
                     android:textSize="14dp"
                     android:visibility="visible" />
@@ -93,7 +93,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/custom_button"
                     android:fontFamily="casual"
-                    android:text="Social"
+                    android:text="@string/social"
                     android:textColor="@color/white"
                     android:textSize="14dp"
                     android:visibility="visible" />

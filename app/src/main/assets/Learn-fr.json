@@ -1,31 +1,51 @@
 [
 
   {
-    "name":"Diplome d'étude secondaire","price":100
+    "id":1 ,
+    "name":"Diplome de lycée","price":20
+  ,"progress":20
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/highschool_degree"
   }
 ,
 
   {
-    "name":"Permis de conduite","price":1000
+    "id": 2,
+    "name":"Permis de conduite","price":20
+  ,"progress":30
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/driving_licence"
   }
 ,
   {
-    "name":"Certificat de servement","price":1500
+    "id": 3,
+    "name":"License de serveur","price":20
+  ,"progress":45
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/waiter_licence"
   }
 ,
   {
-    "name":"Diplome d'enseignement","price":3000
+    "id": 4,
+    "name":"Diplome d'enseignement","price":20
+  ,"progress":55
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/teaching_degree"
   }
 ,
   {
-    "name":"Diplome de programmation","price":4000
+    "id":5 ,
+    "name":"License de programmation","price":20
+  ,"progress":100
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/programming_licence"
   }
 ,
   {
-    "name":"Permis de Pilotage","price":5000
+    "id": 6,
+    "name":"Permis de pilotage","price":20
+  ,"progress":120
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/piloting_licence"
   },
   {
-    "name":"Phd d'enseigement","price":10000
+    "id":7 ,
+    "name":"Phd","price":20
+  ,"progress":200
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/phd"
   }
-
 ]

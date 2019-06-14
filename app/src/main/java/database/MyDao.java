@@ -204,13 +204,16 @@ public interface MyDao {
 
     //Get Gifts individually
 
-    @Query("select * from Gift where name like 'Roses'")
+    @Query("select * from Gift where id=:id")
+    Gift getGift(int id);
+
+    @Query("select * from Gift where id=2")
     Gift getRoses();
 
-    @Query("select * from Gift where name like 'Chocolate'")
+    @Query("select * from Gift where id=1")
     Gift getChocolate();
 
-    @Query("select * from Gift where name like 'Jewelry'")
+    @Query("select * from Gift where id=3")
     Gift getJewelry();
 
     //Counts

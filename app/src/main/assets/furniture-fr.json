@@ -1,80 +1,82 @@
 [
 
   {
-    "name":"chair",
+    "id": 1,
+    "name":"Chaise simple",
     "price":100,
     "fournitureType":"chair",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/chair"
   }
 ,
   {
-    "name":"table",
+    "id":2 ,
+    "name":"Table de salon",
+    "price":250,
+    "fournitureType":"salonTable",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/salon_table"
+  }
+,
+  {
+    "id": 3,
+    "name":"Table",
     "price":400,
     "fournitureType":"table",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table"
   }
 ,
   {
-    "name":"TV holder",
-    "price":50,
-    "fournitureType":"tv_holder",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
-  }
-,
-  {
-    "name":"Old TV",
-    "price":250,
+    "id": 4,
+    "name":"Vieille télé",
+    "price":150,
     "fournitureType":"tv",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/old_tv"
-  }
-,
+  },
   {
-    "name":"Medium TV",
+    "id": 5,
+    "name":"Télé moyenne",
     "price":300,
     "fournitureType":"tv",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/medium_tv"
   }
 ,
   {
-    "name":"Flat Screen TV",
-    "price":1000,
-    "fournitureType":"tv",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/medium_tv"
-  }
-,
-  {
-    "name":"LowEnd Computer",
-    "price":1500,
-    "fournitureType":"computer",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
-  }
-,
-  {
-    "name":"Table with laptop",
-    "price":4500,
+    "id": 6,
+    "name":"Table avec Laptop",
+    "price":2500,
     "fournitureType":"table",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
   }
 ,
   {
-    "name":"HighEnd Computer",
-    "price":5000,
-    "fournitureType":"computer",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table_laptop"
-  }
-,
-  {
-    "name":"Couch",
+    "id": 7,
+    "name":"Canapé",
     "price":300,
     "fournitureType":"couch",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/couch_back"
   }
 ,
   {
-    "name":"Salon Table",
-    "price":250,
-    "fournitureType":"salonTable",
-    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/salon_table"
+    "id": 8,
+    "name":"Lit (Domicile 2)",
+    "price":300,
+    "fournitureType":"bed",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/bed"
+  }
+,
+  {
+    "id": 9,
+    "name":"gard-robe (Domicile 2)",
+    "price":400,
+    "fournitureType":"wardrobe",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/wardrobe"
+  }
+,
+  {
+    "id": 10,
+    "name":"Table & pc (Domicile 2)",
+    "price":1500,
+    "fournitureType":"computer table",
+    "url":"android.resource://com.houbenz.android.lifesimulator/drawable/computer_table"
   }
 
 ]

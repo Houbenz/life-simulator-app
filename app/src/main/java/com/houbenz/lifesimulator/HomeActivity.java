@@ -408,7 +408,7 @@ public class HomeActivity extends AppCompatActivity {
 
                             TextView message = dialog.findViewById(R.id.message);
 
-                            message.setText("Game Over ! :( your health is Zero");
+                            message.setText(getString(R.string.zero_health));
                             dialog.setOnDismissListener(dialog1 -> {
                                 dialog1.dismiss();
                                 finish();
@@ -451,7 +451,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
 
                             if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthbar.getProgress() > 30){
-                                showCustomToast("Hunger is low eat something !","","yellow");
+                                showCustomToast(getString(R.string.low_hunger),"","yellow");
                             }
 
 
@@ -477,7 +477,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
 
                             if(healthbar.getProgress() <30 && hungerBar.getProgress() < 30){
-                                showCustomToast("Health is low buy medicine or eat food",
+                                showCustomToast(getString(R.string.low_health),
                                         "android.resource://com.houbenz.android.lifesimulator/drawable/health","red");
                             }
 
@@ -671,7 +671,7 @@ public class HomeActivity extends AppCompatActivity {
                 datingMessage = findViewById(R.id.datingMessage);
 
 
-                datingMessage.setText("Relation + 10");
+                datingMessage.setText(getString(R.string.relation_plus_ten)+ "10");
                 datingMessage.setVisibility(View.VISIBLE);
                 datingMessage.animate().setDuration(1000).alpha(0f).translationY(-100).withEndAction(() ->{
                     datingMessage.setAlpha(1f);

@@ -1,5 +1,6 @@
 package com.houbenz.lifesimulator;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 
 import androidx.annotation.NonNull;
@@ -42,6 +43,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 
 import java.util.List;
+import java.util.Locale;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -219,7 +221,7 @@ public class GameScene extends AppCompatActivity
 
     public void runClockThread(){
 
-       final Thread thread =new Thread(() -> {
+       @SuppressLint("SetTextI18n") final Thread thread =new Thread(() -> {
 
             while (threadRun) {
 
@@ -238,7 +240,7 @@ public class GameScene extends AppCompatActivity
 
                             TextView message= dialog.findViewById(R.id.message);
 
-                            message.setText("Game Over ! :( your health is Zero");
+                            message.setText(getResources().getString(R.string.zero_health));
                             dialog.setOnDismissListener( dialog1 -> {
                                 dialog1.dismiss();
                                 finish();
@@ -273,7 +275,8 @@ public class GameScene extends AppCompatActivity
                             minute = 0;
                             hour++;
                             hungerBar.setProgress(hungerBar.getProgress()-Params.HUNGER_LOSS_PER_HOUR);
-                            hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+
+                            hungerpr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
 
                             if(hungerBar.getProgress() != 0) {
@@ -282,7 +285,7 @@ public class GameScene extends AppCompatActivity
 
 
                             if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthbar.getProgress() > 30){
-                                showCustomToast("Hunger is low eat something !","","yellow");
+                                showCustomToast(getResources().getString(R.string.low_hunger),"","yellow");
                             }
 
                             if(hungerBar.getProgress()==0 && energyBar.getProgress()==0){
@@ -307,7 +310,7 @@ public class GameScene extends AppCompatActivity
                             }
 
                             if(healthbar.getProgress() <30 && hungerBar.getProgress() < 30){
-                                showCustomToast("Health is low buy medicine or eat food",
+                                showCustomToast(getResources().getString(R.string.low_health),
                                         "android.resource://com.houbenz.android.lifesimulator/drawable/health","red");
                             }
 
@@ -334,7 +337,7 @@ public class GameScene extends AppCompatActivity
                                     balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
                                 });
 
-                                showCustomToast("+"+player.getStore_income()+"$ from stores","","green");
+                                showCustomToast("+"+player.getStore_income()+getResources().getString(R.string.from_stores),"","green");
                             }
                             saveProgress();
                         }
@@ -352,7 +355,7 @@ public class GameScene extends AppCompatActivity
 
 
                             mainText.setVisibility(View.VISIBLE);
-                            mainText.setText("You're Now Learning");
+                            mainText.setText(getResources().getString(R.string.now_learning));
 
                             learn_time--;
 
@@ -360,7 +363,7 @@ public class GameScene extends AppCompatActivity
 
                             startWorking.setEnabled(false);
 
-                            startWorking.setText("Learning "+learn_time +"m");
+                            startWorking.setText(getResources().getString(R.string.learning)+" "+learn_time +"m");
 
 
                             if(learn_time <= 0){
@@ -444,7 +447,7 @@ public class GameScene extends AppCompatActivity
         mp.release();
         mpIncome.release();
         super.onBackPressed();
-        mainText.setText("You're currently doing nothing");
+        mainText.setText(getString(R.string.doing_nothing));
         mainText.setVisibility(View.VISIBLE);
 
     }
@@ -689,7 +692,7 @@ public class GameScene extends AppCompatActivity
                 deselectButtons();
                 startWorking.setSelected(true);
 
-                startWorking.setText("Stop working");
+                startWorking.setText(getString(R.string.stopworking));
                 //startWorking.setTextColor(getResources().getColor(R.color.red));
 
                 startWorkThread();
@@ -700,7 +703,7 @@ public class GameScene extends AppCompatActivity
 
                 String firstTime=sharedPreferences.getString("firstTime","none");
                 if(firstTime.equals("none"))
-                showTuto("Time speed","use this bar to speed up time",R.id.speedSeekBar);
+                showTuto(getString(R.string.time_speed),getString(R.string.usebar),R.id.speedSeekBar);
 
 
             }
@@ -718,7 +721,7 @@ public class GameScene extends AppCompatActivity
 
                 String firstTime=sharedPreferences.getString("firstTime","none");
                 if(firstTime.equals("none")) {
-                    showTuto("Learning", "click here to go to studying section", R.id.study);
+                    showTuto(getString(R.string.learning), getString(R.string.study_section), R.id.study);
                     sharedPreferences.edit().putString("firstTime", "finished").apply();
                 }
 
@@ -781,7 +784,7 @@ public class GameScene extends AppCompatActivity
         String firstTime = sharedPreferences.getString("firstTime","none");
 
         if(firstTime.equals("none"))
-        showTuto("work","click here to go to work session",R.id.work);
+        showTuto(getString(R.string.work),getString(R.string.work_session),R.id.work);
 
     }
 
@@ -812,7 +815,7 @@ public class GameScene extends AppCompatActivity
         final double rewardIncome=player.getWork_income() * Params.NUMBER_OF_MULTI_INOCME;
         player.setWork_income(rewardIncome);
         doubleEarn.setEnabled(false);
-        income.setText(player.getWork_income() + "$/Hour");
+        income.setText(player.getWork_income() + "$/"+getString(R.string.hour));
 
         Thread minusTime =new Thread(() -> {
 
@@ -824,7 +827,7 @@ public class GameScene extends AppCompatActivity
                     Thread.sleep(speed);
                         runOnUiThread(() ->{
                         doubleEarnMinutes--;
-                        doubleEarn.setText("minutes left " + doubleEarnMinutes + " m");
+                        doubleEarn.setText( getString(R.string.minutes_left)+" " + doubleEarnMinutes + " m");
 
                     });
 
@@ -897,7 +900,7 @@ public class GameScene extends AppCompatActivity
                                     int actualProgress =player.getLevel_object().getProgressLevel()-player.getLevel_object().getMaxProgress();
                                     player.upgradeLevel();
 
-                                    showCustomToast("You've Leveled up "+player.getLevel_object().getLevel(),"","gold");
+                                    showCustomToast(getString(R.string.have_leveled_up)+" "+player.getLevel_object().getLevel(),"","gold");
 
 
                                     levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> {
@@ -921,8 +924,8 @@ public class GameScene extends AppCompatActivity
 
 
                             //update the time spent on working
-                            mainText.setText("You've Worked Hours : "+(remainingMinutes / 60) +" ,Minutes : "+(remainingMinutes % 60)
-                                    +" and you have made : "+(player.getWork_income() * (remainingMinutes / 60))+"$");
+                            mainText.setText(getString(R.string.hv_work)+" "+getString(R.string.hour)+ " : "+(remainingMinutes / 60) +" ,"+getString(R.string.minute)
+                            +" : "+(remainingMinutes % 60) +" "+getString(R.string.hv_made)+": "+(player.getWork_income() * (remainingMinutes / 60))+"$");
                         });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -1037,22 +1040,22 @@ public class GameScene extends AppCompatActivity
             if(newBalance >=0){
                 player.setBalance(newBalance );
                 balance.setText(newBalance+"$");
-                showCustomToast("you bought "+gift.getName(),gift.getImgUrl(),"green");
+                showCustomToast(getString(R.string.you_bought)+" "+gift.getName(),gift.getImgUrl(),"green");
 
 
                 int giftCount =gift.getGiftCount()+1;
 
-                if(gift.getName().equals("Chocolate")) {
+                if(gift.getId()==1){
                     gift.setGiftCount(giftCount);
                     MainMenu.myAppDataBase.myDao().updateGift(gift);
                 }
 
-                if(gift.getName().equals("Roses")){
+                if(gift.getId()==2){
                     gift.setGiftCount(giftCount);
                     MainMenu.myAppDataBase.myDao().updateGift(gift);
                 }
 
-                if(gift.getName().equals("Jewelry")){
+                if(gift.getId()==3){
                     gift.setGiftCount(giftCount);
                     MainMenu.myAppDataBase.myDao().updateGift(gift);
                 }
@@ -1061,7 +1064,7 @@ public class GameScene extends AppCompatActivity
 
             }
             else{
-                showCustomToast("Not enough money to buy "+gift.getName(),gift.getImgUrl(),"red");
+                showCustomToast(getString(R.string.not_enough_money)+" "+gift.getName(),gift.getImgUrl(),"red");
             }
         });
     }
@@ -1078,7 +1081,7 @@ public class GameScene extends AppCompatActivity
 
                 House garage = MainMenu.myAppDataBase.myDao().getHouse(2);
                 House house2 = MainMenu.myAppDataBase.myDao().getHouse(3);
-                showCustomToast("You must buy a "+garage.getName()+" or "+house2.getName()+" first ! ",garage.getImgUrl(),"red");
+                showCustomToast(getString(R.string.must_buy)+" "+garage.getName()+" or "+house2.getName()+ getString(R.string.first)+" ! ",garage.getImgUrl(),"red");
             }
             else {
                 Dialog dialog = new Dialog(this);
@@ -1096,7 +1099,7 @@ public class GameScene extends AppCompatActivity
 
                         player.setBalance(newBalance);
                         balance.setText(player.getBalance() + "$");
-                        showCustomToast("you bought " + car.getName(), car.getImgUrl(), "green");
+                        showCustomToast(getString(R.string.you_bought)+" " + car.getName(), car.getImgUrl(), "green");
                         Acquired_Cars acquired_cars = new Acquired_Cars();
                         acquired_cars.setCar_id(car.getId());
                         acquired_cars.setPlayer_id(player.getId());
@@ -1112,7 +1115,7 @@ public class GameScene extends AppCompatActivity
                 } else {
                     if (getACq != null) {
 
-                        showCustomToast(car.getName() + " is selected ", car.getImgUrl(), "green");
+                        showCustomToast(car.getName() + getString(R.string.is_selected)+" ", car.getImgUrl(), "green");
 
 
                         List<Acquired_Cars> acquired_cars = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId());
@@ -1125,7 +1128,7 @@ public class GameScene extends AppCompatActivity
                         MainMenu.myAppDataBase.myDao().updateAcquired_car(getACq);
 
                     } else
-                        showCustomToast("Not enough money to buy " + car.getName(), car.getImgUrl(), "red");
+                        showCustomToast(getString(R.string.not_enough_money)+" " + car.getName(), car.getImgUrl(), "red");
                 }
 
                 decline.setOnClickListener(view1 -> {
@@ -1143,7 +1146,7 @@ public class GameScene extends AppCompatActivity
         String firstTime = sharedPreferences.getString("firstTime","none");
 
         if(firstTime.equals("none")){
-            showTuto("Start working","click here to begin working",R.id.startWorking);
+            showTuto(getString(R.string.startWork),getString(R.string.begin_work),R.id.startWorking);
 
         }
 
@@ -1169,7 +1172,7 @@ public class GameScene extends AppCompatActivity
         startWorking.setEnabled(true);
         jobName.setText(work.getName());
 
-        showCustomToast("you're now a "+work.getName(),work.getImgPath(),"green");
+        showCustomToast(getString(R.string.youre_now)+" "+work.getName(),work.getImgPath(),"green");
 
 
         //replaced admob one
@@ -1197,7 +1200,7 @@ public class GameScene extends AppCompatActivity
             Button decline =dialog.findViewById(R.id.decline);
 
 
-            title.setText("Would you like to purchase this item ?");
+            title.setText(getString(R.string.purchase_item));
 
             confirm.setOnClickListener(view ->{
                 double newBalance=player.getBalance()-fourniture.getPrice();
@@ -1208,7 +1211,8 @@ public class GameScene extends AppCompatActivity
                 if(newBalance>=0) {
                     player.setBalance(newBalance);
                     balance.setText(newBalance + "$");
-                    message=" you purchased a "+fourniture.getName()+" for "+fourniture.getPrice()+"$ !";
+                    message=getString(R.string.you_purchased)+" "+fourniture.getName()+" "
+                            +getString(R.string._for)+" "+fourniture.getPrice()+"$ !";
 
                     Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
                     acquired_furnitures.setAvailable("true");
@@ -1226,7 +1230,7 @@ public class GameScene extends AppCompatActivity
                     green=true;
 
                 }else{
-                    message =" insufficiant funds to purchase "+fourniture.getName();
+                    message = getString(R.string.insufficiant_funds)+""+fourniture.getName();
                     dialog.dismiss();
                     dialog.cancel();
                 }
@@ -1258,7 +1262,7 @@ public class GameScene extends AppCompatActivity
               MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(furn);
           }
 
-            Toast.makeText(getApplicationContext(), fourniture.getName() + " is now used", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), fourniture.getName() + " "+getString(R.string.is_now_used), Toast.LENGTH_SHORT).show();
 
             acquired_furnitures1.setAvailable("true");
 
@@ -1299,7 +1303,7 @@ public class GameScene extends AppCompatActivity
                     player.setBalance(player.getBalance() + player.getStore_income());
                     balance.setText(player.getBalance() + "$");
 
-                    showCustomToast("+"+player.getStore_income()+"$ from stores","","green");
+                    showCustomToast("+"+player.getStore_income()+getString(R.string.from_stores),"","green");
                 }
             }
             switcher = findViewById(R.id.switcher);
@@ -1339,7 +1343,7 @@ public class GameScene extends AppCompatActivity
         }
         else{
 
-            showCustomToast("Insufficient funds to purchase "+food.getName(),food.getImgUrl(),"red");
+            showCustomToast(getString(R.string.insufficiant_funds)+" "+food.getName(),food.getImgUrl(),"red");
         }
     }
 
@@ -1354,7 +1358,7 @@ public class GameScene extends AppCompatActivity
             player.setBalance(newBalance);
             balance.setText(player.getBalance() + "$");
         }else
-            showCustomToast("Insufficient funds to purchase"+medicine.getName(),medicine.getImgUrl(),"red");
+            showCustomToast(getString(R.string.insufficiant_funds)+" "+medicine.getName(),medicine.getImgUrl(),"red");
     }
 
     @Override
@@ -1376,9 +1380,9 @@ public class GameScene extends AppCompatActivity
 
                     MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
 
-                    showCustomToast("Congratulation you've bought " + house.getName(), house.getImgUrl(), "green");
+                    showCustomToast(getString(R.string.congratulation_u_bought)+" " + house.getName(), house.getImgUrl(), "green");
                 } else
-                    showCustomToast("insuficient funds to buy " + house.getName(), house.getImgUrl(), "red");
+                    showCustomToast(getString(R.string.insufficiant_funds)+" " + house.getName(), house.getImgUrl(), "red");
 
 
                 HouseFragment houseFragment = new HouseFragment();
@@ -1431,7 +1435,7 @@ public class GameScene extends AppCompatActivity
                 MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
 
                 player.setStore_income(getIncomeFromStore());
-                showCustomToast("Congratulation you purchased "+store.getName()+" !",store.getImgUrl(),"green");
+                showCustomToast(getString(R.string.congratulation_u_bought)+" "+store.getName()+" !",store.getImgUrl(),"green");
 
                 insertStoreFragment();
 
@@ -1444,7 +1448,7 @@ public class GameScene extends AppCompatActivity
             dialog.show();
 
         }else {
-            showCustomToast("Insufficient funds to purchase "+store.getName(),store.getImgUrl(),"red");
+            showCustomToast(getString(R.string.insufficiant_funds)+" "+store.getName(),store.getImgUrl(),"red");
             dialog.dismiss();
             dialog.cancel();
         }
@@ -1484,7 +1488,7 @@ public class GameScene extends AppCompatActivity
 
         }else
             {
-                showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
+                showCustomToast(getString(R.string.insufficiant_funds)+" "+degree.getName(),"","red");
             }
         }
             else {
@@ -1496,10 +1500,10 @@ public class GameScene extends AppCompatActivity
                 learning=true;
 
                 mainText.setVisibility(View.VISIBLE);
-                mainText.setText("You're Now Learning");
+                mainText.setText(getString(R.string.now_learning));
             }
             else
-                showCustomToast("insufficient funds to purchase "+degree.getName(),"","red");
+                showCustomToast(getString(R.string.insufficiant_funds)+" "+degree.getName(),"","red");
 
             if (!acq.getAvailable().equals("true"))
             {
@@ -1507,7 +1511,7 @@ public class GameScene extends AppCompatActivity
                 if (degree.getProgress() <= acq.getPlayer_progress()) {
 
                     acq.setAvailable("true");
-                    showCustomToast("purchase of "+degree.getName()+" done succesfully","","green");
+                    showCustomToast(getString(R.string.purchase_of)+" "+degree.getName()+getString(R.string.done_success),"","green");
                 }
 
                 MainMenu.myAppDataBase.myDao().update_Acquired_Degree(acq);
@@ -1643,7 +1647,7 @@ public class GameScene extends AppCompatActivity
     public void onRewarded(RewardItem rewardItem) {
         if(doubleEarnClicked) {
             doubleEarnThread();
-            showCustomToast("you now earn double"+ player.getWork_income()+" x2","","green");
+            showCustomToast(getString(R.string.now_earn_double)+" "+ player.getWork_income()+" x2","","green");
         }
         else{
             player.setBalance(player.getBalance()+100);

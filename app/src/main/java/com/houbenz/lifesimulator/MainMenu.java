@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import beans.Buy;
 import beans.Food;
@@ -131,35 +132,19 @@ public class MainMenu extends AppCompatActivity {
         myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        /*
-            myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
-                    .addMigrations(MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,
-                            MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,
-                            MIGRATION_21_22,MIGRATION_22_23,MIGRATION_23_24)
-                    .allowMainThreadQueries().build();
-        */
 
         sharedPreferences = getApplicationContext().getSharedPreferences("myShared", Context.MODE_PRIVATE);
 
-
         String entry = sharedPreferences.getString("entry", "none");
 
+        String lang=sharedPreferences.getString("lang","none");
 
         if (entry.equals("none")) {
-            initGifts(false);
-            initWorkRows(false);
-            initDegreeRows(false);
-            initFragments(false);
-            initFood(false);
-            initStores(false);
-            initFurnitures(false);
-            initMedicine(false);
-            initCars(false);
-            initPartners(false);
-            initHouses(false);
+            initDatabase(false);
             myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
 
             sharedPreferences.edit().putString("entry", "available").apply();
+            sharedPreferences.edit().putString("lang",Locale.getDefault().getLanguage()).apply();
         } else {
 
             String actualversion = getDatabaseVersion();
@@ -173,19 +158,15 @@ public class MainMenu extends AppCompatActivity {
 
             if (!versionDB.getVersion().equals(actualversion)) {
 
-                initGifts(true);
-                initWorkRows(true);
-                initDegreeRows(true);
-                initFragments(true);
-                initFood(true);
-                initStores(true);
-                initFurnitures(true);
-                initMedicine(true);
-                initCars(true);
-                initPartners(true);
-                initHouses(true);
+                initDatabase(true);
                 versionDB.setVersion(actualversion);
                 myAppDataBase.myDao().updateVerionDB(versionDB);
+
+            }
+
+            if(!lang.equals(Locale.getDefault().getLanguage())){
+                initDatabase(true);
+                sharedPreferences.edit().putString("lang",Locale.getDefault().getLanguage()).apply();
             }
 
         }
@@ -279,6 +260,22 @@ public class MainMenu extends AppCompatActivity {
 
         startActivityForResult(intent,RC_SIGN_IN);
 
+    }
+
+
+    public void initDatabase(Boolean update){
+
+        initGifts(update);
+        initWorkRows(update);
+        initDegreeRows(update);
+        initFragments(update);
+        initFood(update);
+        initStores(update);
+        initFurnitures(update);
+        initMedicine(update);
+        initCars(update);
+        initPartners(update);
+        initHouses(update);
     }
 
 /*
@@ -547,6 +544,7 @@ public class MainMenu extends AppCompatActivity {
            work.setLvlToWork(bean.getLeveltoWork());
            work.setName(bean.getName());
            work.setWork_time(bean.getTimeOfWork());
+           work.setDegree_id(bean.getDegree_id());
 
            if(!isUpdate)
                 myAppDataBase.myDao().addWork(work);
@@ -571,6 +569,7 @@ public class MainMenu extends AppCompatActivity {
                work.setLvlToWork(worksBeans.get(i).getLeveltoWork());
                work.setName(worksBeans.get(i).getName());
                work.setWork_time(worksBeans.get(i).getTimeOfWork());
+               work.setDegree_id(worksBeans.get(i).getDegree_id());
 
                myAppDataBase.myDao().addWork(work);
            }
@@ -812,7 +811,11 @@ public class MainMenu extends AppCompatActivity {
         InputStream is ;
         String json ;
         try{
-            is=getApplicationContext().getAssets().open("cars.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is=getApplicationContext().getAssets().open("cars-fr.json");
+            else
+                is=getApplicationContext().getAssets().open("cars.json");
 
             int size =is.available();
 
@@ -868,10 +871,15 @@ public class MainMenu extends AppCompatActivity {
 
     public void initGifts(boolean isUpdate){
 
-        InputStream is ;
+        InputStream is=null ;
         String json ;
         try {
-            is = getApplicationContext().getAssets().open("gifts.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is = getApplicationContext().getAssets().open("gifts-fr.json");
+            else
+                is = getApplicationContext().getAssets().open("gifts.json");
+
 
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -888,7 +896,12 @@ public class MainMenu extends AppCompatActivity {
                 gift.setName(jo.getString("name"));
                 gift.setImgUrl(jo.getString("uri"));
                 gift.setPrice(jo.getInt("price"));
+                if(!isUpdate)
                 gift.setGiftCount(jo.getInt("giftCount"));
+                else {
+                    Gift giftforCount =myAppDataBase.myDao().getGift(gift.getId());
+                    gift.setGiftCount(giftforCount.getGiftCount());
+                }
 
                 if(!isUpdate)
                     myAppDataBase.myDao().addGift(gift);
@@ -911,6 +924,7 @@ public class MainMenu extends AppCompatActivity {
                     gift.setName(jo.getString("name"));
                     gift.setImgUrl(jo.getString("uri"));
                     gift.setPrice(jo.getInt("price"));
+                    if(!isUpdate)
                     gift.setGiftCount(jo.getInt("giftCount"));
 
                     myAppDataBase.myDao().addGift(gift);
@@ -997,10 +1011,10 @@ public class MainMenu extends AppCompatActivity {
         try {
 
 
-
-
-
-            is=getApplicationContext().getAssets().open("house.json");
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is=getApplicationContext().getAssets().open("house-fr.json");
+            else
+                is=getApplicationContext().getAssets().open("house.json");
 
             byte[] buffer = new byte[is.available()];
 

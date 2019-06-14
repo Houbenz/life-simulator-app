@@ -24,6 +24,15 @@ public class Work {
     private String imagePath;
     private String reqDegree;
     private int id ;
+    private int degree_id;
+
+    public int getDegree_id() {
+        return degree_id;
+    }
+
+    public void setDegree_id(int degree_id) {
+        this.degree_id = degree_id;
+    }
 
     public int getId() {
         return id;
@@ -108,10 +117,12 @@ public class Work {
         try{
 
             //if(Locale.getDefault().getLanguage().equals("en"))
-                is =context.getAssets().open("jobs.json");
 
-            //if(Locale.getDefault().getLanguage().equals("fr"))
-              //  is =context.getAssets().open("jobs-fr.json");
+
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("jobs-fr.json");
+            else
+                is =context.getAssets().open("jobs.json");
 
           //  if(Locale.getDefault().getLanguage().equals("ar"))
             //    is =context.getAssets().open("jobs-ar.json");
@@ -143,6 +154,7 @@ public class Work {
 
                 //
                 work.setId(jsonObject.getInt("id"));
+                work.setDegree_id(jsonObject.getInt("degree_id"));
 
                 works.add(work);
 

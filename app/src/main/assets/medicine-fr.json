@@ -1,13 +1,19 @@
 [
   {
-    "name":"herebe","price":1, "benefit":1
+    "id":1 ,
+    "name":"Herbe","price":1, "benefit":1
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/grass"
   }
 ,
   {
-    "name":" Pillules mediocres","price":15, "benefit":10
+    "id":2 ,
+    "name":"Pilules","price":15, "benefit":20
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/pills"
   }
 ,
   {
-    "name":"Pillules de haute qualité","price":50, "benefit":30
+    "id":3 ,
+    "name":"Sirop","price":30, "benefit":40
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/syrup"
   }
 ]

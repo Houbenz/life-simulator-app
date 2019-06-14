@@ -1,25 +1,29 @@
 [
   {
-    "name":"Rue","price":0,"bonusE":0,"bonusH":0
+    "id": 1,
+    "name":"Petite maison",
+    "price":1000,
+    "bonusE":5,
+    "bonusH":5,
+    "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/small_house"
   }
 ,
   {
-    "name":"Studio","price":100,"bonusE":0,"bonusH":0
+    "id": 2,
+    "name":"Garage",
+    "price":700,
+    "bonusE":5,
+    "bonusH":5,
+    "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/garage"
   }
+
 ,
   {
-    "name":"Apartement","price":5000,"bonusE":0,"bonusH":0
-  }
-,
-  {
-    "name":"Villa","price":100000,"bonusE":0,"bonusH":0
-  }
-,
-  {
-    "name":"Manoir","price":500000,"bonusE":0,"bonusH":0
-  }
-,
-  {
-    "name":"Château","price":5000000,"bonusE":0,"bonusH":0
+    "id": 3,
+    "name":"Maison moyenne",
+    "price":1500,
+    "bonusE":5,
+    "bonusH":5,
+    "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/second_house"
   }
 ]

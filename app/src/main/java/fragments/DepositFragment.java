@@ -56,7 +56,7 @@ public class DepositFragment extends Fragment {
         float balanceInBank=getArguments().getFloat("balanceInBank");
 
 
-        bankBalanceD.setText("Balance : "+balanceInBank +"$");
+        bankBalanceD.setText(getString(R.string.balanceTitle)+" : "+balanceInBank +"$");
 
         seekBarDeposit.setMax((int)balance);
 

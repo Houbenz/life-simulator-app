@@ -44,14 +44,11 @@ public class FoodFragment extends Fragment {
 
         foodList.setAdapter(foodListAdapter);
 
-        foodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        foodList.setOnItemClickListener((parent, view, position, id) -> {
 
-                Food food=(Food)parent.getItemAtPosition(position);
-                monFoodClicked.deliverFood(food);
+            Food food=(Food)parent.getItemAtPosition(position);
+            monFoodClicked.deliverFood(food);
 
-            }
         });
 
 

@@ -182,14 +182,14 @@ public class HomeFragment extends Fragment {
                     TextView title = dialog.findViewById(R.id.dialogTitle);
                     Button confirm = dialog.findViewById(R.id.confirm);
                     Button cancel = dialog.findViewById(R.id.decline);
-                    title.setText("would you like to save the image ?");
+                    title.setText(getString(R.string.save_image));
 
                     confirm.setOnClickListener(v1 -> {
 
                         //this is a static method from home2Fragment
                         addImageGallery(savePicture(introLayout, "Home1 inside.jpeg"));
 
-                        Toast.makeText(getContext(), "Picture save Succesfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.picture_saved_success), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     });
 
@@ -210,7 +210,7 @@ public class HomeFragment extends Fragment {
 
             String firstTime = sharedPreferences.getString("firstTimePic", "none");
             if (firstTime.equals("none")) {
-                Toast.makeText(getContext(), "you cas save this picture by long clicking on it !", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.save_pic_longclick), Toast.LENGTH_LONG).show();
                 sharedPreferences.edit().putString("firstTimePic", "done").apply();
             }
 

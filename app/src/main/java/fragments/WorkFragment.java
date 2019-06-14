@@ -69,7 +69,7 @@ public class WorkFragment extends Fragment {
         });
 
         if(firstTime.equals("none")) {
-            showTuto("First time", "Every job requires a degree and a level to be available",0);
+            showTuto(getString(R.string.first_time), getString(R.string.work_tuto_message),0);
         }
         return frameLayout;
 
@@ -89,7 +89,7 @@ public class WorkFragment extends Fragment {
                 .setDismissType(DismissType.outside)
                 .setGuideListener(view -> {
                     if(type == 0)
-                    showTuto("First time", "click on 'Worker' to obtain your first job as a worker",1);
+                    showTuto(getString(R.string.first_time), getString(R.string.click_work_worker),1);
                 })
                 .build()
                 .show();

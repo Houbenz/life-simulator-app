@@ -4,6 +4,7 @@
     "name":"worker", "timeofWork":8, "pay":15,"leveltoWork":0
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_worker"
     ,"degree":"none"
+  ,"degree_id":0
 
   }
 ,
@@ -12,6 +13,7 @@
     "name":"Fire fighter", "timeofWork":8, "pay":20, "leveltoWork":2
     ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_firefighter"
   ,"degree":"highschool degree"
+  ,"degree_id":1
 
   }
 ,
@@ -20,6 +22,8 @@
     "name":"delivery man", "timeofWork":8, "pay":25, "leveltoWork":3
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_deliveryman"
   ,"degree":"driving license"
+  ,"degree_id":2
+
 
   }
 ,
@@ -28,6 +32,7 @@
     "name":"Waiter", "timeofWork":7, "pay":30,"leveltoWork":4
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_waiter"
   ,"degree":"waiter License"
+  ,"degree_id":3
 
   }
 ,
@@ -36,6 +41,7 @@
     "name":"Highschool teacher", "timeofWork":6, "pay":35,"leveltoWork":5
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_teacher"
   ,"degree":"teaching degree"
+  ,"degree_id":4
 
   }
 ,
@@ -44,6 +50,7 @@
     "name":"Programmer", "timeofWork":7, "pay":45,"leveltoWork":7
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_programmer"
   ,"degree":"programming license"
+  ,"degree_id":5
 
   }
 ,
@@ -53,6 +60,7 @@
     "name":"Pilot", "timeofWork":12, "pay":200,"leveltoWork":9
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_pilot"
   ,"degree":"Piloting license"
+  ,"degree_id":6
 
   }
 ,
@@ -61,6 +69,7 @@
     "name":"Professor", "timeofWork":6, "pay":125,"leveltoWork":10
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_professor"
   ,"degree":"Phd"
+  ,"degree_id":7
 
   }
 

@@ -85,9 +85,8 @@ public class BuyFragment extends Fragment {
     private void showTuto(){
 
         new GuideView.Builder(getContext())
-                .setTitle("Buying")
-                .setContentText("From this section you can buy things, Food, medicines," +
-                        " and other stuff like cars !, beware don't spend too much ")
+                .setTitle(getString(R.string.buying))
+                .setContentText(getString(R.string.buy_section_tuto))
                 .setDismissType(DismissType.outside)
                 .setTargetView(gridView)
                 .build()

@@ -67,8 +67,8 @@ public class BankFragment extends Fragment {
     private void showTuto(){
 
         new GuideView.Builder(getContext())
-                .setTitle("Bank")
-                .setContentText("in bank section you can deposit your money and withdaw it and gain interest with time !")
+                .setTitle(getString(R.string.bankName))
+                .setContentText(getString(R.string.bank_section_tuto))
                 .setDismissType(DismissType.outside)
                 .setTargetView(mainBank)
                 .build()

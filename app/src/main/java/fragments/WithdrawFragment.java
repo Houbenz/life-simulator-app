@@ -52,7 +52,7 @@ public class WithdrawFragment extends Fragment {
        // double balance= player.getBalance();
         double balanceInBank=player.getBank_deposit();
 
-        bankBalanceW.setText("Balance : "+balanceInBank+"$");
+        bankBalanceW.setText(getString(R.string.balanceTitle)+" : "+balanceInBank+"$");
         seekBarWithdraw.setMax((int)balanceInBank);
 
 

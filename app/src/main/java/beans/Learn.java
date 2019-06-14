@@ -69,10 +69,12 @@ public class Learn {
         try{
 
           //  if(Locale.getDefault().getLanguage().equals("en"))
-                is =context.getAssets().open("Learn.json");
 
-         //   if(Locale.getDefault().getLanguage().equals("fr"))
-          //      is =context.getAssets().open("Learn-fr.json");
+            if(Locale.getDefault().getLanguage().equals("fr"))
+                is =context.getAssets().open("Learn-fr.json");
+            else
+
+                is =context.getAssets().open("Learn.json");
 
           //  if(Locale.getDefault().getLanguage().equals("ar"))
            //     is =context.getAssets().open("Learn-ar.json");

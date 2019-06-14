@@ -65,12 +65,12 @@ public class CarListAdapter extends ArrayAdapter<Car> {
             image.setImageURI(Uri.parse(car.getImgUrl()));
             name.setText(car.getName());
             price.setText(car.getPrice()+"$");
-            benefit.setText("None");
+            benefit.setText(getContext().getString(R.string.none));
             if(in){
-                owned.setText("Yes");
+                owned.setText(getContext().getString(R.string.owned_yes));
                 owned.setTextColor(getContext().getResources().getColor(R.color.green));
             }else{
-                owned.setText("No");
+                owned.setText(getContext().getString(R.string.owned_no));
                 owned.setTextColor(getContext().getResources().getColor(R.color.red));
             }
 

@@ -62,8 +62,7 @@ public class SleepFragment extends Fragment {
         String firstTime=sharedPreferences.getString("firstTimeLSleep","none");
 
         if(firstTime.equals("none")) {
-            showTuto("Sleeping", "Sleeping helps regain energy to continue work and earn money !" +
-                    ", use this bar to specify the hours you want to sleep");
+            showTuto(getString(R.string.sleeping), getString(R.string.sleep_tuto_message));
             sharedPreferences.edit().putString("firstTimeLSleep","finished").apply();
         }
 

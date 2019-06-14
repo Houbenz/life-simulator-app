@@ -51,24 +51,24 @@ public class GiftListAdapter extends ArrayAdapter<Gift> {
 
         Gift gift1=null;
 
-        switch (gift.getName()){
-            case "Roses":
+        switch (gift.getId()){
+            case 2:
                  gift1 = MainMenu.myAppDataBase.myDao().getRoses();
-                owned.setText("Own :"+gift1.getGiftCount()+" Roses");
-                benefit.setText("Benefit : +"+Params.ROSES_BONUS+" to relationship");
+                owned.setText(getContext().getString(R.string.own)+" :"+gift1.getGiftCount()+ " "+gift.getName());
+                benefit.setText(getContext().getString(R.string.benefit)+" : +"+Params.ROSES_BONUS+" "+getContext().getString(R.string.to_relationship));
                 break;
 
-            case "Chocolate":
+            case 1:
                  gift1 = MainMenu.myAppDataBase.myDao().getChocolate();
-                owned.setText("Own :"+gift1.getGiftCount()+" Chocolates");
-                benefit.setText("Benefit : +"+Params.CHOCOLATE_BONUS+" to relationship");
+                owned.setText(getContext().getString(R.string.own)+" :"+gift1.getGiftCount()+ " "+gift.getName());
+                benefit.setText(getContext().getString(R.string.benefit)+" : +"+Params.CHOCOLATE_BONUS+" "+getContext().getString(R.string.to_relationship));
 
                 break;
 
-            case "Jewelry":
+            case 3:
                  gift1 = MainMenu.myAppDataBase.myDao().getJewelry();
-                owned.setText("Own :"+gift1.getGiftCount()+" Jewelries");
-                benefit.setText("Benefit : +"+Params.JEWELRY_BONUS+" to relationship");
+                owned.setText(getContext().getString(R.string.own)+" :"+gift1.getGiftCount()+ " "+gift.getName());
+                benefit.setText(getContext().getString(R.string.benefit)+" : +"+Params.JEWELRY_BONUS+" "+getContext().getString(R.string.to_relationship));
                 break;
         }
 

@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="casual"
-            android:text="Jewelery"
+            android:text="@string/jewelery"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="14dp"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/main_menu_buttons"
-            android:text="gift"
+            android:text="@string/gift"
             android:textColor="@color/white"
             android:textSize="14dp" />
 
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="casual"
-            android:text="Chocolate"
+            android:text="@string/chocolate"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="14dp"
@@ -117,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/main_menu_buttons"
-            android:text="gift"
+            android:text="@string/gift"
             android:textColor="@color/white"
             android:textSize="14dp" />
     </LinearLayout>
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="casual"
-            android:text="Roses"
+            android:text="@string/roses"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="14dp"
@@ -169,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/main_menu_buttons"
-            android:text="gift"
+            android:text="@string/gift"
             android:textColor="@color/white"
             android:textSize="14dp" />
     </LinearLayout>

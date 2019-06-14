@@ -77,7 +77,7 @@ public class DegreeFragment extends Fragment {
         String firstTime=sharedPreferences.getString("firstTimeLearn","none");
 
         if(firstTime.equals("none")) {
-            showTuto("Learning", "When the degree reaches the max, the player owns it", 0);
+            showTuto(getString(R.string.learning), getString(R.string.learning_section_tuto), 0);
             sharedPreferences.edit().putString("firstTimeLearn","finished").apply();
         }
             return fragment;
@@ -91,7 +91,7 @@ public class DegreeFragment extends Fragment {
                 .setDismissType(DismissType.outside)
                 .setGuideListener(view ->{
                     if(type==0)
-                    showTuto("Learning","click on Highschool degree to begin learning",1);
+                    showTuto(getString(R.string.Learning),getString(R.string.click_highschool_degree),1);
                 })
                 .build()
                 .show();

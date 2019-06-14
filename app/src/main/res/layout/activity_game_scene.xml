@@ -568,7 +568,7 @@
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/colorAccent"
                 android:fontFamily="casual"
-                android:text="Instant 100$"
+                android:text="@string/instant_100"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="12dp"

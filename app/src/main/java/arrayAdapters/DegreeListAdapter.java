@@ -94,32 +94,6 @@ public class DegreeListAdapter extends ArrayAdapter<Degree> {
                    progressStudy.setProgress(acq.getPlayer_progress());
                }
 
-/*
-                boolean in = false;
-                int i = 0;
-
-                while (!in && i < acquiredDegrees.size()) {
-
-                    if (acquiredDegrees.get(i).getDegree_id() == degree.getId()) {
-                        in = true;
-                        progressStudy.setProgress(progressStudy.getProgress() + acquiredDegrees.get(i).getPlayer_progress());
-                        break;
-                    }
-                    i++;
-
-                }
-
-
-                if (in) {
-                    acquired.setText(getContext().getString(R.string.acquiredYes));
-                    acquired.setTextColor(getContext().getResources().getColor(R.color.green));
-                    learnView.setClickable(true);
-                } else {
-
-                    acquired.setText(getContext().getString(R.string.acquiredNo));
-                    acquired.setTextColor(getContext().getResources().getColor(R.color.red));
-                }
-*/
             }
         return  learnView;
     }

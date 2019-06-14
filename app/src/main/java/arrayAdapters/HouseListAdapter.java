@@ -81,7 +81,7 @@ public class HouseListAdapter extends ArrayAdapter<House> {
             String benefitString;
 
             if(house.getId() == 2){
-                  benefitString=String.format(Locale.ENGLISH,"%s : Allows you to buy cars",getContext().getString(R.string.benefit));
+                  benefitString=String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.benefit),getContext().getString(R.string.allow_buy_car));
             }else{
                   benefitString =String.format(Locale.ENGLISH,"%s : +%d\t %s : +%d %s",
                         getContext().getString(R.string.benefit),

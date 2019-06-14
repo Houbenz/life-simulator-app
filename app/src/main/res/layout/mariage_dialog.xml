@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:background="@color/strong_red"
         android:fontFamily="casual"
-        android:text="Offer ring"
+        android:text="@string/offer_ring"
         android:textColor="@color/white"
         android:textSize="18dp"
         android:textStyle="bold" />

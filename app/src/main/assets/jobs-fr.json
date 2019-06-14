@@ -1,61 +1,76 @@
 [
   {
+    "id":1,
     "name":"Travailleur", "timeofWork":8, "pay":15,"leveltoWork":0
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_worker"
   ,"degree":"rien"
+  ,"degree_id":0
 
   }
 ,
   {
+    "id":2,
     "name":"Pompier", "timeofWork":8, "pay":20, "leveltoWork":2
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_firefighter"
-  ,"degree":"Diplome d'étude secondaire"
+  ,"degree":"Diplome de lycée"
+  ,"degree_id":1
 
   }
 ,
   {
+    "id":3,
     "name":"Livreur", "timeofWork":8, "pay":25, "leveltoWork":3
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_deliveryman"
   ,"degree":"Permis de conduite"
+  ,"degree_id":2
+
 
   }
 ,
   {
+    "id":4,
     "name":"Serveur", "timeofWork":7, "pay":30,"leveltoWork":4
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_waiter"
-  ,"degree":"Certificat de servement"
+  ,"degree":"License de serveur"
+  ,"degree_id":3
 
   }
 ,
   {
-    "name":"Enseignat de Lycée", "timeofWork":6, "pay":35,"leveltoWork":5
+    "id":5,
+    "name":"Enseignant de lycée", "timeofWork":6, "pay":35,"leveltoWork":5
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_teacher"
   ,"degree":"Diplome d'enseignement"
+  ,"degree_id":4
 
   }
 ,
   {
-    "name":"Programmeur", "timeofWork":7, "pay":40,"leveltoWork":7
+    "id":6,
+    "name":"Programmeur", "timeofWork":7, "pay":45,"leveltoWork":7
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_programmer"
-  ,"degree":"Diplome de programmation"
+  ,"degree":"License de programmation"
+  ,"degree_id":5
 
   }
 ,
 
   {
-    "name":"Pilote", "timeofWork":12, "pay":250,"leveltoWork":9
+    "id":7,
+    "name":"Pilote", "timeofWork":12, "pay":200,"leveltoWork":9
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_pilot"
-  ,"degree":"Permis de Pilotage"
+  ,"degree":"Permis de pilotage"
+  ,"degree_id":6
 
   }
 ,
   {
+    "id":8,
     "name":"Professeur", "timeofWork":6, "pay":125,"leveltoWork":10
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_professor"
-  ,"degree":"Phd d'enseigement"
+  ,"degree":"Phd"
+  ,"degree_id":7
 
   }
-
-
 
 ]

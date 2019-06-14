@@ -187,7 +187,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 if(cancelTimer) {
                     countDownTimer.cancel();
 
-                    lookPartner.setText("Start looking for a partner");
+                    lookPartner.setText(getString(R.string.start_looking_partner));
                     lookPartner.setTextColor(getResources().getColor(R.color.white));
                     visitText.setVisibility(View.GONE);
                     cancelTimer=false;
@@ -208,7 +208,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
         lookPartner.setOnClickListener(view -> {
             if (dis % 2 == 0) {
-                lookPartner.setText("Stop looking for a partner");
+                lookPartner.setText(getString(R.string.stop_looking_partner));
                 lookPartner.setTextColor(getResources().getColor(R.color.red));
                 dis++;
                 visitText.setVisibility(View.VISIBLE);
@@ -216,7 +216,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 countDownTimer.start();
 
             } else {
-                lookPartner.setText("Start looking for a partner");
+                lookPartner.setText(getString(R.string.start_looking_partner));
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
                 visitText.setVisibility(View.GONE);
                 countDownTimer.cancel();
@@ -286,7 +286,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                         rosesNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.ROSES_BONUS+" to Relation");
+                        relationPlusText.setText("+ "+Params.ROSES_BONUS+" "+getString(R.string.to_relation));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
                             relationPlusText.setText("");
                             relationPlusText.setVisibility(View.INVISIBLE);
@@ -326,7 +326,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                         chocolateNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.CHOCOLATE_BONUS+" to Relation");
+                        relationPlusText.setText("+ "+Params.CHOCOLATE_BONUS+" "+getString(R.string.to_relation));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -367,7 +367,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                         jeweleryNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.JEWELRY_BONUS+" to Relation");
+                        relationPlusText.setText("+ "+Params.JEWELRY_BONUS+" "+getString(R.string.to_relation));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -393,8 +393,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
             if(partner !=null) {
 
-                builder.setMessage("Do you really want to break up with "+partner.getName()+" ?")
-                        .setPositiveButton("Yes", ((dialog, which) -> {
+                builder.setMessage(getString(R.string.do_u_want_breakup) +" "+partner.getName()+" ?")
+                        .setPositiveButton(getString(R.string.yes), ((dialog, which) -> {
 
                             player1.setDating("false");
                             player1.setMarried("false");
@@ -413,7 +413,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                             lookPartner.setVisibility(View.VISIBLE);
                             adButtonFindPartner.setVisibility(View.VISIBLE);
                             foundPartnerConstraint.setVisibility(View.GONE);
-                            lookPartner.setText("Start looking for a partner");
+                            lookPartner.setText(getString(R.string.start_looking_partner));
                             lookPartner.setTextColor(getResources().getColor(R.color.white));
                             dis = 2;
 
@@ -421,7 +421,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                             //loadRewardAd();
 
-                        })).setNegativeButton("No", ((dialog, which) -> {
+                        })).setNegativeButton(getString(R.string.no), ((dialog, which) -> {
                     dialog.cancel();
                     dialog.dismiss();
                 }));
@@ -436,7 +436,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
             if(dateNumber >2){
 
-                Toast.makeText(getContext(),"You've gone in too much dates lately ",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),getString(R.string.too_much_dates),Toast.LENGTH_LONG).show();
 
             }
             else {
@@ -453,7 +453,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
 
 
-                dialogTitle.setText("this date will cost you " + randCost + "$, proceed ?");
+                dialogTitle.setText(getString(R.string.this_date_costs)+" " + randCost + "$, "+getString(R.string.continue_n));
 
                 cofirm.setOnClickListener(v -> {
                     viewmodel.setGoDate(randCost);
@@ -588,9 +588,8 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     private void showTuto(){
 
         new GuideView.Builder(getContext())
-                .setTitle("Dating")
-                .setContentText("when you press the button the player will start looking for a partner," +
-                        " after a brief a period of time you will meet someone !")
+                .setTitle(getString(R.string.dating))
+                .setContentText(getString(R.string.dating_message_tuto))
                 .setTargetView(lookPartner)
                 .build()
                 .show();
@@ -601,7 +600,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.congrat_married);
         TextView text = dialog.findViewById(R.id.cong_text);
-        text.setText("Congratulations You're now married to "+partnerName.getText().toString()+" !.");
+        text.setText( getString(R.string.married_to)+" "+partnerName.getText().toString()+" !.");
         dialog.show();
 
     }
@@ -616,13 +615,13 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             TextView title = dialog.findViewById(R.id.title);
 
             partnerImage.setImageURI(Uri.parse(partner.getImage()));
-            title.setText("Congratulations you've met " + partner.getName() + " !");
+            title.setText(getString(R.string.met_someone)+" " + partner.getName() + " !");
 
             cancel.setOnClickListener(view -> {
                 dialog.dismiss();
                 dialog.cancel();
 
-                lookPartner.setText("Start looking for a partner");
+                lookPartner.setText(getString(R.string.start_looking_partner));
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
                 visitText.setVisibility(View.GONE);
                 dis = 0;
@@ -650,13 +649,13 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                 if(firstTime.equals("none")) {
                     new GuideView.Builder(getContext())
-                            .setTitle("Dating")
-                            .setContentText("click here to offer gift you've bought to your new Girlfriend !")
+                            .setTitle(getString(R.string.dating))
+                            .setContentText(getString(R.string.click_offer_gift))
                             .setTargetView(offerGift)
                             .setGuideListener(view1 ->
                                     new GuideView.Builder(getContext())
-                                            .setTitle("Dating")
-                                            .setContentText("Click here to go on date with your new partner")
+                                            .setTitle(getString(R.string.dating))
+                                            .setContentText(getString(R.string.click_go_date))
                                             .setTargetView(goDate)
                                             .build()
                                             .show())
@@ -673,7 +672,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
             dialog.setOnDismissListener(dialog1 -> {
 
-                lookPartner.setText("Start looking for a partner");
+                lookPartner.setText(getString(R.string.start_looking_partner));
                 lookPartner.setTextColor(getResources().getColor(R.color.white));
                 visitText.setVisibility(View.GONE);
                 dis = 0;
