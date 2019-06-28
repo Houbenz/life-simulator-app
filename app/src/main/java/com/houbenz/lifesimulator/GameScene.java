@@ -990,43 +990,45 @@ public class GameScene extends AppCompatActivity
 
 
     @Override
-    public void deliverMainFragment(String nameOfFragment) {
+    public void deliverMainFragment(int idOfFragment) {
 
 
-        if(nameOfFragment.equals("Food") ||nameOfFragment.equals("Nourriture") ){
+        //todo
+        //change the test of fragment from name to id
+        if(idOfFragment == 1 ){
 
         FoodFragment foodFragment =new FoodFragment();
         fragmentInsertionSecond(foodFragment);
 
         }
-        if(nameOfFragment.equals("Furniture")||nameOfFragment.equals("Fourniture")) {
+        if(idOfFragment == 2 ) {
 
             FournitureFragment fournitureFragment =new FournitureFragment();
             fragmentInsertionSecond(fournitureFragment);
 
         }
-        if(nameOfFragment.equals("House") ||nameOfFragment.equals("Maison")) {
+        if(idOfFragment == 3) {
 
             HouseFragment houseFragment =new HouseFragment();
             fragmentInsertionSecond(houseFragment);
         }
 
-        if(nameOfFragment.equals("Store") ||nameOfFragment.equals("Magasin")){
+        if(idOfFragment == 4 ){
             StoreFragment storeFragment = new StoreFragment();
             fragmentInsertionSecond(storeFragment);
         }
 
-        if(nameOfFragment.equals("Pharmacy") || nameOfFragment.equals("Pharmacie")){
+        if(idOfFragment == 5 ){
             PharmacyFragment pharmacyFragment = new PharmacyFragment();
             fragmentInsertionSecond(pharmacyFragment);
         }
 
-        if(nameOfFragment.equals("Cars") || nameOfFragment.equals("Voitures")){
+        if(idOfFragment == 6 ){
             CarFragment carFragment = new CarFragment();
             fragmentInsertionSecond(carFragment);
         }
 
-        if(nameOfFragment.equals("Gifts") || nameOfFragment.equals("Cadeau")){
+        if(idOfFragment == 7 ){
              GiftFragment giftFragment = new GiftFragment();
             fragmentInsertionSecond(giftFragment);
         }

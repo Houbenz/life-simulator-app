@@ -1,25 +1,25 @@
 [
   {
     "id":1,
-    "name":"Nourriture","color":"#f44b42"
+    "name":"Nourritures","color":"#f44b42"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_food"
   }
 ,
   {
     "id":2,
-    "name":"Fourniture","color":"#327ead"
+    "name":"Meubles","color":"#327ead"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_desk"
   }
 ,
   {
     "id":3,
-    "name":"Maison","color":"#31ad40"
+    "name":"Maisons","color":"#31ad40"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_house"
   }
 ,
   {
     "id":4,
-    "name":"Magasin","color":"#574382"
+    "name":"Magasins","color":"#574382"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_store"
   }
 ,

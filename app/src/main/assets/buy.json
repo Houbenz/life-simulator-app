@@ -7,19 +7,19 @@
 ,
   {
     "id":2,
-    "name":"Furniture","color":"#327ead"
+    "name":"Furnitures","color":"#327ead"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_desk"
   }
 ,
   {
     "id":3,
-    "name":"House","color":"#31ad40"
+    "name":"Houses","color":"#31ad40"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_house"
   }
 ,
   {
     "id":4,
-    "name":"Store","color":"#574382"
+    "name":"Stores","color":"#574382"
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_store"
   }
   ,

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,11 +150,6 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         if (player1.getDating().equals("true") ) {
             adButtonFindPartner.setVisibility(View.GONE);
             Partner partner=MainMenu.myAppDataBase.myDao().getDatingPartner();
-
-            List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
-            for(Partner az : partners){
-                Log.i("LOZ",az.getImage() +" "+ az.getDating()+ " "+ az.getId());
-            }
             if(partner != null) {
 
                 foundPartnerConstraint.setVisibility(View.VISIBLE);

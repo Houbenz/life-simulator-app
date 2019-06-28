@@ -56,7 +56,7 @@
     <string name="health">Santé</string>
     <string name="incomePerDay">Revenu par jour <ns1:g> : </ns1:g></string>
     <string name="acquiredYes">Acquis <ns1:g> :</ns1:g> Oui</string>
-    <string name="acquiredNo">Acquired <ns1:g> :</ns1:g> Non</string>
+    <string name="acquiredNo">Acquis<ns1:g> :</ns1:g> Non</string>
     <string name="pay">Payer</string>
     <string name="requiredLevel">Niveau requis</string>
     <string name="hunger">Faim</string>
@@ -115,10 +115,10 @@
     <string name="home_two_outside">Afficher domicile 2 dehors</string>
     <string name="social">Social</string>
     <string name="married_to">Congratulations You\'re now married to</string>
-    <string name="gift">gift</string>
-    <string name="jewelery">Jewelery</string>
-    <string name="chocolate">Chocolate</string>
-    <string name="roses">Roses</string>
+    <string name="gift">Offrir</string>
+    <string name="jewelery">Bijoux</string>
+    <string name="chocolate">Chocolat</string>
+    <string name="roses">Des roses</string>
     <string name="found_partner">Congratulation you have found a partner !</string>
     <string name="cancel">cancel</string>
     <string name="offer_gift">Offer gift</string>
@@ -161,4 +161,7 @@
     <string name="own">posséde</string>
     <string name="allow_buy_car">Vous permet d\'acheter des voitures</string>
     <string name="instant_100">instant 100$</string>
+    <string name="required_level">Niveau requis</string>
+    <string name="learn_time">Temp d\'apprentissage : 1 heure</string>
+    <string name="house_benefice">Vous permet d\'acquèrir des meubles</string>
 </resources>

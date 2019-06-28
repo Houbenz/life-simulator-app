@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -1022,7 +1021,6 @@ public class MainMenu extends AppCompatActivity {
             is.close();
             json=new String (buffer,"UTF-8");
             JSONArray jsonArray= new JSONArray(json);
-            Log.i("Youha"," aze yuoppa");
             for (int i = 0 ; i<jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 House house = new House();
@@ -1033,7 +1031,6 @@ public class MainMenu extends AppCompatActivity {
                 house.setImgUrl(jsonObject.getString("uri"));
                 house.setBonusEnergy(jsonObject.getInt("bonusE"));
                 house.setBonusHealth(jsonObject.getInt("bonusH"));
-                Log.i("Youha",house.getName()+" yuoppa");
                 houses.add(house);
 
                 if(!isUpdate)

@@ -57,7 +57,7 @@
 
   {
     "id":7,
-    "name":"Pilote", "timeofWork":12, "pay":200,"leveltoWork":9
+    "name":"Pilote", "timeofWork":12, "pay":100,"leveltoWork":9
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_pilot"
   ,"degree":"Permis de pilotage"
   ,"degree_id":6

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,10 +82,8 @@ public class HouseListAdapter extends ArrayAdapter<House> {
             if(house.getId() == 2){
                   benefitString=String.format(Locale.ENGLISH,"%s : %s",getContext().getString(R.string.benefit),getContext().getString(R.string.allow_buy_car));
             }else{
-                  benefitString =String.format(Locale.ENGLISH,"%s : +%d\t %s : +%d %s",
-                        getContext().getString(R.string.benefit),
-                        house.getBonusEnergy(),getContext().getString(R.string.energyBonus),
-                        house.getBonusHealth(),getContext().getString(R.string.healthBonus));
+                  benefitString =String.format(Locale.ENGLISH,"%s : %s ",
+                        getContext().getString(R.string.benefit),getContext().getString(R.string.house_benefice));
             }
 
 
@@ -96,10 +93,10 @@ public class HouseListAdapter extends ArrayAdapter<House> {
             comImage.setImageURI(Uri.parse(house.getImgUrl()));
 
             if(in){
-                owned.setText("Yes");
+                owned.setText(getContext().getString(R.string.yes));
                 owned.setTextColor(getContext().getResources().getColor(R.color.green));
             }else{
-                owned.setText("No");
+                owned.setText(getContext().getString(R.string.no));
                 owned.setTextColor(getContext().getResources().getColor(R.color.red));
             }
 

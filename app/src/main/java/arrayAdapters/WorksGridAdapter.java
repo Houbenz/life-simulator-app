@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +67,7 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
             workName.setText(work.getName());
             workPay.setText(payString);
             workTime.setText(workTimeString);
-            workLevel.setText("Required level : "+work.getLvlToWork());
+            workLevel.setText(getContext().getString(R.string.required_level)+" : "+work.getLvlToWork());
             reqDegree.setText(reqDegreeString);
 
 
@@ -84,16 +82,11 @@ public class WorksGridAdapter extends ArrayAdapter<Work> {
 
         while (!in && i<acquiredDegrees.size()) {
 
-            //if (acquiredDegrees.get(i).getDegree_Name().equals(work.getDegree_required())
-                  //  && acquiredDegrees.get(i).getAvailable().equals("true"))
-
             if(acquiredDegrees.get(i).getDegree_id() == work.getDegree_id() && acquiredDegrees.get(i).getAvailable().equals("true"))
             in = true;
-            Log.i("LOLZ",work.getName() +"  "+ acquiredDegrees.get(i).getDegree_id() +"   "+work.getDegree_id());
             i++;
         }
 
-        //if(work.getDegree_required().equals(getContext().getString(R.string.none)))
             if(work.getDegree_id() ==0)
             in=true;
 

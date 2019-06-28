@@ -1,6 +1,7 @@
 package conf;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Houbenz on 23/08/2018.
@@ -17,7 +18,7 @@ public class Params {
     public static final int ENERGY_GAIN_PER_HOUR=8;
 
 
-    public static final double START_BALANCE = 20000;
+    public static final double START_BALANCE = 200;
 
 
     //for hunger loss (gains are directly from food.json file)
@@ -68,12 +69,25 @@ public class Params {
     public static ArrayList<String> getTexts(){
         ArrayList<String> strings = new ArrayList<String >();
 
-        strings.add("you go to clubs hoping to meet someone");
-        strings.add("you changed direction and go to bars");
-        strings.add("finally you change your mind and start introducing yourself to strangers");
-        strings.add("you go to dating sites");
-        strings.add("maybe introduce yourself to your neighbors");
-        strings.add("You start a conversation with your coworkers");
+
+        if(Locale.getDefault().getLanguage().equals("fr")){
+
+            strings.add("vous allez aux boites de nuit dans l'espoir de rencontrer quelqu'un");
+            strings.add("vous avez changé de direction et vous visitez un bar");
+            strings.add("enfin, vous changez d'avis et commencez à vous présenter à des étrangers");
+            strings.add("Vous entrez dans des site de rencontre");
+            strings.add("peut-être présentez-vous à vos voisins ?");
+            strings.add("Vous commencez une conversation avec vos collègues");
+        }
+
+        else {
+            strings.add("you go to clubs hoping to meet someone");
+            strings.add("you changed direction and go to bars");
+            strings.add("finally you change your mind and start introducing yourself to strangers");
+            strings.add("you go to dating sites");
+            strings.add("maybe introduce yourself to your neighbors");
+            strings.add("You start a conversation with your coworkers");
+        }
 
         return strings;
     }

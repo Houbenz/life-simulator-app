@@ -199,6 +199,9 @@
     <string name="own">Own</string>
     <string name="allow_buy_car">Allows you to buy cars</string>
     <string name="instant_100">instant 100$</string>
+    <string name="required_level">Required level</string>
+    <string name="learn_time">Learn Time : 1 Hour</string>
+    <string name="house_benefice">Allows you to buy furnitures</string>
 
 
 </resources>

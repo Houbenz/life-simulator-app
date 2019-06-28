@@ -65,7 +65,7 @@ public class BuyFragment extends Fragment {
 
             MainFragments mainFrag= (MainFragments) parent.getItemAtPosition(position);
 
-            mBuySelected.deliverMainFragment(mainFrag.getName());
+            mBuySelected.deliverMainFragment(mainFrag.getId());
 
         });
 
@@ -95,7 +95,7 @@ public class BuyFragment extends Fragment {
 
     public interface OnMainFragmentClicked {
 
-        void deliverMainFragment(String nameOfFragment);
+        void deliverMainFragment(int idOfFragment);
 
     }
 
