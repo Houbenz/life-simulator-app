@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
@@ -16,14 +17,25 @@ import android.content.SharedPreferences;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.PlayersClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -91,6 +103,10 @@ public class MainMenu extends AppCompatActivity {
 
     public static final int  MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE=11;
 
+    GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInAccount account;
+    private com.google.android.gms.games.Player player;
+
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v, event) -> {
 
@@ -109,6 +125,7 @@ public class MainMenu extends AppCompatActivity {
 
 
 
+/*
         //asks for permission
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
                  != PackageManager.PERMISSION_GRANTED){
@@ -126,7 +143,7 @@ public class MainMenu extends AppCompatActivity {
         }
 
 
-
+*/
 
         myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
@@ -247,20 +264,112 @@ public class MainMenu extends AppCompatActivity {
         thread.start();
 
 
-        //startSignInIntent();
+        //So we could sign in to google play games
+        startSignInIntent();
+
+        //So we could get the player informations
+        getPlayerInformation();
+
+
+        //setting pop up for achievements !
+        settingUpPopUpforAchievements();
+
+        Button button =findViewById(R.id.button);
+
+
+        button.setOnClickListener(view ->{
+            Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+                    //.unlock(getString(R.string.achievement_first_one));
+                        //.unlock(getString(R.string.achievement_second_one));
+                        .unlock(getString(R.string.achievement_blazer_lazer));
+        });
+
+        Button button2 = findViewById(R.id.button2);
+
+        button2.setOnClickListener(view ->{
+
+            getAchievements();
+        });
+
     }
 
     private void startSignInIntent(){
 
-        GoogleSignInClient signInClient=GoogleSignIn.getClient(this,
-                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        GoogleSignInOptions signInOptions= new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestScopes(Drive.SCOPE_APPFOLDER)
+                .build();
 
-        Intent intent=signInClient.getSignInIntent();
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if(account != null){
+                if(GoogleSignIn.hasPermissions(account)){
 
-        startActivityForResult(intent,RC_SIGN_IN);
+                    this.account=account;
+                }
+        }else{
 
+            mGoogleSignInClient = GoogleSignIn.getClient(this,
+                    signInOptions);
+
+            startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
+        }
     }
 
+
+
+    public void getPlayerInformation(){
+        //Player clients is used to get all available playes
+        PlayersClient playersClient = Games.getPlayersClient(getApplicationContext(),account);
+
+        //get the current player
+        playersClient.getCurrentPlayer().addOnCompleteListener(task -> {
+
+            if(task.isSuccessful()){
+                player = task.getResult();
+            }
+        });
+    }
+
+
+
+    //for loading all the achievements !
+    public static final int RC_ACHEIVEMENTS=1110;
+    public void getAchievements(){
+
+    Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+            .getAchievementsIntent()
+            .addOnSuccessListener(intent ->{
+
+                startActivityForResult(intent,RC_ACHEIVEMENTS);
+            });
+    }
+
+    private void settingUpPopUpforAchievements(){
+        GamesClient gamesClient = Games.getGamesClient(this,GoogleSignIn.getLastSignedInAccount(this));
+        gamesClient.setViewForPopups(findViewById(android.R.id.content));
+        gamesClient.setGravityForPopups(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(requestCode == RC_SIGN_IN){
+
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+            if(result.isSuccess()){
+
+                account=result.getSignInAccount();
+                Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_SHORT).show();
+
+                Log.i("UUU","Sol7ot");
+            }else {
+                    Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     public void initDatabase(Boolean update){
 
@@ -277,25 +386,6 @@ public class MainMenu extends AppCompatActivity {
         initHouses(update);
     }
 
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == RC_SIGN_IN){
-
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-
-            if(result.isSuccess()){
-                GoogleSignInAccount account=result.getSignInAccount();
-                Toast.makeText(getApplicationContext(),"Auth Success",Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(getApplicationContext(),"Auth Failed",Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
-*/
     public void animateInThread(ImageView imageView) {
         int randomNumber = (int) ((imagesResources().length - 0) * Math.random());
 
@@ -378,6 +468,8 @@ public class MainMenu extends AppCompatActivity {
 
                 putText.dismiss();
         });
+
+        caracterName.getEditText().setText(player.getDisplayName());
 
         Button confirmDialog =putText.findViewById(R.id.confirm);
 
