@@ -1,15 +1,11 @@
 package com.houbenz.lifesimulator;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 import android.content.Context;
 import android.content.Intent;
@@ -19,22 +15,26 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.PlayersClient;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.games.SnapshotsClient;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
@@ -44,35 +44,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.games.Games;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import beans.Buy;
-import beans.Food;
-import beans.Furniture;
-import beans.Learn;
-import beans.Medicine;
-import beans.Store;
 import conf.Params;
-import database.Car;
-import database.Degree;
+import database.Acquired_Cars;
+import database.Acquired_Furnitures;
+import database.Acquired_Houses;
+import database.Acquired_Stores;
+import database.Acquired_degree;
 import database.Gift;
-import database.House;
-import database.MainFragments;
 import database.MyAppDataBase;
-import database.Partner;
 import database.Player;
 import database.VersionDB;
-import smartdevelop.ir.eram.showcaseviewlib.GuideView;
-import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+
+import database.DatabaseInit;
 
 
 public class MainMenu extends AppCompatActivity {
@@ -107,6 +101,18 @@ public class MainMenu extends AppCompatActivity {
     GoogleSignInAccount account;
     private com.google.android.gms.games.Player player;
 
+
+    private class ObjectType{
+
+        public static final int PLAYER=0;
+        public static final int ACQ_HOUSES=1;
+        public static final int ACQ_STORES=2;
+        public static final int ACQ_CARS=3;
+        public static final int ACQ_FURNITURES=4;
+        public static final int ACQ_DEGRESS=5;
+
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v, event) -> {
 
@@ -125,25 +131,7 @@ public class MainMenu extends AppCompatActivity {
 
 
 
-/*
-        //asks for permission
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                 != PackageManager.PERMISSION_GRANTED){
 
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-
-                //todo
-
-            }else{
-
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE);
-
-            }
-        }
-
-
-*/
 
         myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
@@ -157,17 +145,17 @@ public class MainMenu extends AppCompatActivity {
 
         if (entry.equals("none")) {
             initDatabase(false);
-            myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
+            myAppDataBase.myDao().initDBVersion(new VersionDB(DatabaseInit.getDatabaseVersion(getApplicationContext()), 1));
 
             sharedPreferences.edit().putString("entry", "available").apply();
             sharedPreferences.edit().putString("lang",Locale.getDefault().getLanguage()).apply();
         } else {
 
-            String actualversion = getDatabaseVersion();
+            String actualversion = DatabaseInit.getDatabaseVersion(getApplicationContext());
             VersionDB versionDB = myAppDataBase.myDao().getVersionDB();
 
             if (versionDB == null) {
-                myAppDataBase.myDao().initDBVersion(new VersionDB(getDatabaseVersion(), 1));
+                myAppDataBase.myDao().initDBVersion(new VersionDB(DatabaseInit.getDatabaseVersion(getApplicationContext()), 1));
                 versionDB = myAppDataBase.myDao().getVersionDB();
             }
 
@@ -205,15 +193,11 @@ public class MainMenu extends AppCompatActivity {
         mainLayout.setOnTouchListener(mOnTouchListener);
 
 
+
+        //get the leaderboard score
         credits.setOnClickListener(view -> {
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-            if(account != null)
-            Games.getLeaderboardsClient(this,account).getLeaderboardIntent(getString(R.string.leaderboard_score))
-                    .addOnSuccessListener(intent -> {
-                        startActivityForResult(intent,RC_LEADERBOARD_SCORE);
-                    });
-
+            showLeaderBoard();
         });
 
 
@@ -267,31 +251,173 @@ public class MainMenu extends AppCompatActivity {
         //So we could sign in to google play games
         startSignInIntent();
 
-        //So we could get the player informations
-        getPlayerInformation();
 
 
-        //setting pop up for achievements !
-        settingUpPopUpforAchievements();
-
-        Button button =findViewById(R.id.button);
 
 
-        button.setOnClickListener(view ->{
-            Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
-                    //.unlock(getString(R.string.achievement_first_one));
-                        //.unlock(getString(R.string.achievement_second_one));
-                        .unlock(getString(R.string.achievement_blazer_lazer));
+        Button savegame =findViewById(R.id.savegame);
+
+
+        savegame.setOnClickListener(view->{
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+               ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+                Player player=myAppDataBase.myDao().getPlayer(1);
+                List<Acquired_Furnitures> acquired_furnitures = myAppDataBase.myDao().getAcquiredFurnitures(1);
+                List<Acquired_degree> acquired_degrees =myAppDataBase.myDao().getAcquiredDegrees(1);
+                List<Acquired_Cars> acquired_cars =myAppDataBase.myDao().getAcquiredCars(1);
+                List<Acquired_Houses> acquired_houses =myAppDataBase.myDao().getAcquiredHouses(1);
+                List<Acquired_Stores> acquired_stores =myAppDataBase.myDao().getAcquiredStores(1);
+
+                oos.writeObject(player);
+                oos.writeObject(acquired_furnitures);
+                //oos.writeObject(acquired_degrees);
+               // oos.writeObject(acquired_cars);
+                //oos.writeObject(acquired_houses);
+               // oos.writeObject(acquired_stores);
+
+                bytearray =bos.toByteArray();
+                oos.close();
+
+
+                executeSaving();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //this is for unlocking achievments
+            // Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+            //.unlock(getString(R.string.achievement_first_one));
+            //.unlock(getString(R.string.achievement_second_one));
+            // .unlock(getString(R.string.achievement_blazer_lazer));
+
         });
 
-        Button button2 = findViewById(R.id.button2);
+        //For reading bytes to objects
+        Button showSave = findViewById(R.id.readfile);
 
-        button2.setOnClickListener(view ->{
+        showSave.setOnClickListener(view ->{
+            showSavedGamesGoogleUi();
+        });
+
+        Button achievement = findViewById(R.id.achievement);
+
+        achievement.setOnClickListener(view ->{
 
             getAchievements();
         });
 
+
+        Button loadData=findViewById(R.id.loaddata);
+        loadData.setOnClickListener(view ->{
+
+           loadSnapshotData().addOnCompleteListener(task -> {
+               if(task.isSuccessful()){
+                   Toast.makeText(getApplicationContext(),"succeful loading",Toast.LENGTH_SHORT).show();
+
+                   //show the loaded data
+                   Log.i("YUUP","length : "+task.getResult().length);
+
+                   extractData(task.getResult());
+
+               }else{
+
+                   Toast.makeText(getApplicationContext(),"loading failed",Toast.LENGTH_SHORT).show();
+               }
+           });
+        });
     }
+
+
+
+    private Task<byte[]> loadSnapshotData(){
+        SnapshotsClient snapshotsClient=Games.getSnapshotsClient(this,account);
+
+        int conflictResolutionPolicy=SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED;
+
+        return snapshotsClient.open(currentSave,false,conflictResolutionPolicy)
+                .addOnFailureListener(e -> {
+
+                    Log.e("ERR","snapshot"+e);
+
+                }).continueWith(task -> {
+
+                    Snapshot snapshot = task.getResult().getData();
+
+                    try {
+                        return snapshot.getSnapshotContents().readFully();
+                    } catch (IOException e) {
+                        Log.e("ERRO", "snapshot" + e);
+                    }
+
+                    return null;
+                });
+    }
+
+    private  void extractData(byte[] rawData) {
+        ByteArrayInputStream byteArrayInputStream =new ByteArrayInputStream(rawData);
+        try {
+            ObjectInputStream objectInputStream =new ObjectInputStream(byteArrayInputStream);
+
+            Player player =(Player)objectInputStream.readObject();
+            List<Acquired_Furnitures> acquired_furnitures=(List<Acquired_Furnitures>) objectInputStream.readObject();
+
+            Log.i("YUUP","its loaded : "+ player.getName());
+
+            Log.i("YUUP","here to is loaded "+acquired_furnitures.get(0).getImgurl());
+
+
+            objectInputStream.close();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    byte[] bytearray;
+
+    private String currentSave="snapshot"+1235;
+
+    private void executeSaving(){
+
+
+        SnapshotsClient snapshotsClient= Games.getSnapshotsClient(this,account);
+
+        // to save a game
+        snapshotsClient.open(currentSave,true).addOnCompleteListener(task -> {
+
+            Snapshot snapshot =task.getResult().getData();
+
+            if (snapshot != null){
+
+                writeSnapshot(snapshot,bytearray,"first description").addOnCompleteListener(task1 -> {
+
+                    if(task1.isSuccessful()){
+                        Toast.makeText(getApplicationContext(),"Succesful",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Log.e("ERR",""+task1.getException());
+                    }
+                });
+            }
+        });
+    }
+    private Task<SnapshotMetadata> writeSnapshot(Snapshot snapshot ,byte[] bytearray,String desc){
+
+        snapshot.getSnapshotContents().writeBytes(bytearray);
+
+        SnapshotMetadataChange snapshotMetadata = new SnapshotMetadataChange.Builder().setDescription(desc).build();
+
+        SnapshotsClient snapshotsClient=Games.getSnapshotsClient(this,account);
+
+
+        return snapshotsClient.commitAndClose(snapshot,snapshotMetadata);
+    }
+
 
     private void startSignInIntent(){
 
@@ -299,7 +425,7 @@ public class MainMenu extends AppCompatActivity {
                 .requestScopes(Drive.SCOPE_APPFOLDER)
                 .build();
 
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account != null){
                 if(GoogleSignIn.hasPermissions(account)){
 
@@ -317,6 +443,11 @@ public class MainMenu extends AppCompatActivity {
 
 
     public void getPlayerInformation(){
+
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+
+
+        progressBar.setVisibility(View.VISIBLE);
         //Player clients is used to get all available playes
         PlayersClient playersClient = Games.getPlayersClient(getApplicationContext(),account);
 
@@ -325,6 +456,8 @@ public class MainMenu extends AppCompatActivity {
 
             if(task.isSuccessful()){
                 player = task.getResult();
+
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -335,7 +468,7 @@ public class MainMenu extends AppCompatActivity {
     public static final int RC_ACHEIVEMENTS=1110;
     public void getAchievements(){
 
-    Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+    Games.getAchievementsClient(this,account)
             .getAchievementsIntent()
             .addOnSuccessListener(intent ->{
 
@@ -344,10 +477,37 @@ public class MainMenu extends AppCompatActivity {
     }
 
     private void settingUpPopUpforAchievements(){
-        GamesClient gamesClient = Games.getGamesClient(this,GoogleSignIn.getLastSignedInAccount(this));
+        GamesClient gamesClient = Games.getGamesClient(this,account);
         gamesClient.setViewForPopups(findViewById(android.R.id.content));
         gamesClient.setGravityForPopups(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
     }
+
+
+    private void showLeaderBoard(){
+
+        Games.getLeaderboardsClient(this,account)
+                .getLeaderboardIntent(getString(R.string.leaderboard_score))
+                .addOnSuccessListener(intent -> {
+                    startActivityForResult(intent,RC_LEADERBOARD_SCORE);
+                });
+    }
+
+    public static final int RC_SAVE_GAME=2000;
+
+    private void showSavedGamesGoogleUi(){
+        SnapshotsClient snapshotsClient= Games.getSnapshotsClient(this,account);
+
+        int numSaves = 1;
+
+        Task<Intent> intentTask=snapshotsClient.getSelectSnapshotIntent("See my saves",true,true,numSaves);
+
+        intentTask.addOnSuccessListener(intent ->{
+
+            startActivityForResult(intent,RC_SAVE_GAME);
+        });
+    }
+
+
 
 
     @Override
@@ -355,35 +515,56 @@ public class MainMenu extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if(requestCode == RC_SIGN_IN){
+        if(requestCode == RC_SIGN_IN) {
 
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-            if(result.isSuccess()){
+            if (result != null) {
+                if (result.isSuccess()) {
 
-                account=result.getSignInAccount();
-                Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_SHORT).show();
+                    account = result.getSignInAccount();
+                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
 
-                Log.i("UUU","Sol7ot");
-            }else {
-                    Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_SHORT).show();
+                    //so we can get the players info
+                    getPlayerInformation();
+
+                    //setting pop up for achievements !
+                    settingUpPopUpforAchievements();
+
+                    Log.i("UUU", "Sol7ot");
+                } else {
+                    Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
+
+
     public void initDatabase(Boolean update){
 
-        initGifts(update);
-        initWorkRows(update);
-        initDegreeRows(update);
-        initFragments(update);
-        initFood(update);
-        initStores(update);
-        initFurnitures(update);
-        initMedicine(update);
-        initCars(update);
-        initPartners(update);
-        initHouses(update);
+
+        List<database.Work> works=myAppDataBase.myDao().getWorks();
+
+        if(!works.isEmpty()) {
+            for (database.Work work : works) {
+                Log.i("YUUP", work.getName() + "");
+            }
+        }else
+
+            Log.i("YUUP", "no work is in there aw ga3ed ya3ti wahdo");
+
+        DatabaseInit.initWorkRows(update,getApplicationContext());
+        DatabaseInit.initDegreeRows(update,getApplicationContext());
+        DatabaseInit.initFragments(update,getApplicationContext());
+        DatabaseInit.initFood(update,getApplicationContext());
+        DatabaseInit.initStores(update,getApplicationContext());
+        DatabaseInit.initFurnitures(update,getApplicationContext());
+        DatabaseInit.initMedicine(update,getApplicationContext());
+        DatabaseInit.initCars(update,getApplicationContext());
+        DatabaseInit.initPartners(update,getApplicationContext());
+        DatabaseInit.initHouses(update,getApplicationContext());
+        DatabaseInit.initGifts(update,getApplicationContext());
     }
 
     public void animateInThread(ImageView imageView) {
@@ -454,6 +635,8 @@ public class MainMenu extends AppCompatActivity {
     //Pour entrer le nom du joueur puis sauvgarder la premiere session
     public void dialogInputCreate(int slotNumber){
 
+
+
         final Dialog putText = new Dialog(MainMenu.this);
 
         putText.setTitle("put your name");
@@ -469,6 +652,7 @@ public class MainMenu extends AppCompatActivity {
                 putText.dismiss();
         });
 
+        if(player != null)
         caracterName.getEditText().setText(player.getDisplayName());
 
         Button confirmDialog =putText.findViewById(R.id.confirm);
@@ -594,7 +778,6 @@ public class MainMenu extends AppCompatActivity {
     }
 
 
-
     public int[] imagesResources(){
 
         int[] arrayImage =new int[18];
@@ -619,580 +802,4 @@ public class MainMenu extends AppCompatActivity {
         arrayImage[17]=R.drawable.jewelry;
         return arrayImage;
     }
-
-
-    public void initWorkRows(boolean isUpdate){
-       ArrayList<beans.Work> worksBeans = beans.Work.workInit(getApplicationContext()) ;
-
-       for(beans.Work bean : worksBeans){
-           database.Work work = new database.Work();
-
-           work.setId(bean.getId());
-
-           work.setDegree_required(bean.getReqDegree());
-           work.setImgPath(bean.getImagePath());
-           work.setIncome(bean.getPay());
-           work.setLvlToWork(bean.getLeveltoWork());
-           work.setName(bean.getName());
-           work.setWork_time(bean.getTimeOfWork());
-           work.setDegree_id(bean.getDegree_id());
-
-           if(!isUpdate)
-                myAppDataBase.myDao().addWork(work);
-           else
-               myAppDataBase.myDao().updateWork(work);
-       }
-
-       int oldRows =myAppDataBase.myDao().workNumber();
-
-       int newRows = worksBeans.size() - oldRows;
-
-       if(newRows >0) {
-           for(int i =oldRows  ; i<worksBeans.size();i++){
-
-               database.Work work = new database.Work();
-
-               work.setId(worksBeans.get(i).getId());
-
-               work.setDegree_required(worksBeans.get(i).getReqDegree());
-               work.setImgPath(worksBeans.get(i).getImagePath());
-               work.setIncome(worksBeans.get(i).getPay());
-               work.setLvlToWork(worksBeans.get(i).getLeveltoWork());
-               work.setName(worksBeans.get(i).getName());
-               work.setWork_time(worksBeans.get(i).getTimeOfWork());
-               work.setDegree_id(worksBeans.get(i).getDegree_id());
-
-               myAppDataBase.myDao().addWork(work);
-           }
-       }
-
-
-    }
-
-    public void initDegreeRows(boolean isUpdate){
-        ArrayList<Learn> learns = Learn.initLearn(getApplicationContext());
-
-        for(Learn learn : learns){
-            Degree degree = new Degree();
-
-            degree.setId(learn.getId());
-            degree.setName(learn.getName());
-            degree.setPrice(learn.getPrice());
-            degree.setImgUrl(learn.getImgURL());
-            degree.setProgress(learn.getProgress());
-
-            if(!isUpdate)
-                myAppDataBase.myDao().addDegree(degree);
-            else
-                myAppDataBase.myDao().updateDegree(degree);
-        }
-
-        int oldRows =myAppDataBase.myDao().degreeNumber();
-
-        int newRows =learns.size() - oldRows;
-        if (newRows > 0){
-            for (int i = oldRows;i<learns.size();i++){
-
-                Degree degree = new Degree();
-
-                degree.setId(learns.get(i).getId());
-                degree.setName(learns.get(i).getName());
-                degree.setPrice(learns.get(i).getPrice());
-                degree.setImgUrl(learns.get(i).getImgURL());
-                degree.setProgress(learns.get(i).getProgress());
-
-                myAppDataBase.myDao().addDegree(degree);
-            }
-        }
-    }
-
-
-    public void initFood(boolean isUpdate){
-        ArrayList<Food>  foods= Food.initFood(getApplicationContext());
-
-        for(Food food : foods){
-            database.Food foodDb = new database.Food();
-
-            foodDb.setId(food.getId());
-            foodDb.setName(food.getName());
-            foodDb.setPrice(food.getPrice());
-            foodDb.setBenefit(food.getBenefit());
-            foodDb.setDescription(food.getDescription());
-            foodDb.setImgUrl(food.getImagePath());
-            if(!isUpdate)
-                myAppDataBase.myDao().addFood(foodDb);
-            else
-                myAppDataBase.myDao().updateFood(foodDb);
-        }
-
-        int oldRows =myAppDataBase.myDao().foodNumber();
-
-        int newRows = foods.size()-oldRows;
-
-        if (newRows > 0){
-            for(int i = oldRows;i<foods.size();i++){
-
-                database.Food foodDb = new database.Food();
-
-                foodDb.setName(foods.get(i).getName());
-                foodDb.setPrice(foods.get(i).getPrice());
-                foodDb.setBenefit(foods.get(i).getBenefit());
-                foodDb.setDescription(foods.get(i).getDescription());
-                foodDb.setImgUrl(foods.get(i).getImagePath());
-
-                myAppDataBase.myDao().addFood(foodDb);
-            }
-
-        }
-
-
-    }
-
-    public void initMedicine(boolean isUpdate){
-        ArrayList<Medicine> medicines = Medicine.initMedicine(getApplicationContext());
-
-
-        for(Medicine medicine : medicines) {
-            database.Medicine medicineDb = new database.Medicine();
-
-            medicineDb.setId(medicine.getId());
-            medicineDb.setName(medicine.getName());
-            medicineDb.setPrice(medicine.getPrice());
-            medicineDb.setBenefit(medicine.getBenefit());
-            medicineDb.setImgUrl(medicine.getImagePath());
-            if (!isUpdate)
-                myAppDataBase.myDao().addMedicine(medicineDb);
-            else
-                myAppDataBase.myDao().updateMedicine(medicineDb);
-        }
-            int oldRows =myAppDataBase.myDao().medicineNumber();
-            int newRows = medicines.size()-oldRows;
-
-            if(newRows > 0){
-                for (int i=oldRows;i <medicines.size();i++){
-
-                    database.Medicine medicineDb = new database.Medicine();
-
-                    medicineDb.setName(medicines.get(i).getName());
-                    medicineDb.setPrice(medicines.get(i).getPrice());
-                    medicineDb.setBenefit(medicines.get(i).getBenefit());
-                    medicineDb.setImgUrl(medicines.get(i).getImagePath());
-
-                    myAppDataBase.myDao().addMedicine(medicineDb);
-                }
-            }
-
-    }
-
-    public  void initFragments(boolean isUpdate){
-        ArrayList<Buy> buys = Buy.initBuy(getApplicationContext());
-
-
-        for (Buy buy : buys){
-            MainFragments mainFragments = new MainFragments();
-            mainFragments.setId(buy.getId());
-            mainFragments.setName(buy.getName());
-            mainFragments.setColor(buy.getColor());
-            mainFragments.setImage_Uri(buy.getImagePath());
-
-            if(!isUpdate)
-                myAppDataBase.myDao().addMainFragment(mainFragments);
-            else
-                myAppDataBase.myDao().updateMainFragment(mainFragments);
-        }
-
-        int oldRows = myAppDataBase.myDao().fragmentNumber();
-        int newRows =buys.size()-oldRows;
-
-        if(newRows > 0){
-
-            for(int i=oldRows; i <buys.size();i++){
-
-                MainFragments mainFragments = new MainFragments();
-                mainFragments.setId(buys.get(i).getId());
-                mainFragments.setName(buys.get(i).getName());
-                mainFragments.setColor(buys.get(i).getColor());
-                mainFragments.setImage_Uri(buys.get(i).getImagePath());
-
-                myAppDataBase.myDao().addMainFragment(mainFragments);
-            }
-        }
-    }
-
-    public void initStores(boolean isUpdate){
-        ArrayList<Store> stores = Store.initStore(getApplicationContext());
-
-        for (Store store : stores) {
-            database.Store storeDb = new database.Store();
-
-            storeDb.setId(store.getId());
-            storeDb.setName(store.getName());
-            storeDb.setPrice(store.getPrice());
-            storeDb.setImgUrl(store.getUri());
-            storeDb.setIncome(store.getIncome());
-            if (!isUpdate)
-                myAppDataBase.myDao().addStore(storeDb);
-            else
-                myAppDataBase.myDao().updateStore(storeDb);
-
-
-        }
-
-
-            int oldRows =myAppDataBase.myDao().storeNumber();
-            int newRows = stores.size() - oldRows;
-
-            if(newRows > 0 ){
-              for(int i = oldRows;i<stores.size(); i++){
-
-                  database.Store storeDb = new database.Store();
-                  storeDb.setName(stores.get(i).getName());
-                  storeDb.setPrice(stores.get(i).getPrice());
-                  storeDb.setImgUrl(stores.get(i).getUri());
-                  storeDb.setIncome(stores.get(i).getIncome());
-
-                  myAppDataBase.myDao().addStore(storeDb);
-              }
-            }
-
-
-
-
-    }
-
-    public  void initFurnitures(boolean isUpdate){
-        ArrayList<Furniture> furnitures = Furniture.initFourniture(getApplicationContext());
-
-        for (Furniture furniture : furnitures){
-            database.Furniture furnitureDb = new database.Furniture();
-
-            furnitureDb.setId(furniture.getId());
-            furnitureDb.setName(furniture.getName());
-            furnitureDb.setPrice(furniture.getPrice());
-            furnitureDb.setImgUrl(furniture.getUrl());
-            furnitureDb.setFurnitureType(furniture.getFournitureType());
-
-            if(!isUpdate)
-                myAppDataBase.myDao().addFurnitures(furnitureDb);
-            else
-                myAppDataBase.myDao().updateFurniture(furnitureDb);
-        }
-
-        int oldRows =myAppDataBase.myDao().furnitureNumber();
-        int newRows = furnitures.size() - oldRows;
-
-        if(newRows > 0) {
-            for(int i =oldRows ; i<furnitures.size() ; i++){
-
-                database.Furniture furnitureDb = new database.Furniture();
-                furnitureDb.setName(furnitures.get(i).getName());
-                furnitureDb.setPrice(furnitures.get(i).getPrice());
-                furnitureDb.setImgUrl(furnitures.get(i).getUrl());
-                furnitureDb.setFurnitureType(furnitures.get(i).getFournitureType());
-
-                myAppDataBase.myDao().addFurnitures(furnitureDb);
-            }
-        }
-
-
-    }
-
-    public void initCars(boolean isUpdate){
-
-        InputStream is ;
-        String json ;
-        try{
-
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is=getApplicationContext().getAssets().open("cars-fr.json");
-            else
-                is=getApplicationContext().getAssets().open("cars.json");
-
-            int size =is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-            is.close();
-
-            json = new String(buffer,"UTF-8");
-            JSONArray jsonArray = new JSONArray(json);
-
-
-            for (int i =0 ; i<jsonArray.length();i++){
-                Car car = new Car();
-             JSONObject jsonObject = jsonArray.getJSONObject(i);
-             car.setId(jsonObject.getInt("id"));
-             car.setName(jsonObject.getString("name"));
-             car.setPrice(jsonObject.getDouble("price"));
-             car.setImgUrl(jsonObject.getString("uri"));
-
-                if(!isUpdate)
-                    MainMenu.myAppDataBase.myDao().addCar(car);
-                else
-                    MainMenu.myAppDataBase.myDao().updateCar(car);
-            }
-
-            int oldRows = MainMenu.myAppDataBase.myDao().carsNumber();
-            int newRows = jsonArray.length() - oldRows;
-
-
-            //for when we update the file with a new row
-
-            if(newRows > 0)
-                for(int i = oldRows ; i<jsonArray.length();i++){
-
-                    Car car = new Car();
-
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    car.setId(jsonObject.getInt("id"));
-                    car.setName(jsonObject.getString("name"));
-                    car.setPrice(jsonObject.getDouble("price"));
-                    car.setImgUrl(jsonObject.getString("uri"));
-
-                        MainMenu.myAppDataBase.myDao().addCar(car);
-                }
-
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void initGifts(boolean isUpdate){
-
-        InputStream is=null ;
-        String json ;
-        try {
-
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is = getApplicationContext().getAssets().open("gifts-fr.json");
-            else
-                is = getApplicationContext().getAssets().open("gifts.json");
-
-
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json=new String (buffer,"UTF-8");
-            JSONArray jsonArray = new JSONArray(json);
-
-
-            for(int i =0 ; i<jsonArray.length();i++){
-                JSONObject jo=jsonArray.getJSONObject(i);
-                Gift gift = new Gift();
-                gift.setId(jo.getInt("id"));
-                gift.setName(jo.getString("name"));
-                gift.setImgUrl(jo.getString("uri"));
-                gift.setPrice(jo.getInt("price"));
-                if(!isUpdate)
-                gift.setGiftCount(jo.getInt("giftCount"));
-                else {
-                    Gift giftforCount =myAppDataBase.myDao().getGift(gift.getId());
-                    gift.setGiftCount(giftforCount.getGiftCount());
-                }
-
-                if(!isUpdate)
-                    myAppDataBase.myDao().addGift(gift);
-                else
-                    myAppDataBase.myDao().updateGift(gift);
-            }
-
-            int oldRows = myAppDataBase.myDao().giftNumber();
-            int newRows = jsonArray.length() - oldRows;
-
-            if(newRows > 0){
-
-                for(int i =oldRows ; i<jsonArray.length();i++){
-
-                    JSONObject jo=jsonArray.getJSONObject(i);
-
-                    Gift gift = new Gift();
-
-                    gift.setId(jo.getInt("id"));
-                    gift.setName(jo.getString("name"));
-                    gift.setImgUrl(jo.getString("uri"));
-                    gift.setPrice(jo.getInt("price"));
-                    if(!isUpdate)
-                    gift.setGiftCount(jo.getInt("giftCount"));
-
-                    myAppDataBase.myDao().addGift(gift);
-                }
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void initPartners(boolean isUpdate){
-
-        ArrayList<Partner> partners = new ArrayList<>();
-
-        InputStream is ;
-        String json ;
-
-        try {
-
-            is=getApplicationContext().getAssets().open("partner-female.json");
-
-            byte[] buffer = new byte[is.available()];
-
-            is.read(buffer);
-            is.close();
-            json=new String (buffer,"UTF-8");
-            JSONArray jsonArray= new JSONArray(json);
-
-            for (int i = 0 ; i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Partner partner = new Partner();
-
-                partner.setId(jsonObject.getInt("id"));
-                partner.setImage(jsonObject.getString("image"));
-                partner.setLikeness(jsonObject.getInt("likeness"));
-                partner.setName(jsonObject.getString("name"));
-                partners.add(partner);
-
-                if(!isUpdate)
-                    myAppDataBase.myDao().addPartner(partner);
-                else {
-                    Partner par = myAppDataBase.myDao().getDatingPartner();
-
-                        if (par != null && par.getId() == partner.getId())
-                            partner.setDating("true");
-                    }
-                    myAppDataBase.myDao().updatePartner(partner);
-                     }
-
-            int oldRows = myAppDataBase.myDao().partnerNumber();
-            int newRows = jsonArray.length() - oldRows;
-
-            if(newRows >0){
-
-                for (int i = oldRows ; i<jsonArray.length();i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    Partner partner = new Partner();
-
-                    partner.setId(jsonObject.getInt("id"));
-                    partner.setImage(jsonObject.getString("image"));
-                    partner.setLikeness(jsonObject.getInt("likeness"));
-                    partner.setName(jsonObject.getString("name"));
-                    partners.add(partner);
-                    myAppDataBase.myDao().addPartner(partner);
-                }
-            }
-
-
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void initHouses(boolean isUpdate){
-
-        ArrayList<House> houses = new ArrayList<>();
-
-        InputStream is ;
-        String json ;
-
-        try {
-
-
-            if(Locale.getDefault().getLanguage().equals("fr"))
-                is=getApplicationContext().getAssets().open("house-fr.json");
-            else
-                is=getApplicationContext().getAssets().open("house.json");
-
-            byte[] buffer = new byte[is.available()];
-
-            is.read(buffer);
-            is.close();
-            json=new String (buffer,"UTF-8");
-            JSONArray jsonArray= new JSONArray(json);
-            for (int i = 0 ; i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                House house = new House();
-
-                house.setId(jsonObject.getInt("id"));
-                house.setName(jsonObject.getString("name"));
-                house.setPrice(jsonObject.getInt("price"));
-                house.setImgUrl(jsonObject.getString("uri"));
-                house.setBonusEnergy(jsonObject.getInt("bonusE"));
-                house.setBonusHealth(jsonObject.getInt("bonusH"));
-                houses.add(house);
-
-                if(!isUpdate)
-                    myAppDataBase.myDao().addHouse(house);
-                else
-                    myAppDataBase.myDao().updateHouse(house);
-            }
-
-
-            int oldRows = myAppDataBase.myDao().houseNumber();
-            int newRows = jsonArray.length() - oldRows;
-
-            if(newRows >0){
-
-                for (int i = oldRows ; i<jsonArray.length();i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    House house = new House();
-
-                    house.setId(jsonObject.getInt("id"));
-                    house.setName(jsonObject.getString("name"));
-                    house.setPrice(jsonObject.getInt("price"));
-                    house.setImgUrl(jsonObject.getString("uri"));
-                    house.setBonusEnergy(jsonObject.getInt("bonusE"));
-                    house.setBonusHealth(jsonObject.getInt("bonusH"));
-                    houses.add(house);
-
-                    myAppDataBase.myDao().addHouse(house);
-                }
-            }
-
-
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public String getDatabaseVersion(){
-
-        InputStream is=null ;
-        String db_version= "";
-        String json ;
-
-        try {
-           is = getApplicationContext().getAssets().open("database-version.json");
-
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json=new String(buffer,"UTF-8");
-
-            JSONObject jsonObject = new JSONObject(json);
-
-             db_version =jsonObject.getString("version");
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return db_version;
-    }
-
 }

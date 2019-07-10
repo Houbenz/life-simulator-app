@@ -1,6 +1,8 @@
 package database;
 
 
+import java.io.Serializable;
+
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -11,7 +13,7 @@ import static androidx.room.ForeignKey.CASCADE;
         @ForeignKey(entity =Player.class,childColumns = "player_id",parentColumns = "id",onDelete = CASCADE,onUpdate = CASCADE),
         @ForeignKey(entity =Store.class,childColumns = "store_id",parentColumns = "id",onDelete = CASCADE,onUpdate = CASCADE)
 })
-public class Acquired_Stores {
+public class Acquired_Stores implements Serializable {
 
 
     @PrimaryKey(autoGenerate = true)

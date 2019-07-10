@@ -1,5 +1,7 @@
 package database;
 
+import java.io.Serializable;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -7,7 +9,7 @@ import androidx.room.PrimaryKey;
 import beans.Level;
 
 @Entity
-public class Player {
+public class Player implements Serializable{
 
     @PrimaryKey
     private int id ;

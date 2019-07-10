@@ -209,4 +209,7 @@
 
     <!-- achievement Blazer lazer -->
     <string name="achievement_blazer_lazer" translatable="false">CgkI0cfuxPwUEAIQBA</string>
+
+    <!-- leaderboard Score -->
+    <string name="leaderboard_score" translatable="false">CgkI0cfuxPwUEAIQAQ</string>
 </resources>

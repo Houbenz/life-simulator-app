@@ -192,9 +192,10 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        //Asks for permission
+
+        //asks for permission
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED){
+                 != PackageManager.PERMISSION_GRANTED){
 
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
 
@@ -207,7 +208,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         }
-
 
         mConstraintLayout=findViewById(R.id.constraintLayout);
         mConstraintLayout.setOnTouchListener(mOnTouchListener);

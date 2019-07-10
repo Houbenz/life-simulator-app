@@ -42,6 +42,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -725,6 +733,8 @@ public class GameScene extends AppCompatActivity
                     sharedPreferences.edit().putString("firstTime", "finished").apply();
                 }
 
+                submitScore((long)player.getBalance());
+
                 duo++;
             }
         });
@@ -789,6 +799,12 @@ public class GameScene extends AppCompatActivity
     }
 
 
+    private void submitScore (long score){
+        Toast.makeText(getApplicationContext(),"i submitted " +score,Toast.LENGTH_SHORT).show();
+        Games.getLeaderboardsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+                .submitScore(getString(R.string.leaderboard_score),score);
+    }
+
     private void showTuto(String title,String contentText,int viewid ){
         new GuideView.Builder(this)
                 .setTitle(title)
@@ -798,6 +814,9 @@ public class GameScene extends AppCompatActivity
                 .build()
                 .show();
     }
+
+
+
 
     public void deselectButtons(){
         work.setSelected(false);

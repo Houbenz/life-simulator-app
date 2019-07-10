@@ -1,11 +1,13 @@
 package database;
 
 
+import java.io.Serializable;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Purchases {
+public class Purchases implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
