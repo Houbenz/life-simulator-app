@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+
+import Workers.SaveToCloudWork;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.games.Games;
 import com.houbenz.lifesimulator.GameScene;
 import com.houbenz.lifesimulator.MainMenu;
 
@@ -31,12 +37,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import conf.Params;
 import customViews.RelationBar;
 import database.Gift;
 import database.Partner;
 import database.Player;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelPartner;
 
 import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
@@ -415,6 +424,10 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                             //loadRewardAd();
 
+                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(getActivity());
+                            if(account != null && GoogleSignIn.hasPermissions(account))
+                                Games.getAchievementsClient(getActivity(),account).unlock(getString(R.string.achievement_break_up));
+
                         })).setNegativeButton(getString(R.string.no), ((dialog, which) -> {
                     dialog.cancel();
                     dialog.dismiss();
@@ -549,6 +562,12 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                             mariage.setVisibility(View.GONE);
                             offerGift.setVisibility(View.VISIBLE);
                             goDate.setVisibility(View.VISIBLE);
+
+
+
+                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(getActivity());
+                            if(account != null && GoogleSignIn.hasPermissions(account))
+                                Games.getAchievementsClient(getActivity(),account).unlock(getString(R.string.achievement_married));
                         }
                     });
                     dialog.show();
@@ -585,6 +604,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 .setTitle(getString(R.string.dating))
                 .setContentText(getString(R.string.dating_message_tuto))
                 .setTargetView(lookPartner)
+                .setDismissType(DismissType.outside)
                 .build()
                 .show();
     }
@@ -661,6 +681,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                 dialog.cancel();
                 dialog.dismiss();
+                saveToCloud();
             });
 
 
@@ -742,7 +763,13 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         countDownTimer=null;
         super.onDetach();
     }
+    private void saveToCloud(){
+        OneTimeWorkRequest oneTimeWorkRequest =new OneTimeWorkRequest.Builder(SaveToCloudWork.class)
+                .build();
+        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
+        GoogleSignInAccount account =GoogleSignIn.getLastSignedInAccount(getActivity());
 
+    }
 
 }
 

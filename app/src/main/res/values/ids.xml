@@ -8,4 +8,36 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="app_id" translatable="false">720625181649</string>
     <!-- package_name -->
     <string name="package_name" translatable="false">com.houbenz.android.lifesimulator</string>
+    <!-- achievement Your First car ! -->
+    <string name="achievement_your_first_car" translatable="false">CgkI0cfuxPwUEAIQBQ</string>
+    <!-- achievement Second job -->
+    <string name="achievement_second_job" translatable="false">CgkI0cfuxPwUEAIQBg</string>
+    <!-- achievement Level up 5 ! -->
+    <string name="achievement_level_up_5" translatable="false">CgkI0cfuxPwUEAIQBw</string>
+    <!-- achievement Level Up 10 ! -->
+    <string name="achievement_level_up_10" translatable="false">CgkI0cfuxPwUEAIQCA</string>
+    <!-- achievement Married -->
+    <string name="achievement_married" translatable="false">CgkI0cfuxPwUEAIQCQ</string>
+    <!-- achievement Ma House ! -->
+    <string name="achievement_ma_house" translatable="false">CgkI0cfuxPwUEAIQCg</string>
+    <!-- achievement First Degree -->
+    <string name="achievement_first_degree" translatable="false">CgkI0cfuxPwUEAIQCw</string>
+    <!-- achievement Einstein ! -->
+    <string name="achievement_einstein" translatable="false">CgkI0cfuxPwUEAIQDA</string>
+    <!-- achievement Chiken dinner -->
+    <string name="achievement_chiken_dinner" translatable="false">CgkI0cfuxPwUEAIQDQ</string>
+    <!-- achievement First store -->
+    <string name="achievement_first_store" translatable="false">CgkI0cfuxPwUEAIQDg</string>
+    <!-- achievement SuperMaket wow ! -->
+    <string name="achievement_supermaket_wow" translatable="false">CgkI0cfuxPwUEAIQDw</string>
+    <!-- achievement First Furniture -->
+    <string name="achievement_first_furniture" translatable="false">CgkI0cfuxPwUEAIQEA</string>
+    <!-- achievement Comfy house ! -->
+    <string name="achievement_comfy_house" translatable="false">CgkI0cfuxPwUEAIQEQ</string>
+    <!-- achievement Break up -->
+    <string name="achievement_break_up" translatable="false">CgkI0cfuxPwUEAIQEg</string>
+    <!-- achievement A lot of furnitures -->
+    <string name="achievement_a_lot_of_furnitures" translatable="false">CgkI0cfuxPwUEAIQEw</string>
+    <!-- leaderboard Score -->
+    <string name="leaderboard_score" translatable="false">CgkI0cfuxPwUEAIQAQ</string>
 </resources>

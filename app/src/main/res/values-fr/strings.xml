@@ -164,4 +164,5 @@
     <string name="required_level">Niveau requis</string>
     <string name="learn_time">Temp d\'apprentissage : 1 heure</string>
     <string name="house_benefice">Vous permet d\'acquèrir des meubles</string>
+    <string name="achievements">Réussites</string>
 </resources>

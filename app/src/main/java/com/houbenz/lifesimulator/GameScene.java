@@ -3,6 +3,7 @@ package com.houbenz.lifesimulator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 
+import Workers.SaveToCloudWork;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -19,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,12 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.SnapshotsClient;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,20 +60,26 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import database.Acquired_Cars;
 import database.Acquired_Furnitures;
 import database.Acquired_Houses;
 import database.Food;
 import database.Furniture;
+import database.Gift;
 import database.House;
 import beans.Level;
 import database.Medicine;
 import database.Acquired_Stores;
 import database.Acquired_degree;
 import database.Degree;
+import database.Partner;
 import database.Player;
 import database.Store;
 import database.Work;
@@ -88,6 +102,8 @@ import fragments.WorkFragment;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import viewmodels.ViewModelCars;
 import viewmodels.ViewModelGift;
+
+import static com.houbenz.lifesimulator.MainMenu.myAppDataBase;
 
 
 public class GameScene extends AppCompatActivity
@@ -208,6 +224,12 @@ public class GameScene extends AppCompatActivity
     //this is the test for FINDPARTNER AD VIDEO ID
    // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
 
+
+
+    private GoogleSignInAccount account;
+
+
+
     private View.OnTouchListener mOnTouchListener = (v , event) -> {
 
             hideSystemUI();
@@ -256,7 +278,7 @@ public class GameScene extends AppCompatActivity
 
 
                             if( ! threadRun) {
-                                MainMenu.myAppDataBase.myDao().deletePlayer(player);
+                                myAppDataBase.myDao().deletePlayer(player);
                                 dialog.show();
                             }
                             threadRun=false;
@@ -578,6 +600,19 @@ public class GameScene extends AppCompatActivity
             hungerpr=findViewById(R.id.hungerpr);
 
 
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null) {
+            if (GoogleSignIn.hasPermissions(account)) {
+
+                this.account = account;
+
+
+                settingUpPopUpforAchievements();
+
+
+            }
+        }
+
 
         loadProgress();
 
@@ -693,7 +728,6 @@ public class GameScene extends AppCompatActivity
         startWorking.setOnClickListener(v -> {
 
 
-
             if(duo % 2 ==0) {
                 workthreadRun = true;
 
@@ -741,10 +775,6 @@ public class GameScene extends AppCompatActivity
 
 
         doubleEarn.setOnClickListener(v -> {
-
-
-
-
 
             if(mRewardVideoAdDoubleIncome.isLoaded()) {
                 doubleEarnClicked=true;
@@ -796,12 +826,22 @@ public class GameScene extends AppCompatActivity
         if(firstTime.equals("none"))
         showTuto(getString(R.string.work),getString(R.string.work_session),R.id.work);
 
+
+        saveToCloud();
+
     }
 
+    private void settingUpPopUpforAchievements(){
+        GamesClient gamesClient = Games.getGamesClient(this,account);
+        gamesClient.setViewForPopups(findViewById(android.R.id.content));
+        gamesClient.setGravityForPopups(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+    }
 
     private void submitScore (long score){
-        Toast.makeText(getApplicationContext(),"i submitted " +score,Toast.LENGTH_SHORT).show();
-        Games.getLeaderboardsClient(this,GoogleSignIn.getLastSignedInAccount(this))
+
+        GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (account!= null && GoogleSignIn.hasPermissions(account))
+        Games.getLeaderboardsClient(this,account)
                 .submitScore(getString(R.string.leaderboard_score),score);
     }
 
@@ -856,7 +896,7 @@ public class GameScene extends AppCompatActivity
             }
             runOnUiThread(() ->{
 
-                Player player1 = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+                Player player1 = myAppDataBase.myDao().getPlayer(slot);
                 player.setWork_income(player1.getWork_income());
                 income.setText(player.getWork_income() + "$");
                 doubleEarn.setEnabled(true);
@@ -921,6 +961,15 @@ public class GameScene extends AppCompatActivity
 
                                     showCustomToast(getString(R.string.have_leveled_up)+" "+player.getLevel_object().getLevel(),"","gold");
 
+                                    if(player.getLevel_object().getLevel() ==5) {
+                                        if(account != null && GoogleSignIn.hasPermissions(account))
+                                            Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_level_up_5));
+                                    }
+
+                                    if(player.getLevel_object().getLevel() == 10) {
+                                        if(account != null && GoogleSignIn.hasPermissions(account))
+                                            Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_level_up_5));
+                                    }
 
                                     levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> {
 
@@ -1068,17 +1117,17 @@ public class GameScene extends AppCompatActivity
 
                 if(gift.getId()==1){
                     gift.setGiftCount(giftCount);
-                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                    myAppDataBase.myDao().updateGift(gift);
                 }
 
                 if(gift.getId()==2){
                     gift.setGiftCount(giftCount);
-                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                    myAppDataBase.myDao().updateGift(gift);
                 }
 
                 if(gift.getId()==3){
                     gift.setGiftCount(giftCount);
-                    MainMenu.myAppDataBase.myDao().updateGift(gift);
+                    myAppDataBase.myDao().updateGift(gift);
                 }
                 //to increment the number of gifts
                 fragmentInsertionSecond(new GiftFragment());
@@ -1094,14 +1143,14 @@ public class GameScene extends AppCompatActivity
 
         viewModelCars.getCar().observe(this,car -> {
 
-            Acquired_Houses acquired_garage = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),2);
-            Acquired_Houses acquired_secondhome = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(),3);
+            Acquired_Houses acquired_garage = myAppDataBase.myDao().getAcqHouse(player.getId(),2);
+            Acquired_Houses acquired_secondhome = myAppDataBase.myDao().getAcqHouse(player.getId(),3);
 
             if(acquired_garage == null && acquired_secondhome==null){
 
 
-                House garage = MainMenu.myAppDataBase.myDao().getHouse(2);
-                House house2 = MainMenu.myAppDataBase.myDao().getHouse(3);
+                House garage = myAppDataBase.myDao().getHouse(2);
+                House house2 = myAppDataBase.myDao().getHouse(3);
                 showCustomToast(getString(R.string.must_buy)+" "+garage.getName()+" or "+house2.getName()+ getString(R.string.first)+" ! ",garage.getImgUrl(),"red");
             }
             else {
@@ -1112,11 +1161,15 @@ public class GameScene extends AppCompatActivity
 
                 double newBalance = player.getBalance() - car.getPrice();
 
-                Acquired_Cars getACq = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId(), car.getId());
+                Acquired_Cars getACq = myAppDataBase.myDao().getAcquiredCars(player.getId(), car.getId());
 
                 if (newBalance >= 0 && getACq == null) {
 
                     confirm.setOnClickListener(view -> {
+
+                        if(account != null && GoogleSignIn.hasPermissions(account))
+                         Games.getAchievementsClient(this,account).unlock(getString(R.string.achievement_your_first_car));
+
 
                         player.setBalance(newBalance);
                         balance.setText(player.getBalance() + "$");
@@ -1126,7 +1179,7 @@ public class GameScene extends AppCompatActivity
                         acquired_cars.setPlayer_id(player.getId());
                         acquired_cars.setImgUrl(car.getImgUrl());
                         acquired_cars.setAvailable("true");
-                        MainMenu.myAppDataBase.myDao().addAcquired_Car(acquired_cars);
+                        myAppDataBase.myDao().addAcquired_Car(acquired_cars);
                         CarFragment carFragment = new CarFragment();
                         fragmentInsertionSecond(carFragment);
                         dialog.dismiss();
@@ -1139,14 +1192,14 @@ public class GameScene extends AppCompatActivity
                         showCustomToast(car.getName() + getString(R.string.is_selected)+" ", car.getImgUrl(), "green");
 
 
-                        List<Acquired_Cars> acquired_cars = MainMenu.myAppDataBase.myDao().getAcquiredCars(player.getId());
+                        List<Acquired_Cars> acquired_cars = myAppDataBase.myDao().getAcquiredCars(player.getId());
                         for (Acquired_Cars acq : acquired_cars) {
                             acq.setAvailable("false");
-                            MainMenu.myAppDataBase.myDao().updateAcquired_car(acq);
+                            myAppDataBase.myDao().updateAcquired_car(acq);
 
                         }
                         getACq.setAvailable("true");
-                        MainMenu.myAppDataBase.myDao().updateAcquired_car(getACq);
+                        myAppDataBase.myDao().updateAcquired_car(getACq);
 
                     } else
                         showCustomToast(getString(R.string.not_enough_money)+" " + car.getName(), car.getImgUrl(), "red");
@@ -1159,6 +1212,9 @@ public class GameScene extends AppCompatActivity
         });
 
     }
+
+
+
 
     //To execute tasks from fragments
     @Override
@@ -1173,6 +1229,11 @@ public class GameScene extends AppCompatActivity
 
         if(!work.getName().equals(player.getWork()))
         {
+
+            if(account != null && GoogleSignIn.hasPermissions(account)){
+                Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_second_job));
+            }
+
             income=findViewById(R.id.income);
 
         income.setText(work.getIncome()+"$/"+getString(R.string.hour));
@@ -1184,7 +1245,7 @@ public class GameScene extends AppCompatActivity
         player.setWork_image_path(work.getImgPath());
         player.setWork_income(work.getIncome());
 
-        MainMenu.myAppDataBase.myDao().updatePlayer(player);
+        myAppDataBase.myDao().updatePlayer(player);
 
 
         Uri imgURI = Uri.parse(work.getImgPath());
@@ -1192,8 +1253,15 @@ public class GameScene extends AppCompatActivity
         saveProgress();
         startWorking.setEnabled(true);
         jobName.setText(work.getName());
+        saveToCloud();
 
         showCustomToast(getString(R.string.youre_now)+" "+work.getName(),work.getImgPath(),"green");
+
+        if (work.getId() ==8){
+
+            if(account != null && GoogleSignIn.hasPermissions(account))
+                Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_einstein));
+        }
 
 
         //replaced admob one
@@ -1205,7 +1273,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverFourniture(final Furniture fourniture) {
 
-        Acquired_Furnitures acquired_furnitures1 =MainMenu.myAppDataBase.myDao().getAcqFurn(fourniture.getId(),player.getId());
+        Acquired_Furnitures acquired_furnitures1 =myAppDataBase.myDao().getAcqFurn(fourniture.getId(),player.getId());
         // test if is the furniture is already bought
         if(acquired_furnitures1 == null){
 
@@ -1226,8 +1294,6 @@ public class GameScene extends AppCompatActivity
             confirm.setOnClickListener(view ->{
                 double newBalance=player.getBalance()-fourniture.getPrice();
 
-                boolean green = false ;
-
                 String message;
                 if(newBalance>=0) {
                     player.setBalance(newBalance);
@@ -1242,13 +1308,20 @@ public class GameScene extends AppCompatActivity
                     acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
                     acquired_furnitures.setImgurl(fourniture.getImgUrl());
 
-                    MainMenu.myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
+                    myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
 
                     // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
                     dialog.dismiss();
                     dialog.cancel();
 
-                    green=true;
+                    if(account != null && GoogleSignIn.hasPermissions(account))
+                        Games.getAchievementsClient(getApplicationContext(),account)
+                                .unlock(getString(R.string.achievement_first_furniture));
+
+
+                    if(account != null && GoogleSignIn.hasPermissions(account))
+                        Games.getAchievementsClient(getApplicationContext(),account)
+                                .increment(getString(R.string.achievement_a_lot_of_furnitures),1);
 
                 }else{
                     message = getString(R.string.insufficiant_funds)+""+fourniture.getName();
@@ -1258,6 +1331,8 @@ public class GameScene extends AppCompatActivity
                // showPurchaseDialog(message);
 
                 showCustomToast(message,fourniture.getImgUrl(),"green");
+
+
 
 
                 //this is for the view model between homefragment and GameScene
@@ -1275,19 +1350,19 @@ public class GameScene extends AppCompatActivity
 
         }else {
 
-          List <Acquired_Furnitures> acquired_furnitures = MainMenu.myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
+          List <Acquired_Furnitures> acquired_furnitures = myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
 
           for(Acquired_Furnitures furn : acquired_furnitures) {
               if(furn.getFurnitureType().equals(fourniture.getFurnitureType()))
               furn.setAvailable("false");
-              MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(furn);
+              myAppDataBase.myDao().updateAcquired_Furnitures(furn);
           }
 
             Toast.makeText(getApplicationContext(), fourniture.getName() + " "+getString(R.string.is_now_used), Toast.LENGTH_SHORT).show();
 
             acquired_furnitures1.setAvailable("true");
 
-            MainMenu.myAppDataBase.myDao().updateAcquired_Furnitures(acquired_furnitures1);
+            myAppDataBase.myDao().updateAcquired_Furnitures(acquired_furnitures1);
 
             //viewmodel.getAcquired_furn().getValue().add(acquired_furnitures1);
 
@@ -1361,6 +1436,10 @@ public class GameScene extends AppCompatActivity
             balance.setText(player.getBalance() + "$");
             hungerBar.setProgress(food.getBenefit()+hungerBar.getProgress());
             hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+
+            if (food.getId() == 2){
+                Games.getAchievementsClient(getApplicationContext(),account).increment(getString(R.string.achievement_chiken_dinner),1);
+            }
         }
         else{
 
@@ -1385,7 +1464,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverHouse(House house) {
 
-            Acquired_Houses acquired_house1 = MainMenu.myAppDataBase.myDao().getAcqHouse(player.getId(), house.getId());
+            Acquired_Houses acquired_house1 = myAppDataBase.myDao().getAcqHouse(player.getId(), house.getId());
 
             if (acquired_house1 == null) {
                 double newBalance = player.getBalance() - house.getPrice();
@@ -1399,9 +1478,20 @@ public class GameScene extends AppCompatActivity
                     acquired_houses.setPlayer_id(player.getId());
                     acquired_houses.setImgUrl(house.getImgUrl());
 
-                    MainMenu.myAppDataBase.myDao().addAcquired_House(acquired_houses);
+                    myAppDataBase.myDao().addAcquired_House(acquired_houses);
 
                     showCustomToast(getString(R.string.congratulation_u_bought)+" " + house.getName(), house.getImgUrl(), "green");
+
+                    if(house.getId() == 1) {
+                        if (account != null && GoogleSignIn.hasPermissions(account))
+                            Games.getAchievementsClient(getApplicationContext(), account).unlock(getString(R.string.achievement_ma_house));
+                    }
+
+                    if(house.getId() == 3) {
+                        if (account != null && GoogleSignIn.hasPermissions(account))
+                            Games.getAchievementsClient(getApplicationContext(), account).unlock(getString(R.string.achievement_ma_house));
+                    }
+
                 } else
                     showCustomToast(getString(R.string.insufficiant_funds)+" " + house.getName(), house.getImgUrl(), "red");
 
@@ -1413,12 +1503,12 @@ public class GameScene extends AppCompatActivity
 
     public  double getIncomeFromStore(){
 
-        List<Acquired_Stores> acquired_stores =MainMenu.myAppDataBase.myDao().getAcquiredStores(player.getId());
+        List<Acquired_Stores> acquired_stores =myAppDataBase.myDao().getAcquiredStores(player.getId());
         double income =0;
 
         if(!acquired_stores.isEmpty()){
             for (Acquired_Stores acq : acquired_stores){
-                income += MainMenu.myAppDataBase.myDao().getStoreIncome(acq.getStore_id());
+                income += myAppDataBase.myDao().getStoreIncome(acq.getStore_id());
             }
         }
 
@@ -1453,12 +1543,21 @@ public class GameScene extends AppCompatActivity
                 dialog.dismiss();
                 dialog.cancel();
 
-                MainMenu.myAppDataBase.myDao().addAcquired_Store(acquired_stores);
+                myAppDataBase.myDao().addAcquired_Store(acquired_stores);
 
                 player.setStore_income(getIncomeFromStore());
                 showCustomToast(getString(R.string.congratulation_u_bought)+" "+store.getName()+" !",store.getImgUrl(),"green");
 
                 insertStoreFragment();
+
+                if(account != null && GoogleSignIn.hasPermissions(account))
+                Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_first_store));
+
+
+                if(store.getId() == 4) {
+                    if (account != null && GoogleSignIn.hasPermissions(account))
+                        Games.getAchievementsClient(getApplicationContext(), account).unlock(getString(R.string.achievement_supermaket_wow));
+                }
 
             });
             decline.setOnClickListener(view ->{
@@ -1489,7 +1588,7 @@ public class GameScene extends AppCompatActivity
         double newBalance =player.getBalance()-degree.getPrice();
 
 
-        Acquired_degree acq =MainMenu.myAppDataBase.myDao().getAcqDegr(player.getId(),degree.getId());
+        Acquired_degree acq =myAppDataBase.myDao().getAcqDegr(player.getId(),degree.getId());
 
         if(acq == null) {
 
@@ -1503,7 +1602,7 @@ public class GameScene extends AppCompatActivity
             acquired_degree.setDegree_Name(degree.getName());
             acquired_degree.setAvailable("false");
             acquired_degree.setPlayer_progress(acquired_degree.getPlayer_progress() + 5);
-            MainMenu.myAppDataBase.myDao().addAcquired_degree(acquired_degree);
+            myAppDataBase.myDao().addAcquired_degree(acquired_degree);
 
             learning=true;
 
@@ -1533,9 +1632,12 @@ public class GameScene extends AppCompatActivity
 
                     acq.setAvailable("true");
                     showCustomToast(getString(R.string.purchase_of)+" "+degree.getName()+getString(R.string.done_success),"","green");
+
+                    if(account != null && GoogleSignIn.hasPermissions(account))
+                        Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_first_degree));
                 }
 
-                MainMenu.myAppDataBase.myDao().update_Acquired_Degree(acq);
+                myAppDataBase.myDao().update_Acquired_Degree(acq);
             }
         }
 
@@ -1687,7 +1789,7 @@ public class GameScene extends AppCompatActivity
 
 
     public void loadProgress(){
-        database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
+        database.Player loaded_player = myAppDataBase.myDao().getPlayer(slot);
         jobName.setText(loaded_player.getWork());
         caracterImg.setImageURI(Uri.parse(loaded_player.getWork_image_path()));
         balance.setText(loaded_player.getBalance()+"$");
@@ -1728,23 +1830,18 @@ public class GameScene extends AppCompatActivity
         player.setLevel_progress(player.getLevel_object().getProgressLevel());
         player.setMax_progress(player.getLevel_object().getMaxProgress());
 
-        double workincome = MainMenu.myAppDataBase.myDao().work_incorme(player.getWork());
+        double workincome = myAppDataBase.myDao().work_incorme(player.getWork());
 
         player.setWork_income(workincome);
 
-        MainMenu.myAppDataBase.myDao().updatePlayer(player);
-
-
-        GoogleSignInAccount account =GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            Games.getLeaderboardsClient(this, account).submitScore(getString(R.string.leaderboard_score),
-                    (long) player.getBalance());
-
-
-
-        }
-
+        myAppDataBase.myDao().updatePlayer(player);
     }
 
+    private void saveToCloud(){
+
+        OneTimeWorkRequest oneTimeWorkRequest =new OneTimeWorkRequest.Builder(SaveToCloudWork.class)
+                .build();
+        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
+    }
 
 }

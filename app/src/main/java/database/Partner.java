@@ -8,13 +8,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Partner {
+public class Partner  implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id ;

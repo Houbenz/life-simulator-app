@@ -40,8 +40,12 @@ android {
 
 
 dependencies {
+
+    def work_version ="2.0.1"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+
+    implementation "androidx.work:work-runtime:$work_version"
     implementation 'androidx.room:room-runtime:2.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
     implementation 'androidx.room:room-testing:2.1.0'

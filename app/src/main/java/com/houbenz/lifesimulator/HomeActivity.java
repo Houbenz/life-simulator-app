@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 
+import Workers.SaveToCloudWork;
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,8 +40,11 @@ import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import beans.Level;
 import conf.Params;
 import database.Player;
@@ -102,6 +108,11 @@ public class HomeActivity extends AppCompatActivity {
         hideSystemUI();
         return false;
     } ;
+
+
+    private GoogleSignInAccount account;
+
+
 
     public void deselectButtons(){
         showHomeButton.setSelected(false);
@@ -364,8 +375,23 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null) {
+            if (GoogleSignIn.hasPermissions(account)) {
+
+                this.account = account;
+                settingUpPopUpforAchievements();
+            }
+        }
     }
-    private void animateProgressBar(ProgressBar progressBar){
+
+    private void settingUpPopUpforAchievements(){
+        GamesClient gamesClient = Games.getGamesClient(this,account);
+        gamesClient.setViewForPopups(findViewById(android.R.id.content));
+        gamesClient.setGravityForPopups(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+    }
+
+    private void animateProgressBar(@NonNull ProgressBar progressBar){
         progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->{
 
             progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->{
@@ -665,9 +691,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
 
-
-
-
                 datingMessage = findViewById(R.id.datingMessage);
 
 
@@ -706,14 +729,5 @@ public class HomeActivity extends AppCompatActivity {
         animator.start();
     }
 
-    public void animateAlphaZeroToOne(View image,int duration){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(image,View.ALPHA,0f , 1f);
-        animator.setDuration(duration);
-        animator.start();
-    }
-    public void animateAlphaOneToZero(View image,int duration){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(image,View.ALPHA,1f , 0f);
-        animator.setDuration(duration);
-        animator.start();
-    }
+
 }

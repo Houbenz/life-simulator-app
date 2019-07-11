@@ -49,7 +49,6 @@ public  class DatabaseInit {
 
         int newRows = worksBeans.size() - oldRows;
 
-        Log.i("YUUP","number of new rows : "+ newRows);
         if(newRows >0) {
             for(int i =oldRows  ; i<worksBeans.size();i++){
 

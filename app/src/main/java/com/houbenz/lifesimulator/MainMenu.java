@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.Room;
 import android.content.Context;
@@ -63,6 +64,7 @@ import database.Acquired_Stores;
 import database.Acquired_degree;
 import database.Gift;
 import database.MyAppDataBase;
+import database.Partner;
 import database.Player;
 import database.VersionDB;
 
@@ -74,7 +76,7 @@ public class MainMenu extends AppCompatActivity {
 
     private Button newGame;
     private Button loadGame;
-    private Button settings;
+    private Button achievements;
     private Button credits;
 
     public static MyAppDataBase myAppDataBase;
@@ -97,21 +99,11 @@ public class MainMenu extends AppCompatActivity {
 
     public static final int  MY_PERMISSIONS_REQUEST_EXTERNAL_STROGAE=11;
 
-    GoogleSignInClient mGoogleSignInClient;
-    GoogleSignInAccount account;
+    private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInAccount account;
     private com.google.android.gms.games.Player player;
 
-
-    private class ObjectType{
-
-        public static final int PLAYER=0;
-        public static final int ACQ_HOUSES=1;
-        public static final int ACQ_STORES=2;
-        public static final int ACQ_CARS=3;
-        public static final int ACQ_FURNITURES=4;
-        public static final int ACQ_DEGRESS=5;
-
-    }
+    private ProgressBar progressBar;
 
     @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener mOnTouchListener = (v, event) -> {
@@ -127,10 +119,6 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-
-
-
 
 
         myAppDataBase = Room.databaseBuilder(getApplicationContext(), MyAppDataBase.class, "life_simulatordb")
@@ -178,7 +166,7 @@ public class MainMenu extends AppCompatActivity {
 
         newGame = findViewById(R.id.newgame);
         loadGame = findViewById(R.id.loadgame);
-        settings = findViewById(R.id.settings);
+        achievements = findViewById(R.id.achievements);
         credits = findViewById(R.id.credits);
 
 
@@ -187,7 +175,7 @@ public class MainMenu extends AppCompatActivity {
         imageView3 = findViewById(R.id.imageView3);
         imageView4 = findViewById(R.id.imageView4);
 
-
+        progressBar=findViewById(R.id.progressBar);
         mainLayout = findViewById(R.id.mainLayout);
 
         mainLayout.setOnTouchListener(mOnTouchListener);
@@ -211,6 +199,13 @@ public class MainMenu extends AppCompatActivity {
             dialogueCreatorLoadGame();
 
         });
+
+        achievements.setOnClickListener(view->{
+
+            getAchievements();
+        });
+
+
 
         animateButton();
 
@@ -247,90 +242,10 @@ public class MainMenu extends AppCompatActivity {
 
         thread.start();
 
-
         //So we could sign in to google play games
         startSignInIntent();
 
-
-
-
-
-        Button savegame =findViewById(R.id.savegame);
-
-
-        savegame.setOnClickListener(view->{
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-               ObjectOutputStream oos = new ObjectOutputStream(bos);
-
-                Player player=myAppDataBase.myDao().getPlayer(1);
-                List<Acquired_Furnitures> acquired_furnitures = myAppDataBase.myDao().getAcquiredFurnitures(1);
-                List<Acquired_degree> acquired_degrees =myAppDataBase.myDao().getAcquiredDegrees(1);
-                List<Acquired_Cars> acquired_cars =myAppDataBase.myDao().getAcquiredCars(1);
-                List<Acquired_Houses> acquired_houses =myAppDataBase.myDao().getAcquiredHouses(1);
-                List<Acquired_Stores> acquired_stores =myAppDataBase.myDao().getAcquiredStores(1);
-
-                oos.writeObject(player);
-                oos.writeObject(acquired_furnitures);
-                //oos.writeObject(acquired_degrees);
-               // oos.writeObject(acquired_cars);
-                //oos.writeObject(acquired_houses);
-               // oos.writeObject(acquired_stores);
-
-                bytearray =bos.toByteArray();
-                oos.close();
-
-
-                executeSaving();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            //this is for unlocking achievments
-            // Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this))
-            //.unlock(getString(R.string.achievement_first_one));
-            //.unlock(getString(R.string.achievement_second_one));
-            // .unlock(getString(R.string.achievement_blazer_lazer));
-
-        });
-
-        //For reading bytes to objects
-        Button showSave = findViewById(R.id.readfile);
-
-        showSave.setOnClickListener(view ->{
-            showSavedGamesGoogleUi();
-        });
-
-        Button achievement = findViewById(R.id.achievement);
-
-        achievement.setOnClickListener(view ->{
-
-            getAchievements();
-        });
-
-
-        Button loadData=findViewById(R.id.loaddata);
-        loadData.setOnClickListener(view ->{
-
-           loadSnapshotData().addOnCompleteListener(task -> {
-               if(task.isSuccessful()){
-                   Toast.makeText(getApplicationContext(),"succeful loading",Toast.LENGTH_SHORT).show();
-
-                   //show the loaded data
-                   Log.i("YUUP","length : "+task.getResult().length);
-
-                   extractData(task.getResult());
-
-               }else{
-
-                   Toast.makeText(getApplicationContext(),"loading failed",Toast.LENGTH_SHORT).show();
-               }
-           });
-        });
     }
-
 
 
     private Task<byte[]> loadSnapshotData(){
@@ -339,18 +254,14 @@ public class MainMenu extends AppCompatActivity {
         int conflictResolutionPolicy=SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED;
 
         return snapshotsClient.open(currentSave,false,conflictResolutionPolicy)
-                .addOnFailureListener(e -> {
-
-                    Log.e("ERR","snapshot"+e);
-
-                }).continueWith(task -> {
+                .addOnFailureListener(Throwable::printStackTrace).continueWith(task -> {
 
                     Snapshot snapshot = task.getResult().getData();
 
                     try {
                         return snapshot.getSnapshotContents().readFully();
                     } catch (IOException e) {
-                        Log.e("ERRO", "snapshot" + e);
+                        e.printStackTrace();
                     }
 
                     return null;
@@ -360,64 +271,72 @@ public class MainMenu extends AppCompatActivity {
     private  void extractData(byte[] rawData) {
         ByteArrayInputStream byteArrayInputStream =new ByteArrayInputStream(rawData);
         try {
-            ObjectInputStream objectInputStream =new ObjectInputStream(byteArrayInputStream);
+            ObjectInputStream ois =new ObjectInputStream(byteArrayInputStream);
 
-            Player player =(Player)objectInputStream.readObject();
-            List<Acquired_Furnitures> acquired_furnitures=(List<Acquired_Furnitures>) objectInputStream.readObject();
+            //fetch the date from rawData
+            Player player =(Player)ois.readObject();
+            List<Acquired_Furnitures> acquired_furnitures=(List<Acquired_Furnitures>) ois.readObject();
+            List<Acquired_degree> acquired_degrees=(List<Acquired_degree>) ois.readObject();
+            List<Acquired_Cars> acquired_cars=(List<Acquired_Cars>) ois.readObject();
+            List<Acquired_Houses> acquired_houses=(List<Acquired_Houses>) ois.readObject();
+            List<Acquired_Stores> acquired_stores=(List<Acquired_Stores>) ois.readObject();
+            List<Partner> partners = (List<Partner>)ois.readObject();
+            List<Gift> gifts = (List<Gift>)ois.readObject();
 
-            Log.i("YUUP","its loaded : "+ player.getName());
+            /*
+             * insert the objects into the database
+             */
 
-            Log.i("YUUP","here to is loaded "+acquired_furnitures.get(0).getImgurl());
+            if(player !=  null)
+            myAppDataBase.myDao().addPlayer(player);
 
+            if(acquired_furnitures!= null)
+            for(Acquired_Furnitures acq : acquired_furnitures){
+                myAppDataBase.myDao().addAcquired_Furniture(acq);
+            }
 
-            objectInputStream.close();
+            if(acquired_degrees != null)
+            for(Acquired_degree acq :acquired_degrees){
+                myAppDataBase.myDao().addAcquired_degree(acq);
+            }
+
+            if(acquired_cars != null)
+            for(Acquired_Cars acq:acquired_cars){
+                myAppDataBase.myDao().addAcquired_Car(acq);
+            }
+
+            if(acquired_houses != null)
+            for(Acquired_Houses acq :acquired_houses){
+                myAppDataBase.myDao().addAcquired_House(acq);
+            }
+
+            if(acquired_stores != null)
+            for(Acquired_Stores acq : acquired_stores){
+                myAppDataBase.myDao().addAcquired_Store(acq);
+            }
+
+            if(partners != null)
+                for (Partner partner : partners){
+                    myAppDataBase.myDao().updatePartner(partner);
+            }
+
+            if(gifts != null)
+                for(Gift gift: gifts){
+                    myAppDataBase.myDao().updateGift(gift);
+                    Log.i("YUUP"," "+gift.getName());
+            }
+            ois.close();
+
+            Intent intent = new Intent(MainMenu.this, GameScene.class);
+            intent.putExtra("slotNumber", 1);
+            startActivity(intent);
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-
-
-    byte[] bytearray;
-
-    private String currentSave="snapshot"+1235;
-
-    private void executeSaving(){
-
-
-        SnapshotsClient snapshotsClient= Games.getSnapshotsClient(this,account);
-
-        // to save a game
-        snapshotsClient.open(currentSave,true).addOnCompleteListener(task -> {
-
-            Snapshot snapshot =task.getResult().getData();
-
-            if (snapshot != null){
-
-                writeSnapshot(snapshot,bytearray,"first description").addOnCompleteListener(task1 -> {
-
-                    if(task1.isSuccessful()){
-                        Toast.makeText(getApplicationContext(),"Succesful",Toast.LENGTH_SHORT).show();
-                    }else {
-                        Log.e("ERR",""+task1.getException());
-                    }
-                });
-            }
-        });
-    }
-    private Task<SnapshotMetadata> writeSnapshot(Snapshot snapshot ,byte[] bytearray,String desc){
-
-        snapshot.getSnapshotContents().writeBytes(bytearray);
-
-        SnapshotMetadataChange snapshotMetadata = new SnapshotMetadataChange.Builder().setDescription(desc).build();
-
-        SnapshotsClient snapshotsClient=Games.getSnapshotsClient(this,account);
-
-
-        return snapshotsClient.commitAndClose(snapshot,snapshotMetadata);
-    }
-
+    public static final String  currentSave="snapshot"+1235;
 
     private void startSignInIntent(){
 
@@ -444,10 +363,6 @@ public class MainMenu extends AppCompatActivity {
 
     public void getPlayerInformation(){
 
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-
-
-        progressBar.setVisibility(View.VISIBLE);
         //Player clients is used to get all available playes
         PlayersClient playersClient = Games.getPlayersClient(getApplicationContext(),account);
 
@@ -457,7 +372,6 @@ public class MainMenu extends AppCompatActivity {
             if(task.isSuccessful()){
                 player = task.getResult();
 
-                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -531,7 +445,6 @@ public class MainMenu extends AppCompatActivity {
                     //setting pop up for achievements !
                     settingUpPopUpforAchievements();
 
-                    Log.i("UUU", "Sol7ot");
                 } else {
                     Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
                 }
@@ -542,18 +455,6 @@ public class MainMenu extends AppCompatActivity {
 
 
     public void initDatabase(Boolean update){
-
-
-        List<database.Work> works=myAppDataBase.myDao().getWorks();
-
-        if(!works.isEmpty()) {
-            for (database.Work work : works) {
-                Log.i("YUUP", work.getName() + "");
-            }
-        }else
-
-            Log.i("YUUP", "no work is in there aw ga3ed ya3ti wahdo");
-
         DatabaseInit.initWorkRows(update,getApplicationContext());
         DatabaseInit.initDegreeRows(update,getApplicationContext());
         DatabaseInit.initFragments(update,getApplicationContext());
@@ -602,13 +503,31 @@ public class MainMenu extends AppCompatActivity {
 
     public void dialogueCreatorLoadGame() {
 
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setIndeterminate(true);
         Player player = myAppDataBase.myDao().getPlayer(1);
 
         if(player != null) {
             Intent intent = new Intent(MainMenu.this, GameScene.class);
             intent.putExtra("slotNumber", 1);
             startActivity(intent);
+        }else if(this.account!=null && GoogleSignIn.hasPermissions(account)){
+
+            loadSnapshotData().addOnCompleteListener(task -> {
+
+                if(task.isSuccessful()){
+
+                    extractData(task.getResult());
+
+                    Toast.makeText(getApplicationContext(),"Loading succesful",Toast.LENGTH_SHORT).show();
+
+                }else {
+                    Toast.makeText(getApplicationContext(),"Loading failed !",Toast.LENGTH_SHORT).show();
+                }
+
+            });
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     //Affiche les slots pour un nouveau joueur
@@ -626,16 +545,9 @@ public class MainMenu extends AppCompatActivity {
 
     }
 
-    public void deselectButtons(){
-        newGame.setSelected(false);
-        loadGame.setSelected(false);
-        credits.setSelected(false);
-    }
 
     //Pour entrer le nom du joueur puis sauvgarder la premiere session
     public void dialogInputCreate(int slotNumber){
-
-
 
         final Dialog putText = new Dialog(MainMenu.this);
 
@@ -715,7 +627,6 @@ public class MainMenu extends AppCompatActivity {
                     myAppDataBase.myDao().deletePlayer(myAppDataBase.myDao().getPlayer(slotNumber));
                     List<Gift> gifts = myAppDataBase.myDao().getGifts();
 
-                    //
                     for(Gift gift : gifts){
                         gift.setGiftCount(0);
                        myAppDataBase.myDao().updateGift(gift);
@@ -739,7 +650,7 @@ public class MainMenu extends AppCompatActivity {
 
         animateView(newGame,1500);
         animateView(loadGame,2000);
-        animateView(settings,2500);
+        animateView(achievements,2500);
         animateView(credits,3000);
 
         animateTranslationImageX(imageView1,1500);

@@ -32,6 +32,7 @@ public class Buy {
     public Buy(String name, float price) {
         this.name = name;
         this.price = price;
+
     }
 
     public Buy(String name, float price,String color) {

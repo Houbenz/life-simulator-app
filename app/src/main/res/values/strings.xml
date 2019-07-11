@@ -203,13 +203,5 @@
     <string name="learn_time">Learn Time : 1 Hour</string>
     <string name="house_benefice">Allows you to buy furnitures</string>
 
-    <string name="achievement_first_one" translatable="false">CgkI0cfuxPwUEAIQAg</string>
-    <!-- achievement second one ! -->
-    <string name="achievement_second_one" translatable="false">CgkI0cfuxPwUEAIQAw</string>
-
-    <!-- achievement Blazer lazer -->
-    <string name="achievement_blazer_lazer" translatable="false">CgkI0cfuxPwUEAIQBA</string>
-
-    <!-- leaderboard Score -->
-    <string name="leaderboard_score" translatable="false">CgkI0cfuxPwUEAIQAQ</string>
+    <string name="achievements">Achievements</string>
 </resources>
