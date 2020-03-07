@@ -21,10 +21,6 @@ import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,11 +43,8 @@ import com.google.android.gms.games.Games;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -323,10 +316,10 @@ public class MainMenu extends AppCompatActivity {
             if(gifts != null)
                 for(Gift gift: gifts){
                     myAppDataBase.myDao().updateGift(gift);
-                    Log.i("YUUP"," "+gift.getName());
             }
             ois.close();
 
+            progressBar.setVisibility(View.GONE);
             Intent intent = new Intent(MainMenu.this, GameScene.class);
             intent.putExtra("slotNumber", 1);
             startActivity(intent);
@@ -350,6 +343,7 @@ public class MainMenu extends AppCompatActivity {
 
                     this.account=account;
                 }
+                Log.e("ERRA","account "+ this.account.toString());
         }else{
 
             mGoogleSignInClient = GoogleSignIn.getClient(this,
@@ -382,12 +376,14 @@ public class MainMenu extends AppCompatActivity {
     public static final int RC_ACHEIVEMENTS=1110;
     public void getAchievements(){
 
-    Games.getAchievementsClient(this,account)
-            .getAchievementsIntent()
-            .addOnSuccessListener(intent ->{
+        if(account != null && GoogleSignIn.hasPermissions(account)) {
+            Games.getAchievementsClient(this, account)
+                    .getAchievementsIntent()
+                    .addOnSuccessListener(intent -> {
 
-                startActivityForResult(intent,RC_ACHEIVEMENTS);
-            });
+                        startActivityForResult(intent, RC_ACHEIVEMENTS);
+                    });
+        }
     }
 
     private void settingUpPopUpforAchievements(){
@@ -399,11 +395,14 @@ public class MainMenu extends AppCompatActivity {
 
     private void showLeaderBoard(){
 
-        Games.getLeaderboardsClient(this,account)
-                .getLeaderboardIntent(getString(R.string.leaderboard_score))
-                .addOnSuccessListener(intent -> {
-                    startActivityForResult(intent,RC_LEADERBOARD_SCORE);
-                });
+
+        if(account != null && GoogleSignIn.hasPermissions(account)) {
+            Games.getLeaderboardsClient(this, account)
+                    .getLeaderboardIntent(getString(R.string.leaderboard_score))
+                    .addOnSuccessListener(intent -> {
+                        startActivityForResult(intent, RC_LEADERBOARD_SCORE);
+                    });
+        }
     }
 
     public static final int RC_SAVE_GAME=2000;
@@ -437,8 +436,6 @@ public class MainMenu extends AppCompatActivity {
                 if (result.isSuccess()) {
 
                     account = result.getSignInAccount();
-                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
-
                     //so we can get the players info
                     getPlayerInformation();
 
@@ -446,7 +443,8 @@ public class MainMenu extends AppCompatActivity {
                     settingUpPopUpforAchievements();
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
+                    Log.e("ERRA","Status :  "+result.getStatus()+" result "+result.getSignInAccount());
+                    Toast.makeText(getApplicationContext(), "failed to login to google play games", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -503,31 +501,36 @@ public class MainMenu extends AppCompatActivity {
 
     public void dialogueCreatorLoadGame() {
 
-        progressBar.setVisibility(View.VISIBLE);
+
         progressBar.setIndeterminate(true);
+
+        progressBar.setVisibility(View.VISIBLE);
         Player player = myAppDataBase.myDao().getPlayer(1);
 
         if(player != null) {
             Intent intent = new Intent(MainMenu.this, GameScene.class);
             intent.putExtra("slotNumber", 1);
+            progressBar.setVisibility(View.GONE);
             startActivity(intent);
-        }else if(this.account!=null && GoogleSignIn.hasPermissions(account)){
+        }else {
+            if (this.account != null && GoogleSignIn.hasPermissions(account)) {
 
-            loadSnapshotData().addOnCompleteListener(task -> {
+                loadSnapshotData().addOnCompleteListener(task -> {
 
-                if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
 
-                    extractData(task.getResult());
+                        extractData(task.getResult());
 
-                    Toast.makeText(getApplicationContext(),"Loading succesful",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Loading succesful", Toast.LENGTH_SHORT).show();
 
-                }else {
-                    Toast.makeText(getApplicationContext(),"Loading failed !",Toast.LENGTH_SHORT).show();
-                }
-
-            });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Loading failed !", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            progressBar.setVisibility(View.GONE);
         }
-        progressBar.setVisibility(View.GONE);
+
     }
 
     //Affiche les slots pour un nouveau joueur

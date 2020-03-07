@@ -1,25 +1,25 @@
 [
   {
     "id":1 ,
-    "name":"Small Store","price":5000,"income":100,
+    "name":"Small Store","price":100,"income":100,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/small_store"
   }
   ,
   {
     "id":2 ,
-    "name":"Medium Store","price":17500,"income":600,
+    "name":"Medium Store","price":5500,"income":600,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/medium_store"
   }
   ,
   {
     "id":3 ,
-    "name":"Restaurant","price":25000,"income":1300,
+    "name":"Restaurant","price":13000,"income":1300,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/restaurant"
   }
   ,
   {
     "id":4 ,
-    "name":"Super Market","price":50000,"income":2500,
+    "name":"Super Market","price":50000,"income":5000,
     "uri" :"android.resource://com.houbenz.android.lifesimulator/drawable/super_market"
   }
 ]

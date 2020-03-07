@@ -53,14 +53,12 @@ public class SaveToCloudWork extends Worker {
 
         if (account != null && GoogleSignIn.hasPermissions(account)){
             executeSaving(getBytearray());
-        Log.i("YOOU", "saving operation done");
 
+            return Result.success();
         }
 
-        else
-            Log.i("YOOU","account is null or does not have permission");
+        return Result.failure();
 
-        return Result.success();
     }
 
 
@@ -79,12 +77,7 @@ public class SaveToCloudWork extends Worker {
             if (snapshot != null){
 
                 //call for write snapshot method returns a task !
-                writeSnapshot(snapshot,bytearray,player.getName()).addOnCompleteListener(task1 -> {
-
-                    if(task1.isSuccessful()){
-                        Toast.makeText(getApplicationContext(),"saved to cloud",Toast.LENGTH_SHORT).show();
-                    }
-                });
+                writeSnapshot(snapshot,bytearray,player.getName()).addOnCompleteListener(task1 -> { });
             }
         });
     }

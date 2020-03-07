@@ -11,7 +11,7 @@
   {
     "id":2 ,
     "name":"Salon Table",
-    "price":250,
+    "price":200,
     "fournitureType":"salonTable",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/salon_table"
   }
@@ -19,7 +19,7 @@
   {
     "id": 3,
     "name":"Table",
-    "price":400,
+    "price":200,
     "fournitureType":"table",
     "url":"android.resource://com.houbenz.android.lifesimulator/drawable/table"
   }

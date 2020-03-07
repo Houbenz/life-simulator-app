@@ -20,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,28 +43,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.games.SnapshotsClient;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.tasks.Task;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import database.Acquired_Cars;
 import database.Acquired_Furnitures;
@@ -79,7 +61,6 @@ import database.Medicine;
 import database.Acquired_Stores;
 import database.Acquired_degree;
 import database.Degree;
-import database.Partner;
 import database.Player;
 import database.Store;
 import database.Work;
@@ -568,7 +549,6 @@ public class GameScene extends AppCompatActivity
             MobileAds.initialize(this, APP_ADS_ID);
 
         }catch (Exception e){
-            Toast.makeText(getApplicationContext(),"not loading :/",Toast.LENGTH_LONG).show();
         }
        mRewardVideoAdDoubleIncome =MobileAds.getRewardedVideoAdInstance(this);
         mRewardVideoAdDoubleIncome.setRewardedVideoAdListener(this);
@@ -767,7 +747,6 @@ public class GameScene extends AppCompatActivity
                     sharedPreferences.edit().putString("firstTime", "finished").apply();
                 }
 
-                submitScore((long)player.getBalance());
 
                 duo++;
             }
@@ -834,7 +813,7 @@ public class GameScene extends AppCompatActivity
     private void settingUpPopUpforAchievements(){
         GamesClient gamesClient = Games.getGamesClient(this,account);
         gamesClient.setViewForPopups(findViewById(android.R.id.content));
-        gamesClient.setGravityForPopups(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+        gamesClient.setGravityForPopups(Gravity.TOP|Gravity.CENTER_HORIZONTAL);
     }
 
     private void submitScore (long score){
@@ -843,6 +822,7 @@ public class GameScene extends AppCompatActivity
         if (account!= null && GoogleSignIn.hasPermissions(account))
         Games.getLeaderboardsClient(this,account)
                 .submitScore(getString(R.string.leaderboard_score),score);
+
     }
 
     private void showTuto(String title,String contentText,int viewid ){
@@ -968,7 +948,7 @@ public class GameScene extends AppCompatActivity
 
                                     if(player.getLevel_object().getLevel() == 10) {
                                         if(account != null && GoogleSignIn.hasPermissions(account))
-                                            Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_level_up_5));
+                                            Games.getAchievementsClient(getApplicationContext(),account).unlock(getString(R.string.achievement_level_up_10));
                                     }
 
                                     levelNumber.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> {
@@ -1438,6 +1418,7 @@ public class GameScene extends AppCompatActivity
             hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
 
             if (food.getId() == 2){
+                if(account != null && GoogleSignIn.hasPermissions(account))
                 Games.getAchievementsClient(getApplicationContext(),account).increment(getString(R.string.achievement_chiken_dinner),1);
             }
         }
@@ -1489,7 +1470,7 @@ public class GameScene extends AppCompatActivity
 
                     if(house.getId() == 3) {
                         if (account != null && GoogleSignIn.hasPermissions(account))
-                            Games.getAchievementsClient(getApplicationContext(), account).unlock(getString(R.string.achievement_ma_house));
+                            Games.getAchievementsClient(getApplicationContext(), account).unlock(getString(R.string.achievement_comfy_house));
                     }
 
                 } else
@@ -1842,6 +1823,7 @@ public class GameScene extends AppCompatActivity
         OneTimeWorkRequest oneTimeWorkRequest =new OneTimeWorkRequest.Builder(SaveToCloudWork.class)
                 .build();
         WorkManager.getInstance().enqueue(oneTimeWorkRequest);
+        submitScore((long)player.getBalance());
     }
 
 }

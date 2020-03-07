@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name":"Small house",
-    "price":1000,
+    "price":500,
     "bonusE":5,
     "bonusH":5,
     "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/small_house"
@@ -21,7 +21,7 @@
   {
     "id": 3,
     "name":"Medium House",
-    "price":1500,
+    "price":1000,
     "bonusE":5,
     "bonusH":5,
     "uri":"android.resource://com.houbenz.android.lifesimulator/drawable/second_house"
