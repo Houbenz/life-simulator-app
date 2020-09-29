@@ -8,16 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,15 +24,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
 
-import androidx.lifecycle.ViewModelProviders;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import beans.Level;
 import conf.Params;
 import database.Player;
@@ -85,6 +82,8 @@ public class HomeActivity extends AppCompatActivity {
     private TextView hungerpr;
     private TextView balance;
     private TextView levelNumber;
+
+    private TextView not_owned_text;
 
     private TextView speedName;
 
@@ -198,6 +197,7 @@ public class HomeActivity extends AppCompatActivity {
         socialButton=findViewById(R.id.socialButton);
         showOutsideHomeButton=findViewById(R.id.showOutsideHomeButton);
         showOutsideHome2Button=findViewById(R.id.showOutsideHome2Button);
+        not_owned_text=findViewById(R.id.not_owned_textview);
 
 
 
@@ -398,16 +398,14 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void insertFragment(Fragment fragment){
 
+        not_owned_text.setVisibility(View.GONE);
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack();
-
         saveProgress();
-
         Bundle bundle = new Bundle();
         bundle.putInt("slot",slot);
         bundle.putInt("minusRelation",minusRelation);
         fragment.setArguments(bundle);
-        transaction =fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
+        transaction =fragmentManager.beginTransaction();
         transaction.replace(R.id.placeFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();

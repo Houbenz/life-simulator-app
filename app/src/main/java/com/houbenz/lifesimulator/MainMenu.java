@@ -4,27 +4,9 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.games.PlayersClient;
-import com.google.android.gms.games.SnapshotsClient;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,13 +16,26 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.room.Room;
+
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
-
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.PlayersClient;
+import com.google.android.gms.games.SnapshotsClient;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -55,13 +50,12 @@ import database.Acquired_Furnitures;
 import database.Acquired_Houses;
 import database.Acquired_Stores;
 import database.Acquired_degree;
+import database.DatabaseInit;
 import database.Gift;
 import database.MyAppDataBase;
 import database.Partner;
 import database.Player;
 import database.VersionDB;
-
-import database.DatabaseInit;
 
 
 public class MainMenu extends AppCompatActivity {
@@ -320,6 +314,9 @@ public class MainMenu extends AppCompatActivity {
             ois.close();
 
             progressBar.setVisibility(View.GONE);
+
+            sharedPreferences.edit().putString("firstTime", "finished").apply();
+            Log.i("okkk","firstTime : "+sharedPreferences.getString("firstTime","none"));
             Intent intent = new Intent(MainMenu.this, GameScene.class);
             intent.putExtra("slotNumber", 1);
             startActivity(intent);
@@ -508,6 +505,9 @@ public class MainMenu extends AppCompatActivity {
         Player player = myAppDataBase.myDao().getPlayer(1);
 
         if(player != null) {
+
+            sharedPreferences.edit().putString("firstTime", "finished").apply();
+            Log.i("okkk","firstTime : "+sharedPreferences.getString("firstTime","none"));
             Intent intent = new Intent(MainMenu.this, GameScene.class);
             intent.putExtra("slotNumber", 1);
             progressBar.setVisibility(View.GONE);

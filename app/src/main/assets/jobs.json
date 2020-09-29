@@ -3,7 +3,7 @@
     "id":1,
     "name":"worker", "timeofWork":8, "pay":15,"leveltoWork":0
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_worker"
-    ,"degree":"none"
+  ,"degree":"none"
   ,"degree_id":0
 
   }
@@ -11,7 +11,7 @@
   {
     "id":2,
     "name":"Fire fighter", "timeofWork":8, "pay":20, "leveltoWork":2
-    ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_firefighter"
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_firefighter"
   ,"degree":"highschool degree"
   ,"degree_id":1
 
@@ -38,7 +38,7 @@
 ,
   {
     "id":5,
-    "name":"Highschool teacher", "timeofWork":6, "pay":35,"leveltoWork":5
+    "name":"Highschool teacher", "timeofWork":6, "pay":45,"leveltoWork":5
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_teacher"
   ,"degree":"teaching degree"
   ,"degree_id":4
@@ -47,7 +47,7 @@
 ,
   {
     "id":6,
-    "name":"Programmer", "timeofWork":7, "pay":45,"leveltoWork":7
+    "name":"Programmer", "timeofWork":7, "pay":55,"leveltoWork":7
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_programmer"
   ,"degree":"programming license"
   ,"degree_id":5
@@ -72,5 +72,80 @@
   ,"degree_id":7
 
   }
+,
+  {
+    "id":9,
+    "name":"Cashier", "timeofWork":6, "pay":22,"leveltoWork":3
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_cashier"
+  ,"degree":"highschool degree"
+  ,"degree_id":1
 
+  }
+
+,
+  {
+    "id":10,
+    "name":"Concierge", "timeofWork":6, "pay":18,"leveltoWork":1
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_concierge"
+  ,"degree":"highschool degree"
+  ,"degree_id":1
+
+  }
+,
+  {
+    "id":11,
+    "name":"Astronaut", "timeofWork":6, "pay":200,"leveltoWork":20
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_astronaut"
+  ,"degree":"Space Astronaut Certificat"
+  ,"degree_id":12
+
+  }
+,
+  {
+    "id":12,
+    "name":"Chef", "timeofWork":6, "pay":65,"leveltoWork":8
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_chef"
+  ,"degree":"Cooking Degree"
+  ,"degree_id":9
+
+  }
+,
+  {
+    "id":13,
+    "name":"Farmer", "timeofWork":6, "pay":37,"leveltoWork":4
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_farmer"
+  ,"degree":"Farming License"
+  ,"degree_id":10
+
+  }
+,
+
+  {
+    "id":14,
+    "name":"Diver", "timeofWork":6, "pay":75,"leveltoWork":8
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_diver"
+  ,"degree":"Diving License"
+  ,"degree_id":13
+
+  }
+,
+
+  {
+    "id":15,
+    "name":"Writer", "timeofWork":6, "pay":55,"leveltoWork":7
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_writer"
+  ,"degree":"Literature Degree"
+  ,"degree_id":11
+
+  }
+,
+
+  {
+    "id":16,
+    "name":"Singer", "timeofWork":6, "pay":80,"leveltoWork":8
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_singer"
+  ,"degree":"Singing license"
+  ,"degree_id":8
+
+  }
 ]

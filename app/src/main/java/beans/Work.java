@@ -2,20 +2,17 @@ package beans;
 
 import android.content.Context;
 
-import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 
-public class Work {
+public class Work implements Comparable<Work>{
 
     private String name ;
     private int timeOfWork;
@@ -168,4 +165,13 @@ public class Work {
         return works ;
     }
 
+
+    @Override
+    public int compareTo(Work work) {
+
+        if(this.getLeveltoWork() > work.getLeveltoWork()){
+            return 1;
+        }else
+            return -1;
+    }
 }

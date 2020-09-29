@@ -5,19 +5,19 @@ package fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import com.houbenz.lifesimulator.MainMenu;
+import androidx.fragment.app.Fragment;
+
 import com.android.houbenz.lifesimulator.R;
+import com.houbenz.lifesimulator.MainMenu;
 
-import java.util.List;
-
+import java.util.ArrayList;
+import java.util.Collections;
 
 import arrayAdapters.WorksGridAdapter;
 import database.Work;
@@ -43,8 +43,8 @@ public class WorkFragment extends Fragment {
 
         sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
 
-        List<Work> works = MainMenu.myAppDataBase.myDao().getWorks();
-
+        ArrayList<Work> works =(ArrayList<Work>) MainMenu.myAppDataBase.myDao().getWorks();
+        Collections.sort(works);
         //The player Level (IMPORTANT)
         int playerLevel = getArguments().getInt("playerLevel");
         int slot = getArguments().getInt("slot");

@@ -22,6 +22,9 @@ public interface MyDao {
     @Insert
     void addWork(Work work);
 
+    @Query("delete from work")
+    void deleteAllWork();
+
     @Insert
     void addPartner(Partner partner);
 

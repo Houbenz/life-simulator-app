@@ -26,6 +26,12 @@ public  class DatabaseInit {
     public static void initWorkRows(boolean isUpdate,Context context){
         ArrayList<beans.Work> worksBeans = beans.Work.workInit(context) ;
 
+        Log.i("okkk",myAppDataBase.myDao().workNumber()+"");
+
+            myAppDataBase.myDao().deleteAllWork();
+
+        Log.i("okkk",myAppDataBase.myDao().workNumber()+"");
+
         for(beans.Work bean : worksBeans){
             database.Work work = new database.Work();
 
@@ -38,37 +44,9 @@ public  class DatabaseInit {
             work.setName(bean.getName());
             work.setWork_time(bean.getTimeOfWork());
             work.setDegree_id(bean.getDegree_id());
+            myAppDataBase.myDao().addWork(work);
 
-            if(!isUpdate)
-                myAppDataBase.myDao().addWork(work);
-            else
-                myAppDataBase.myDao().updateWork(work);
         }
-
-        int oldRows =myAppDataBase.myDao().workNumber();
-
-        int newRows = worksBeans.size() - oldRows;
-
-        if(newRows >0) {
-            for(int i =oldRows  ; i<worksBeans.size();i++){
-
-                database.Work work = new database.Work();
-
-                work.setId(worksBeans.get(i).getId());
-
-                work.setDegree_required(worksBeans.get(i).getReqDegree());
-                work.setImgPath(worksBeans.get(i).getImagePath());
-                work.setIncome(worksBeans.get(i).getPay());
-                work.setLvlToWork(worksBeans.get(i).getLeveltoWork());
-                work.setName(worksBeans.get(i).getName());
-                work.setWork_time(worksBeans.get(i).getTimeOfWork());
-                work.setDegree_id(worksBeans.get(i).getDegree_id());
-
-                myAppDataBase.myDao().addWork(work);
-            }
-        }
-
-
     }
 
     public static void initDegreeRows(boolean isUpdate,Context context){

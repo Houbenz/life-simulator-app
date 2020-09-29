@@ -2,11 +2,6 @@ package com.houbenz.lifesimulator;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-
-import Workers.SaveToCloudWork;
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,11 +10,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.CountDownTimer;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.ads.AdRequest;
@@ -43,38 +45,36 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
+
 import java.util.List;
 import java.util.Locale;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
+
+import Workers.SaveToCloudWork;
+import beans.Level;
+import conf.Params;
 import database.Acquired_Cars;
 import database.Acquired_Furnitures;
 import database.Acquired_Houses;
-import database.Food;
-import database.Furniture;
-import database.Gift;
-import database.House;
-import beans.Level;
-import database.Medicine;
 import database.Acquired_Stores;
 import database.Acquired_degree;
 import database.Degree;
+import database.Food;
+import database.Furniture;
+import database.House;
+import database.Medicine;
 import database.Player;
 import database.Store;
 import database.Work;
-import conf.Params;
 import fragments.BankFragment;
 import fragments.BuyFragment;
 import fragments.CarFragment;
+import fragments.DegreeFragment;
 import fragments.DepositFragment;
 import fragments.FoodFragment;
 import fragments.FournitureFragment;
 import fragments.GiftFragment;
-import fragments.HouseFragment;
 import fragments.HomeFragment;
-import fragments.DegreeFragment;
+import fragments.HouseFragment;
 import fragments.PharmacyFragment;
 import fragments.SleepFragment;
 import fragments.StoreFragment;
@@ -1202,6 +1202,10 @@ public class GameScene extends AppCompatActivity
 
         String firstTime = sharedPreferences.getString("firstTime","none");
 
+        Log.i("okkk","firstTime : "+firstTime);
+
+        Log.i("okkk","firstTime : "+sharedPreferences.getString("firstTime","none"));
+
         if(firstTime.equals("none")){
             showTuto(getString(R.string.startWork),getString(R.string.begin_work),R.id.startWorking);
 
@@ -1253,99 +1257,111 @@ public class GameScene extends AppCompatActivity
     @Override
     public void deliverFourniture(final Furniture fourniture) {
 
-        Acquired_Furnitures acquired_furnitures1 =myAppDataBase.myDao().getAcqFurn(fourniture.getId(),player.getId());
-        // test if is the furniture is already bought
-        if(acquired_furnitures1 == null){
 
+        Acquired_Houses acquired_home = myAppDataBase.myDao().getAcqHouse(player.getId(),1);
+        Acquired_Houses acquired_secondhome = myAppDataBase.myDao().getAcqHouse(player.getId(),3);
 
-            Dialog dialog = new Dialog(GameScene.this);
+        if (   acquired_home == null && acquired_secondhome == null ){
 
+            House garage = myAppDataBase.myDao().getHouse(1);
+            House house2 = myAppDataBase.myDao().getHouse(3);
 
-
-            dialog.setContentView(R.layout.dialog);
-
-            TextView title = dialog.findViewById(R.id.dialogTitle);
-            Button confirm=dialog.findViewById(R.id.confirm);
-            Button decline =dialog.findViewById(R.id.decline);
-
-
-            title.setText(getString(R.string.purchase_item));
-
-            confirm.setOnClickListener(view ->{
-                double newBalance=player.getBalance()-fourniture.getPrice();
-
-                String message;
-                if(newBalance>=0) {
-                    player.setBalance(newBalance);
-                    balance.setText(newBalance + "$");
-                    message=getString(R.string.you_purchased)+" "+fourniture.getName()+" "
-                            +getString(R.string._for)+" "+fourniture.getPrice()+"$ !";
-
-                    Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
-                    acquired_furnitures.setAvailable("true");
-                    acquired_furnitures.setFurn_id(fourniture.getId());
-                    acquired_furnitures.setPlayer_id(player.getId());
-                    acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
-                    acquired_furnitures.setImgurl(fourniture.getImgUrl());
-
-                    myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
-
-                    // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
-                    dialog.dismiss();
-                    dialog.cancel();
-
-                    if(account != null && GoogleSignIn.hasPermissions(account))
-                        Games.getAchievementsClient(getApplicationContext(),account)
-                                .unlock(getString(R.string.achievement_first_furniture));
-
-
-                    if(account != null && GoogleSignIn.hasPermissions(account))
-                        Games.getAchievementsClient(getApplicationContext(),account)
-                                .increment(getString(R.string.achievement_a_lot_of_furnitures),1);
-
-                }else{
-                    message = getString(R.string.insufficiant_funds)+""+fourniture.getName();
-                    dialog.dismiss();
-                    dialog.cancel();
-                }
-               // showPurchaseDialog(message);
-
-                showCustomToast(message,fourniture.getImgUrl(),"green");
-
-
-
-
-                //this is for the view model between homefragment and GameScene
-
-                insertFurnitureFragment();
-            });
-
-            decline.setOnClickListener(view ->{
-                dialog.dismiss();
-                dialog.cancel();
-            });
-
-            dialog.show();
-
-
+            showCustomToast(getString(R.string.must_buy)+" "+garage.getName()+" or "
+                    +house2.getName()+" "+getString(R.string.first)+" ! ",garage.getImgUrl(),"red");
         }else {
+            Acquired_Furnitures acquired_furnitures1 =myAppDataBase.myDao().getAcqFurn(fourniture.getId(),player.getId());
+            // test if is the furniture is already bought
+            if(acquired_furnitures1 == null){
 
-          List <Acquired_Furnitures> acquired_furnitures = myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
 
-          for(Acquired_Furnitures furn : acquired_furnitures) {
-              if(furn.getFurnitureType().equals(fourniture.getFurnitureType()))
-              furn.setAvailable("false");
-              myAppDataBase.myDao().updateAcquired_Furnitures(furn);
-          }
+                Dialog dialog = new Dialog(GameScene.this);
 
-            Toast.makeText(getApplicationContext(), fourniture.getName() + " "+getString(R.string.is_now_used), Toast.LENGTH_SHORT).show();
 
-            acquired_furnitures1.setAvailable("true");
 
-            myAppDataBase.myDao().updateAcquired_Furnitures(acquired_furnitures1);
+                dialog.setContentView(R.layout.dialog);
 
-            //viewmodel.getAcquired_furn().getValue().add(acquired_furnitures1);
+                TextView title = dialog.findViewById(R.id.dialogTitle);
+                Button confirm=dialog.findViewById(R.id.confirm);
+                Button decline =dialog.findViewById(R.id.decline);
 
+
+                title.setText(getString(R.string.purchase_item));
+
+                confirm.setOnClickListener(view ->{
+                    double newBalance=player.getBalance()-fourniture.getPrice();
+
+                    String color;
+                    String message;
+                    if(newBalance>=0) {
+                        player.setBalance(newBalance);
+                        balance.setText(newBalance + "$");
+                        message=getString(R.string.you_purchased)+" "+fourniture.getName()+" "
+                                +getString(R.string._for)+" "+fourniture.getPrice()+"$ !";
+                        color="green";
+
+                        Acquired_Furnitures acquired_furnitures = new Acquired_Furnitures();
+                        acquired_furnitures.setAvailable("true");
+                        acquired_furnitures.setFurn_id(fourniture.getId());
+                        acquired_furnitures.setPlayer_id(player.getId());
+                        acquired_furnitures.setFurnitureType(fourniture.getFurnitureType());
+                        acquired_furnitures.setImgurl(fourniture.getImgUrl());
+
+                        myAppDataBase.myDao().addAcquired_Furniture(acquired_furnitures);
+
+                        // viewmodel.getAcquired_furn().getValue().add(acquired_furnitures);
+                        dialog.dismiss();
+                        dialog.cancel();
+
+                        if(account != null && GoogleSignIn.hasPermissions(account))
+                            Games.getAchievementsClient(getApplicationContext(),account)
+                                    .unlock(getString(R.string.achievement_first_furniture));
+
+
+                        if(account != null && GoogleSignIn.hasPermissions(account))
+                            Games.getAchievementsClient(getApplicationContext(),account)
+                                    .increment(getString(R.string.achievement_a_lot_of_furnitures),1);
+
+                    }else{
+                        message = getString(R.string.insufficiant_funds)+""+fourniture.getName();
+                        color="red";
+                        dialog.dismiss();
+                        dialog.cancel();
+                    }
+                   // showPurchaseDialog(message);
+
+                    showCustomToast(message,fourniture.getImgUrl(),color);
+                    //this is for the view model between homefragment and GameScene
+
+                    insertFurnitureFragment();
+                });
+
+                decline.setOnClickListener(view ->{
+                    dialog.dismiss();
+                    dialog.cancel();
+                });
+
+                dialog.show();
+
+
+            }else {
+
+              List <Acquired_Furnitures> acquired_furnitures = myAppDataBase.myDao().getAcquiredFurnitures(player.getId());
+
+              for(Acquired_Furnitures furn : acquired_furnitures) {
+                  if(furn.getFurnitureType().equals(fourniture.getFurnitureType()))
+                  furn.setAvailable("false");
+                  myAppDataBase.myDao().updateAcquired_Furnitures(furn);
+              }
+
+                Toast.makeText(getApplicationContext(), fourniture.getName() + " "+getString(R.string.is_now_used), Toast.LENGTH_SHORT).show();
+
+                acquired_furnitures1.setAvailable("true");
+
+                myAppDataBase.myDao().updateAcquired_Furnitures(acquired_furnitures1);
+
+                //viewmodel.getAcquired_furn().getValue().add(acquired_furnitures1);
+
+            }
         }
     }
 

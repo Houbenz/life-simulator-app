@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Work {
+public class Work  implements Comparable<Work>{
 
     @PrimaryKey(autoGenerate = true)
     private int id ;
@@ -81,5 +81,14 @@ public class Work {
 
     public void setDegree_id(int degree_id) {
         this.degree_id = degree_id;
+    }
+
+    @Override
+    public int compareTo(Work work) {
+
+        if(this.getLvlToWork() > work.getLvlToWork()){
+            return 1;
+        }else
+            return -1;
     }
 }

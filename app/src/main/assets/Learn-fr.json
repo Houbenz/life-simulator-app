@@ -31,21 +31,63 @@
 ,
   {
     "id":5 ,
-    "name":"License de programmation","price":20
-  ,"progress":100
+    "name":"License de programmation","price":35
+  ,"progress":40
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/programming_licence"
   }
 ,
   {
     "id": 6,
-    "name":"Permis de pilotage","price":20
-  ,"progress":120
+    "name":"Permis de pilotage","price":50
+  ,"progress":60
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/piloting_licence"
   },
   {
     "id":7 ,
-    "name":"Phd","price":20
+    "name":"Phd","price":50
   ,"progress":200
   ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/phd"
+  },
+
+  {
+    "id":8 ,
+    "name":"License de musique","price":35
+  ,"progress":50
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_singing_license"
+  },
+
+  {
+    "id":9 ,
+    "name":"Diplome de cuisine","price":35
+  ,"progress":60
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_cooking_degree"
+  },
+
+  {
+    "id":10,
+    "name":"License d'Agriculture","price":20
+  ,"progress":50
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_farming_license"
+  },
+
+  {
+    "id":11,
+    "name":"Diplome de Literature","price":35
+  ,"progress":80
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_writing_license"
+  }
+,
+  {
+    "id":12,
+    "name":"Certificat d'Astronaute","price":200
+  ,"progress":150
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_space_astronaut_certificat"
+  }
+,
+  {
+    "id":13,
+    "name":"License de plonge","price":50
+  ,"progress":70
+  ,"uri":"android.resource://com.houbenz.android.lifesimulator/drawable/ic_diving_certificat"
   }
 ]

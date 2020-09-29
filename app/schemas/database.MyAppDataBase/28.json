@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 28,
-    "identityHash": "a1419cd822338086b22ab0fbc214bb98",
+    "identityHash": "d970edd0d96246e7c83b7fa60b7cbf00",
     "entities": [
       {
         "tableName": "Player",
@@ -196,7 +196,7 @@
       },
       {
         "tableName": "Work",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `degree_required` TEXT, `income` REAL NOT NULL, `work_time` INTEGER NOT NULL, `imgPath` TEXT, `lvlToWork` INTEGER NOT NULL, `degree_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `degree_required` TEXT, `income` REAL NOT NULL, `work_time` INTEGER NOT NULL, `imgPath` TEXT, `lvlToWork` INTEGER NOT NULL, `degree_id` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -251,7 +251,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -1049,7 +1049,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a1419cd822338086b22ab0fbc214bb98')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd970edd0d96246e7c83b7fa60b7cbf00')"
     ]
   }
 }
