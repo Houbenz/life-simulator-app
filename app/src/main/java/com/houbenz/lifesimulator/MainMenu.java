@@ -74,7 +74,7 @@ public class MainMenu extends AppCompatActivity {
     private ImageView imageView3;
     private ImageView imageView4;
 
-    private int firsttime;
+    private int firstTime;
 
     private ConstraintLayout mainLayout;
 
@@ -93,12 +93,10 @@ public class MainMenu extends AppCompatActivity {
     private ProgressBar progressBar;
 
     @SuppressLint("ClickableViewAccessibility")
-    private View.OnTouchListener mOnTouchListener = (v, event) -> {
+    private final View.OnClickListener mOnTouchListener = (v) -> {
 
         //delayedHide();
-
         hideSystemUI();
-        return false;
     };
 
 
@@ -165,7 +163,7 @@ public class MainMenu extends AppCompatActivity {
         progressBar=findViewById(R.id.progressBar);
         mainLayout = findViewById(R.id.mainLayout);
 
-        mainLayout.setOnTouchListener(mOnTouchListener);
+        mainLayout.setOnClickListener(mOnTouchListener);
 
 
 
@@ -197,7 +195,7 @@ public class MainMenu extends AppCompatActivity {
         animateButton();
 
 
-        firsttime = 4000;
+        firstTime = 4000;
 
         Thread thread = new Thread(() -> {
 
@@ -206,8 +204,8 @@ public class MainMenu extends AppCompatActivity {
                 try {
 
 
-                    Thread.sleep(firsttime);
-                    firsttime = 1500;
+                    Thread.sleep(firstTime);
+                    firstTime = 1500;
                     runOnUiThread(() -> animateInThread(imageView3));
 
                     Thread.sleep(1500);

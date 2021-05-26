@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,16 +30,17 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
@@ -91,7 +91,7 @@ public class GameScene extends AppCompatActivity
         implements WorkFragment.onWorkSelected, BuyFragment.OnMainFragmentClicked,FournitureFragment.OnFournitureClicked
     ,SleepFragment.onSleepClicked,FoodFragment.onFoodClicked, PharmacyFragment.OnMedicineClicked,
         HouseFragment.OnHouseClicked, StoreFragment.OnStoreClicked
-    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit, RewardedVideoAdListener
+    , DegreeFragment.OnDegreeClick, BankFragment.OnDeposit,WithdrawFragment.OnWithdraw,DepositFragment.OnDeposit//,RewardedVideoAdListener
 {
 
     private Button buy;
@@ -163,10 +163,8 @@ public class GameScene extends AppCompatActivity
 
     private int slot ;
 
-    private boolean ignore=true;
 
-
-    private RewardedVideoAd mRewardVideoAdDoubleIncome;
+    // private RewardedVideoAd mRewardVideoAdDoubleIncome;
 
     private ConstraintLayout constraintLayout;
 
@@ -175,7 +173,7 @@ public class GameScene extends AppCompatActivity
     MediaPlayer mp;
     MediaPlayer mpIncome;
 
-    private boolean workthreadRun=false ;
+    private boolean workThreadRun =false ;
 
     private int minusRelation = 0;
 
@@ -185,36 +183,34 @@ public class GameScene extends AppCompatActivity
     private int learn_time=Params.LEARN_TIME;
 
 
-
-    public final static String appodeal_app_ID ="d759df7a087f4d49bb559c217f05ba70ba91fede02cbfb55";
-
     //this is the original app ad id
     public final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
      //this is the original video double income ad id
-     private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
+     //private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
 
 
     //this is the original FINDPARTNER AD VIDEO ID
-    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
+   // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
 
 
     //this is for test video double ad income ad
-    // final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
+    final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
 
     //this is the test for FINDPARTNER AD VIDEO ID
-   // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
+    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
 
 
+
+    private RewardedAd rewardAd;
 
     private GoogleSignInAccount account;
 
 
 
-    private View.OnTouchListener mOnTouchListener = (v , event) -> {
+    private final View.OnClickListener mOnTouchListener = (v) -> {
 
             hideSystemUI();
-            return false;
 
     };
 
@@ -414,11 +410,9 @@ public class GameScene extends AppCompatActivity
 
 
     private void animateProgressBar(@NonNull ProgressBar progressBar){
-        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->{
-
-            progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->{
-                progressBar.animate().rotation(0f).setDuration(150);
-            }); });
+        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->
+                progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->
+                        progressBar.animate().rotation(0f).setDuration(150)));
     }
 
     public void enableAllButtons(boolean enable){
@@ -454,7 +448,7 @@ public class GameScene extends AppCompatActivity
     @Override
     public void onBackPressed() {
         deselectButtons();
-        workthreadRun=false;
+        workThreadRun =false;
         mp.release();
         mpIncome.release();
         super.onBackPressed();
@@ -466,22 +460,18 @@ public class GameScene extends AppCompatActivity
     public void showCustomToast(String message , String imgUrl, String type){
 
         LayoutInflater inflater=getLayoutInflater();
-        View layout = null;
-
+        View layout ;
        switch (type){
            case "green":
-               layout = inflater.inflate(R.layout.custom_toast_green,(ViewGroup)findViewById(R.id.cutom_toast_green));
+               layout = inflater.inflate(R.layout.custom_toast_green,findViewById(R.id.cutom_toast_green));
                break ;
-           case "red" :
-               layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red));
-               break;
            case "gold" :
-               layout=inflater.inflate(R.layout.custom_toast_levelup,(ViewGroup)findViewById(R.id.cutom_toast_levelup));
+               layout=inflater.inflate(R.layout.custom_toast_levelup,findViewById(R.id.cutom_toast_levelup));
                break;
            case "yellow" :
-               layout=inflater.inflate(R.layout.custom_toast_yellow,(ViewGroup)findViewById(R.id.cutom_toast_yellow));
+               layout=inflater.inflate(R.layout.custom_toast_yellow,findViewById(R.id.cutom_toast_yellow));
                break;
-           default:layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red)); ;
+           default:layout = inflater.inflate(R.layout.custom_toast_red,findViewById(R.id.cutom_toast_red));
        }
 
 
@@ -510,6 +500,59 @@ public class GameScene extends AppCompatActivity
     }
 
 
+
+    public void addFullScreenContentCallback(AdRequest adRequest){
+        rewardAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                Log.d("MyAd","ad was shown");
+                rewardAd=null;
+                loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+                Log.d("MyAd","ad failed to show");
+
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+                Log.d("MyAd","ad dismissed");
+                loadAd(adRequest);
+            }
+
+        });
+
+    }
+
+public void loadAd(AdRequest adRequest){
+    RewardedAd.load(this, AD_VIDEO_ID, adRequest, new RewardedAdLoadCallback() {
+        @Override
+        public void onAdLoaded(@NonNull RewardedAd lRewardedAd) {
+            super.onAdLoaded(lRewardedAd);
+            rewardAd = lRewardedAd;
+            addFullScreenContentCallback(adRequest);
+            Log.d("MyAd", "Ad loaded");
+
+            if(!player.getWork().equals(getString(R.string.none)))
+                doubleEarn.setVisibility(View.VISIBLE);
+
+            instantDollarButton.setVisibility(View.VISIBLE);
+
+        }
+        @Override
+        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+            super.onAdFailedToLoad(loadAdError);
+            Log.d("MyAd", loadAdError.getMessage());
+            rewardAd=null;
+        }
+    });
+}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -537,22 +580,17 @@ public class GameScene extends AppCompatActivity
         sharedPreferences=getApplicationContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
 
         //for the car
-        viewModelCars=ViewModelProviders.of(this).get(ViewModelCars.class);
+        viewModelCars = new ViewModelProvider(this).get(ViewModelCars.class);
         deliverCars();
 
         //for the gifts
-        viewModelGift=ViewModelProviders.of(this).get(ViewModelGift.class);
+        viewModelGift= new ViewModelProvider(this).get(ViewModelGift.class);
         deliverGift();
 
 
-        try {
-            MobileAds.initialize(this, APP_ADS_ID);
+        AdRequest adRequest = new AdRequest.Builder().build();
 
-        }catch (Exception e){
-        }
-       mRewardVideoAdDoubleIncome =MobileAds.getRewardedVideoAdInstance(this);
-        mRewardVideoAdDoubleIncome.setRewardedVideoAdListener(this);
-        loadRewardAd();
+        loadAd(adRequest);
 
 
 
@@ -562,12 +600,8 @@ public class GameScene extends AppCompatActivity
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
          runClockThread();
-
-
          constraintLayout=findViewById(R.id.mainLayout);
-
-         constraintLayout.setOnTouchListener(mOnTouchListener);
-
+         constraintLayout.setOnClickListener(mOnTouchListener);
 
         slot =getIntent().getIntExtra("slotNumber",1);
 
@@ -583,13 +617,8 @@ public class GameScene extends AppCompatActivity
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account != null) {
             if (GoogleSignIn.hasPermissions(account)) {
-
                 this.account = account;
-
-
                 settingUpPopUpforAchievements();
-
-
             }
         }
 
@@ -680,36 +709,19 @@ public class GameScene extends AppCompatActivity
 
         });
 
-
         playerN.setText(player.getName());
-
-        balance.setText(player.getBalance()+"$");
-
-
-
-        income.setText(player.getWork_income()+"$/"+getString(R.string.hour));
-
-
+        balance.setText(String.format("%s$", player.getBalance()));
+        income.setText(String.format("%s$/%s", player.getWork_income(), getString(R.string.hour)));
         //Init of progress bars
         initialiseProgressBars();
 
         // when the button start work is pressed
         startWorking=findViewById(R.id.startWorking);
-
-        if(player.getWork().equals(getString(R.string.none))) {
-            startWorking.setEnabled(false);
-        }
-        else {
-            startWorking.setEnabled(true);
-        }
-
-
-
+        startWorking.setEnabled(!player.getWork().equals(getString(R.string.none)));
         startWorking.setOnClickListener(v -> {
 
-
             if(duo % 2 ==0) {
-                workthreadRun = true;
+                workThreadRun = true;
 
                 deselectButtons();
                 startWorking.setSelected(true);
@@ -733,7 +745,7 @@ public class GameScene extends AppCompatActivity
 
                 startWorking.setSelected(false);
 
-                workthreadRun=false;
+                workThreadRun =false;
 
                 enableAllButtons(true);
                 speedSeekBar.setProgress(0);
@@ -754,23 +766,30 @@ public class GameScene extends AppCompatActivity
 
 
         doubleEarn.setOnClickListener(v -> {
-
-            if(mRewardVideoAdDoubleIncome.isLoaded()) {
-                doubleEarnClicked=true;
-                mRewardVideoAdDoubleIncome.show();
+            if(rewardAd != null) {
+                rewardAd.show(this, rewardItem -> {
+                    doubleEarnClicked=true;
+                    doubleEarnThread();
+                    showCustomToast(getString(R.string.now_earn_double)+" "+ player.getWork_income()+" x2","","green");
+                });
             }
         });
 
         instantDollarButton.setOnClickListener(v ->{
+                if(rewardAd != null) {
+                    rewardAd.show(this, rewardItem -> {
+                        doubleEarnClicked = false;
+                        Log.d("My","player balance before : "+player.getBalance());
 
-           if(mRewardVideoAdDoubleIncome.isLoaded()){
-               doubleEarnClicked=false;
-               mRewardVideoAdDoubleIncome.show();
-           }
+                        player.setBalance(player.getBalance() + 100);
+                        balance.setText(String.format("%s$", player.getBalance()));
+                        Log.d("My","player balance after : "+player.getBalance());
+                    });
 
+            }
         });
 
-        speedSeekBar=(SeekBar)findViewById(R.id.speedSeekBar);
+        speedSeekBar=findViewById(R.id.speedSeekBar);
         speedName=findViewById(R.id.speedName);
 
 
@@ -782,15 +801,15 @@ public class GameScene extends AppCompatActivity
                 if(progress==0){
                     speedName.setText(getString(R.string.normalSpeed));
                     speed=Params.TIME_SPEED_NORMAL;
-                };
+                }
                 if(progress==1){
                     speedName.setText(getString(R.string.fastSpeed));
                     speed=Params.TIME_SPEED_FAST;
-                };
+                }
                 if(progress==2){
                     speedName.setText(getString(R.string.ultraSpeed));
                     speed=Params.TIME_SPEED_ULTRA_FAST;
-                };
+                }
                 if(progress==3){
                     speedName.setText(getString(R.string.superSpeed));
                     speed=Params.TIME_SPEED_SUPER_FAST;
@@ -835,9 +854,6 @@ public class GameScene extends AppCompatActivity
                 .show();
     }
 
-
-
-
     public void deselectButtons(){
         work.setSelected(false);
         study.setSelected(false);
@@ -846,15 +862,13 @@ public class GameScene extends AppCompatActivity
         buy.setSelected(false);
     }
 
-
-
     public void doubleEarnThread(){
 
 
         final double rewardIncome=player.getWork_income() * Params.NUMBER_OF_MULTI_INOCME;
         player.setWork_income(rewardIncome);
         doubleEarn.setEnabled(false);
-        income.setText(player.getWork_income() + "$/"+getString(R.string.hour));
+        income.setText(String.format("%s$/%s", player.getWork_income(), getString(R.string.hour)));
 
         Thread minusTime =new Thread(() -> {
 
@@ -866,7 +880,7 @@ public class GameScene extends AppCompatActivity
                     Thread.sleep(speed);
                         runOnUiThread(() ->{
                         doubleEarnMinutes--;
-                        doubleEarn.setText( getString(R.string.minutes_left)+" " + doubleEarnMinutes + " m");
+                        doubleEarn.setText(String.format(Locale.ENGLISH,"%s %d m", getString(R.string.minutes_left), doubleEarnMinutes));
 
                     });
 
@@ -878,10 +892,9 @@ public class GameScene extends AppCompatActivity
 
                 Player player1 = myAppDataBase.myDao().getPlayer(slot);
                 player.setWork_income(player1.getWork_income());
-                income.setText(player.getWork_income() + "$");
+                income.setText(String.format("%s$", player.getWork_income()));
                 doubleEarn.setEnabled(true);
                 doubleEarn.setText(getString(R.string.doubleEarn));
-                loadRewardAd();
 
             });
 
@@ -895,22 +908,16 @@ public class GameScene extends AppCompatActivity
         Thread thread =new Thread(() ->{
 
                 remainingMinutes =0;
-                while (workthreadRun) {
+                while (workThreadRun) {
                     try {
-
                         Thread.sleep(speed);
-
                         runOnUiThread(() ->
                                 {
-
-                           if(workthreadRun) {
+                           if(workThreadRun) {
 
                                        enableAllButtons(false);
-
                                         fragmentManager = getSupportFragmentManager();
                                         fragmentManager.popBackStack();
-
-
 
                                 if(remainingMinutes % 60 == 0) {
 
@@ -920,13 +927,13 @@ public class GameScene extends AppCompatActivity
 
                                     balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> {
                                         mpIncome.start();
-                                        balance.setText(player.getBalance() + "$");
+                                        balance.setText(String.format("%s$", player.getBalance()));
                                         balance.animate().scaleX(1f).scaleY(1f).setDuration(150);
                                     });
 
                                     //reduce player energy
                                     energyBar.setProgress(energyBar.getProgress()-Params.ENERGY_LOSS);
-                                    energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
+                                    energypr.setText(String.format(Locale.ENGLISH,"%d/%d", energyBar.getProgress(), energyBar.getMax()));
 
                                     //increment player progress for a level
                                     player.getLevel_object().setProgressLevel(player.getLevel_object().getProgressLevel()+Params.XP_GAIN);
@@ -956,9 +963,9 @@ public class GameScene extends AppCompatActivity
 
 
                                         if(player.getLevel_object().getLevel()<10)
-                                            levelNumber.setText(getString(R.string.level) +": 0"+ player.getLevel_object().getLevel());
+                                            levelNumber.setText(String.format(Locale.ENGLISH,"%s: 0%d", getString(R.string.level), player.getLevel_object().getLevel()));
                                         else
-                                            levelNumber.setText(getString(R.string.level) +": "+ player.getLevel_object().getLevel());
+                                            levelNumber.setText(String.format(Locale.ENGLISH,"%s: %d", getString(R.string.level), player.getLevel_object().getLevel()));
 
 
                                         levelNumber.animate().scaleX(1f).scaleY(1f).setDuration(150);
@@ -972,8 +979,7 @@ public class GameScene extends AppCompatActivity
 
 
                             //update the time spent on working
-                            mainText.setText(getString(R.string.hv_work)+" "+getString(R.string.hour)+ " : "+(remainingMinutes / 60) +" ,"+getString(R.string.minute)
-                            +" : "+(remainingMinutes % 60) +" "+getString(R.string.hv_made)+": "+(player.getWork_income() * (remainingMinutes / 60))+"$");
+                            mainText.setText(String.format(Locale.ENGLISH,"%s %s : %d ,%s : %d %s: %s$", getString(R.string.hv_work), getString(R.string.hour), remainingMinutes / 60, getString(R.string.minute), remainingMinutes % 60, getString(R.string.hv_made), player.getWork_income() * (remainingMinutes / 60)));
                         });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -992,17 +998,17 @@ public class GameScene extends AppCompatActivity
         healthbar.setIndeterminate(false);
         healthbar.setMax(100);
 
-        healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+        healthpr.setText(String.format(Locale.ENGLISH,"%d/%d", healthbar.getProgress(), healthbar.getMax()));
 
         energyBar.setIndeterminate(false);
         energyBar.setMax(100);
 
-        energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
+        energypr.setText(String.format(Locale.ENGLISH,"%d/%d", energyBar.getProgress(), energyBar.getMax()));
 
         hungerBar.setIndeterminate(false);
         hungerBar.setMax(100);
 
-        hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+        hungerpr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
 
         levelBar.setMax(player.getLevel_object().getMaxProgress());
@@ -1010,13 +1016,12 @@ public class GameScene extends AppCompatActivity
         levelBar.setProgress(player.getLevel_object().getProgressLevel());
 
         if(player.getLevel_object().getLevel()<10)
-            levelNumber.setText(getString(R.string.level)+": 0"+player.getLevel_object().getLevel());
+            levelNumber.setText(String.format(Locale.ENGLISH,"%s: 0%d", getString(R.string.level), player.getLevel_object().getLevel()));
 
         else
-            levelNumber.setText(getString(R.string.level)+": "+player.getLevel_object().getLevel());
+            levelNumber.setText(String.format(Locale.ENGLISH,"%s: %d", getString(R.string.level), player.getLevel_object().getLevel()));
 
-    };
-
+    }
 
 
     private void hideSystemUI() {
@@ -1089,7 +1094,7 @@ public class GameScene extends AppCompatActivity
 
             if(newBalance >=0){
                 player.setBalance(newBalance );
-                balance.setText(newBalance+"$");
+                balance.setText(String.format("%s$", newBalance));
                 showCustomToast(getString(R.string.you_bought)+" "+gift.getName(),gift.getImgUrl(),"green");
 
 
@@ -1152,7 +1157,7 @@ public class GameScene extends AppCompatActivity
 
 
                         player.setBalance(newBalance);
-                        balance.setText(player.getBalance() + "$");
+                        balance.setText(String.format("%s$", player.getBalance()));
                         showCustomToast(getString(R.string.you_bought)+" " + car.getName(), car.getImgUrl(), "green");
                         Acquired_Cars acquired_cars = new Acquired_Cars();
                         acquired_cars.setCar_id(car.getId());
@@ -1185,9 +1190,7 @@ public class GameScene extends AppCompatActivity
                         showCustomToast(getString(R.string.not_enough_money)+" " + car.getName(), car.getImgUrl(), "red");
                 }
 
-                decline.setOnClickListener(view1 -> {
-                    dialog.dismiss();
-                });
+                decline.setOnClickListener(view1 -> dialog.dismiss());
             }
         });
 
@@ -1220,7 +1223,7 @@ public class GameScene extends AppCompatActivity
 
             income=findViewById(R.id.income);
 
-        income.setText(work.getIncome()+"$/"+getString(R.string.hour));
+        income.setText(String.format("%s$/%s", work.getIncome(), getString(R.string.hour)));
 
         choosenWork =work;
 
@@ -1248,9 +1251,11 @@ public class GameScene extends AppCompatActivity
         }
 
 
-        //replaced admob one
+       /* //replaced admob one
         if(mRewardVideoAdDoubleIncome.isLoaded())
             doubleEarn.setVisibility(View.VISIBLE);
+
+        */
         }
     }
 
@@ -1294,7 +1299,7 @@ public class GameScene extends AppCompatActivity
                     String message;
                     if(newBalance>=0) {
                         player.setBalance(newBalance);
-                        balance.setText(newBalance + "$");
+                        balance.setText(String.format("%s$", newBalance));
                         message=getString(R.string.you_purchased)+" "+fourniture.getName()+" "
                                 +getString(R.string._for)+" "+fourniture.getPrice()+"$ !";
                         color="green";
@@ -1373,14 +1378,14 @@ public class GameScene extends AppCompatActivity
         if(sleepTime >0) {
 
             energyBar.setProgress(hoursNumber * Params.ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
-            energypr.setText(energyBar.getProgress() + "/" + energyBar.getMax());
+            energypr.setText(String.format(Locale.ENGLISH,"%d/%d", energyBar.getProgress(), energyBar.getMax()));
 
             hungerBar.setProgress(hungerBar.getProgress() - hoursNumber * Params.HUNGER_LOSS_PER_HOUR_IN_SLEEP);
-            hungerpr.setText(hungerBar.getProgress() + "/" + hungerBar.getMax());
+            hungerpr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
             if (hungerBar.getProgress() == 0) {
                 healthbar.setProgress(healthbar.getProgress() - hoursNumber * Params.HEALTH_LOSS_PER_HOUR_IN_SLEEP);
-                healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
+                healthpr.setText(String.format(Locale.ENGLISH,"%d/%d", healthbar.getProgress(), healthbar.getMax()));
             }
 
             hour += sleepTime;
@@ -1393,7 +1398,7 @@ public class GameScene extends AppCompatActivity
                 if (player.getStore_income() != 0) {
 
                     player.setBalance(player.getBalance() + player.getStore_income());
-                    balance.setText(player.getBalance() + "$");
+                    balance.setText(String.format("%s$", player.getBalance()));
 
                     showCustomToast("+"+player.getStore_income()+getString(R.string.from_stores),"","green");
                 }
@@ -1429,9 +1434,9 @@ public class GameScene extends AppCompatActivity
         double newBalance =player.getBalance()-food.getPrice();
         if(newBalance>=0) {
             player.setBalance(newBalance);
-            balance.setText(player.getBalance() + "$");
+            balance.setText(String.format("%s$", player.getBalance()));
             hungerBar.setProgress(food.getBenefit()+hungerBar.getProgress());
-            hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+            hungerpr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
             if (food.getId() == 2){
                 if(account != null && GoogleSignIn.hasPermissions(account))
@@ -1448,12 +1453,12 @@ public class GameScene extends AppCompatActivity
     public void deliverMedicine(Medicine medicine) {
 
         healthbar.setProgress(healthbar.getProgress()+medicine.getBenefit());
-        healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+        healthpr.setText(String.format(Locale.ENGLISH,"%d/%d", healthbar.getProgress(), healthbar.getMax()));
 
         double newBalance=player.getBalance()-medicine.getPrice();
         if(newBalance>=0) {
             player.setBalance(newBalance);
-            balance.setText(player.getBalance() + "$");
+            balance.setText(String.format("%s$", player.getBalance()));
         }else
             showCustomToast(getString(R.string.insufficiant_funds)+" "+medicine.getName(),medicine.getImgUrl(),"red");
     }
@@ -1468,7 +1473,7 @@ public class GameScene extends AppCompatActivity
 
                 if (newBalance >= 0) {
                     player.setBalance(newBalance);
-                    balance.setText(player.getBalance() + "$");
+                    balance.setText(String.format("%s$", player.getBalance()));
 
                     Acquired_Houses acquired_houses = new Acquired_Houses();
                     acquired_houses.setHouse_id(house.getId());
@@ -1521,8 +1526,6 @@ public class GameScene extends AppCompatActivity
         Dialog dialog = new Dialog(GameScene.this);
 
         dialog.setContentView(R.layout.dialog);
-
-        TextView title = dialog.findViewById(R.id.dialogTitle);
         Button confirm=dialog.findViewById(R.id.confirm);
         Button decline =dialog.findViewById(R.id.decline);
 
@@ -1532,7 +1535,7 @@ public class GameScene extends AppCompatActivity
 
 
                 player.setBalance(newBalance);
-                balance.setText(player.getBalance()+"$");
+                balance.setText(String.format("%s$", player.getBalance()));
 
                 Acquired_Stores acquired_stores = new Acquired_Stores();
                 acquired_stores.setStore_id(store.getId());
@@ -1591,7 +1594,7 @@ public class GameScene extends AppCompatActivity
 
         if(newBalance>=0) {
             player.setBalance(newBalance);
-            balance.setText(player.getBalance() + "$");
+            balance.setText(String.format("%s$", player.getBalance()));
 
             Acquired_degree acquired_degree = new Acquired_degree();
             acquired_degree.setPlayer_id(player.getId());
@@ -1613,7 +1616,7 @@ public class GameScene extends AppCompatActivity
             if(newBalance >=0) {
                 acq.setPlayer_progress(acq.getPlayer_progress() + 5);
                 player.setBalance(newBalance);
-                balance.setText(player.getBalance() + "$");
+                balance.setText(String.format("%s$", player.getBalance()));
                 learning=true;
 
                 mainText.setVisibility(View.VISIBLE);
@@ -1674,7 +1677,7 @@ public class GameScene extends AppCompatActivity
 
         player.setBank_deposit(player.getBank_deposit()+deposit);
         player.setBalance(newBalance);
-        balance.setText(player.getBalance()+"$");
+        balance.setText(String.format("%s$", player.getBalance()));
         saveProgress();
         fragmentInsertionSecond(bankFragment);
     }
@@ -1686,7 +1689,7 @@ public class GameScene extends AppCompatActivity
 
         player.setBalance(player.getBalance()+withdraw);
 
-        balance.setText(player.getBalance()+"$");
+        balance.setText(String.format("%s$", player.getBalance()));
         saveProgress();
         fragmentInsertionSecond(bankFragment);
     }
@@ -1740,58 +1743,13 @@ public class GameScene extends AppCompatActivity
     }
 
 
-    private void loadRewardAd(){
-            mRewardVideoAdDoubleIncome.loadAd(AD_VIDEO_ID, new AdRequest.Builder().build());
-
-    }
-
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-
-        if(!player.getWork().equals(getString(R.string.none)))
-            doubleEarn.setVisibility(View.VISIBLE);
-
-        instantDollarButton.setVisibility(View.VISIBLE);
-    }
-    @Override
-    public void onRewardedVideoAdOpened() { }
-    @Override
-    public void onRewardedVideoStarted() { }
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardAd();
-        instantDollarButton.setVisibility(View.INVISIBLE);
-    }
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        if(doubleEarnClicked) {
-            doubleEarnThread();
-            showCustomToast(getString(R.string.now_earn_double)+" "+ player.getWork_income()+" x2","","green");
-        }
-        else{
-            player.setBalance(player.getBalance()+100);
-            balance.setText(player.getBalance()+"$");
-            showCustomToast("100$","","green");
-        }
-    }
-    @Override
-    public void onRewardedVideoAdLeftApplication() { }
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        loadRewardAd();
-    }
-    @Override
-    public void onRewardedVideoCompleted() { }
-
-
     public void loadProgress(){
         database.Player loaded_player = myAppDataBase.myDao().getPlayer(slot);
         jobName.setText(loaded_player.getWork());
         caracterImg.setImageURI(Uri.parse(loaded_player.getWork_image_path()));
-        balance.setText(loaded_player.getBalance()+"$");
+        balance.setText(String.format("%s$", loaded_player.getBalance()));
         //income.setText((int)loaded_player.getWork_income());
-        levelNumber.setText("lvl"+loaded_player.getLevel());
+        levelNumber.setText(String.format(Locale.ENGLISH,"lvl%d", loaded_player.getLevel()));
         hour=loaded_player.getHour();
         minute=loaded_player.getMinute();
         day=loaded_player.getDay();
@@ -1827,9 +1785,9 @@ public class GameScene extends AppCompatActivity
         player.setLevel_progress(player.getLevel_object().getProgressLevel());
         player.setMax_progress(player.getLevel_object().getMaxProgress());
 
-        double workincome = myAppDataBase.myDao().work_incorme(player.getWork());
+        double workIncome = myAppDataBase.myDao().work_incorme(player.getWork());
 
-        player.setWork_income(workincome);
+        player.setWork_income(workIncome);
 
         myAppDataBase.myDao().updatePlayer(player);
     }

@@ -23,9 +23,6 @@ import android.widget.Toast;
 import com.android.houbenz.lifesimulator.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
@@ -35,6 +32,7 @@ import com.houbenz.lifesimulator.MainMenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -50,9 +48,10 @@ import viewmodels.ViewModelPartner;
 import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
 
 
-public class RelationFragment extends Fragment implements RewardedVideoAdListener {
+public class RelationFragment extends Fragment //implements RewardedVideoAdListener
+{
 
-    private RewardedVideoAd mRewardVideoAd;
+   // private RewardedVideoAd mRewardVideoAd;
 
     public RelationFragment() {
 
@@ -106,7 +105,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         mariage=fragment.findViewById(R.id.mariage);
         mariagePhotos=fragment.findViewById(R.id.mariagephotos);
 
-
+/*
         try {
             MobileAds.initialize(getContext(), APP_ADS_ID);
 
@@ -119,11 +118,11 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
         mRewardVideoAd.setRewardedVideoAdListener(this);
 
         loadRewardAd();
+*/
 
 
 
-
-        viewmodel = ViewModelProviders.of(getActivity()).get(ViewModelPartner.class);
+        viewmodel = new ViewModelProvider(requireActivity()).get(ViewModelPartner.class);
 
         slot = getArguments().getInt("slot");
 
@@ -479,6 +478,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                 });
 
+                /*
                 watchad.setOnClickListener(v2 ->{
                     if(mRewardVideoAd.isLoaded()){
                         dateAd=true;
@@ -487,7 +487,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
                     dialog.dismiss();
                 });
-
+*/
                 decline.setOnClickListener(v1 -> {
                     dialog.cancel();
                 });
@@ -506,7 +506,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
                 }
             }
         });
-
+/*
         adButtonFindPartner.setOnClickListener(v -> {
 
             if(mRewardVideoAd.isLoaded()){
@@ -515,7 +515,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
             }
 
         });
-
+*/
 
 
         mariage.setOnClickListener(view -> {
@@ -697,7 +697,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
 
         }
 
-
+/*
     private void loadRewardAd(){
             mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
     }
@@ -755,7 +755,7 @@ public class RelationFragment extends Fragment implements RewardedVideoAdListene
     @Override
     public void onRewardedVideoCompleted() { }
 
-
+*/
     @Override
     public void onDetach() {
         countDownTimer.cancel();
