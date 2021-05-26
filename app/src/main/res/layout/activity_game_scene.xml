@@ -19,9 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="com.android.houbenz.lifesimulator.com.example.android.lifesimulator.GameScene">
@@ -33,11 +31,11 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toStartOf="@+id/instantDollarButton"
+                app:layout_constraintHorizontal_bias="0.92"
                 app:layout_constraintStart_toEndOf="@+id/linearLayout2"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.48000002">
@@ -145,6 +143,37 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="33dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@+id/stats"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/healthIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="5dp"
+                    app:srcCompat="@drawable/health" />
+
+                <ImageView
+                    android:id="@+id/hungerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="5dp"
+                    app:srcCompat="@drawable/hunger_img" />
+
+                <ImageView
+                    android:id="@+id/energyIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/energy_img" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/buttonsLine"
@@ -340,7 +369,7 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/stats"
                 android:layout_width="110dp"
                 android:layout_height="160dp"
@@ -354,10 +383,9 @@
                     android:layout_height="50dp"
                     android:layout_above="@+id/playerInfo"
                     android:layout_alignParentStart="true"
-                    android:layout_marginBottom="4dp"
-                    app:srcCompat="@drawable/ic_empty"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="33dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_empty" />
 
                 <LinearLayout
                     android:id="@+id/playerInfo"
@@ -366,7 +394,9 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/borderblacksmall"
                     android:orientation="vertical"
-                    android:padding="2dp">
+                    android:padding="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:id="@+id/playerN"
@@ -431,17 +461,20 @@
                 <FrameLayout
                     android:id="@+id/levelProgressBarHolder"
                     android:layout_width="15dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_alignTop="@+id/playerInfo"
                     android:layout_alignBottom="@+id/playerInfo"
                     android:layout_toEndOf="@+id/playerInfo"
                     android:background="@drawable/borderblacksmall"
-                    android:padding="1dp">
+                    android:padding="1dp"
+                    app:layout_constraintBottom_toTopOf="@+id/progressLevel"
+                    app:layout_constraintStart_toEndOf="@+id/playerInfo"
+                    app:layout_constraintTop_toTopOf="@+id/playerInfo">
 
                     <ProgressBar
                         android:id="@+id/levelProgressBar"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
+                        android:layout_width="15dp"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/progressLevel"
                         android:layout_alignStart="@+id/progressLevel"
@@ -452,28 +485,35 @@
 
                 <TextView
                     android:id="@+id/progressLevel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/playerInfo"
                     android:layout_toEndOf="@+id/playerInfo"
+                    android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="10sp"
-                    android:typeface="monospace" />
+                    android:typeface="monospace"
+                    app:layout_constraintBottom_toBottomOf="@+id/playerInfo"
+                    app:layout_constraintEnd_toEndOf="@+id/levelProgressBarHolder"
+                    app:layout_constraintStart_toEndOf="@+id/playerInfo" />
 
                 <TextView
                     android:id="@+id/jobName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/progressLevel"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginBottom="4dp"
                     android:layout_toEndOf="@+id/caracterImg"
                     android:fontFamily="casual"
                     android:text="worker"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="11dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/caracterImg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.12"
+                    app:layout_constraintStart_toEndOf="@+id/caracterImg"
+                    app:layout_constraintTop_toTopOf="@+id/caracterImg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/speedLayout"
@@ -522,36 +562,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="33dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical"
-                app:layout_constraintStart_toEndOf="@+id/stats"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/healthIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginBottom="5dp"
-                    app:srcCompat="@drawable/health" />
-
-                <ImageView
-                    android:id="@+id/hungerIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginBottom="5dp"
-                    app:srcCompat="@drawable/hunger_img" />
-
-                <ImageView
-                    android:id="@+id/energyIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/energy_img" />
-            </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -564,8 +574,8 @@
                 android:id="@+id/instantDollarButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/colorAccent"
                 android:fontFamily="casual"
                 android:text="@string/instant_100"

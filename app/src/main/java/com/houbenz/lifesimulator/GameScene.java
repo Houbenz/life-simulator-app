@@ -177,10 +177,10 @@ public class GameScene extends AppCompatActivity
     public final static  String APP_ADS_ID = "ca-app-pub-5859725902066144~3681738021";
 
      //this is the original video double income ad id
-     //private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
+     private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
 
     //this is for test video double ad income ad
-    final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
+    //final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
 
 
     private RewardedAd rewardAd;

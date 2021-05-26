@@ -66,7 +66,6 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
     private SharedPreferences sharedPreferences;
     private RelationBar relationBar;
     private Button offerGift;
-    private Button breakUp;
     private Button goDate;
     private Button mariage;
 
@@ -78,9 +77,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
     private int dis = 2;
     private View foundPartnerConstraint;
     private Player player1;
-    private int slot;
-    private int minusRelation;
-    private ViewModelPartner viewmodel;
+    private ViewModelPartner viewModel;
     private CountDownTimer countDownTimer;
 
     private ImageView partnerImage;
@@ -96,10 +93,10 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
 
     //this is the original FINDPARTNER AD VIDEO ID
-    // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
+     public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
 
     //this is the test for FINDPARTNER AD VIDEO ID
-    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
+    //public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
 
 
 
@@ -167,7 +164,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
         foundPartnerConstraint = fragment.findViewById(R.id.foundPartnerConstraint);
         relationBar =fragment.findViewById(R.id.relationProgress);
         offerGift = fragment.findViewById(R.id.offerGift);
-        breakUp = fragment.findViewById(R.id.breakUp);
+        Button breakUp = fragment.findViewById(R.id.breakUp);
         goDate = fragment.findViewById(R.id.goDate);
         progressText = fragment.findViewById(R.id.progressText);
         visitText=fragment.findViewById(R.id.visittext);
@@ -183,9 +180,9 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
 
 
-        viewmodel = new ViewModelProvider(requireActivity()).get(ViewModelPartner.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(ViewModelPartner.class);
 
-        slot = getArguments() != null ? getArguments().getInt("slot") : 0;
+        int slot = getArguments() != null ? getArguments().getInt("slot") : 0;
 
         player1 = MainMenu.myAppDataBase.myDao().getPlayer(slot);
 
@@ -340,7 +337,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         relationBar.setProgress(relationBar.getProgress() + Params.ROSES_BONUS );
                         progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
 
-                         viewmodel.setRelationBar(relationBar.getProgress());
+                         viewModel.setRelationBar(relationBar.getProgress());
 
                          player1.setRelationBar(relationBar.getProgress());
                         MainMenu.myAppDataBase.myDao().updatePlayer(player1);
@@ -380,7 +377,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         player1.setRelationBar(relationBar.getProgress());
 
 
-                            viewmodel.setRelationBar(relationBar.getProgress());
+                            viewModel.setRelationBar(relationBar.getProgress());
 
                             MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
@@ -421,7 +418,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                         player1.setRelationBar(relationBar.getProgress());
 
-                        viewmodel.setRelationBar(relationBar.getProgress());
+                        viewModel.setRelationBar(relationBar.getProgress());
 
                         MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
@@ -465,7 +462,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                             relationBar.setProgress(0);
                             progressText.setText(String.format(Locale.ENGLISH,"%d/100", relationBar.getProgress()));
 
-                            viewmodel.setRelationBar(relationBar.getProgress());
+                            viewModel.setRelationBar(relationBar.getProgress());
 
                             MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
@@ -479,7 +476,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                             lookPartner.setTextColor(getResources().getColor(R.color.white));
                             dis = 2;
 
-                            viewmodel.setBreakUp(true);
+                            viewModel.setBreakUp(true);
 
                             //loadRewardAd();
 
@@ -522,7 +519,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                 dialogTitle.setText(String.format(Locale.ENGLISH,"%s %d$, %s", getString(R.string.this_date_costs), randCost, getString(R.string.continue_n)));
 
                 cofirm.setOnClickListener(v -> {
-                    viewmodel.setGoDate(randCost);
+                    viewModel.setGoDate(randCost);
                     dialog.dismiss();
 
                     dateNumber++;
@@ -533,7 +530,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                     player1.setRelationBar(relationBar.getProgress());
 
 
-                    viewmodel.setRelationBar(relationBar.getProgress());
+                    viewModel.setRelationBar(relationBar.getProgress());
 
                     MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
@@ -558,7 +555,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                             }
                             else{
                                 //don't mind the 22 its just for the code to work properly
-                                viewmodel.setGoDate(2000);
+                                viewModel.setGoDate(2000);
 
                                 dateNumber++;
 
@@ -566,7 +563,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
                                 progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                                 player1.setRelationBar(relationBar.getProgress());
-                                viewmodel.setRelationBar(relationBar.getProgress());
+                                viewModel.setRelationBar(relationBar.getProgress());
 
                                 MainMenu.myAppDataBase.myDao().updatePlayer(player1);
                             }
@@ -608,7 +605,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                     }
                     else{
                         //don't mind the 22 its just for the code to work properly
-                        viewmodel.setGoDate(2000);
+                        viewModel.setGoDate(2000);
 
                         dateNumber++;
 
@@ -616,7 +613,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
                         progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                         player1.setRelationBar(relationBar.getProgress());
-                        viewmodel.setRelationBar(relationBar.getProgress());
+                        viewModel.setRelationBar(relationBar.getProgress());
 
                         MainMenu.myAppDataBase.myDao().updatePlayer(player1);
                     }
@@ -666,7 +663,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                                 marriedDialog();
                             });
 
-                            viewmodel.setMarried(true);
+                            viewModel.setMarried(true);
                             mariagePhotos.setVisibility(View.VISIBLE);
                             mariage.setVisibility(View.GONE);
                             offerGift.setVisibility(View.VISIBLE);
@@ -765,7 +762,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                 partnerName.setText(partner.getName());
                 this.partnerImage.setImageURI(Uri.parse(partner.getImage()));
 
-                viewmodel.setFoundPartner(true);
+                viewModel.setFoundPartner(true);
 
 
                 String firstTime =sharedPreferences.getString("firstTimeDate","none");
