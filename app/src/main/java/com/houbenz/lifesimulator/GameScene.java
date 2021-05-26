@@ -115,13 +115,11 @@ public class GameScene extends AppCompatActivity
     private TextView levelNumber;
 
     private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
 
     private SharedPreferences sharedPreferences;
 
     private TextView time ;
     private TextView dayView ;
-    private TextView playerN;
     private ImageView caracterImg ;
     private TextView jobName;
 
@@ -137,9 +135,6 @@ public class GameScene extends AppCompatActivity
     private  int minute ;
     private  int hour ;
     private  int day;
-    private  int totalTime;
-
-    private int sleepTime;
 
     private int speed = Params.TIME_SPEED_NORMAL;
 
@@ -151,10 +146,7 @@ public class GameScene extends AppCompatActivity
     private BankFragment bankFragment;
     private BuyFragment  buyFragment;
 
-    private HomeFragment homeFragment;
-
     private  Player player;
-    private Work choosenWork;
 
     private ViewSwitcher switcher ;
 
@@ -165,8 +157,6 @@ public class GameScene extends AppCompatActivity
 
 
     // private RewardedVideoAd mRewardVideoAdDoubleIncome;
-
-    private ConstraintLayout constraintLayout;
 
     private ViewModelCars viewModelCars;
     private ViewModelGift viewModelGift;
@@ -189,17 +179,8 @@ public class GameScene extends AppCompatActivity
      //this is the original video double income ad id
      //private final static String AD_VIDEO_ID = "ca-app-pub-5859725902066144/4392184462";
 
-
-    //this is the original FINDPARTNER AD VIDEO ID
-   // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
-
-
     //this is for test video double ad income ad
     final static String AD_VIDEO_ID = "ca-app-pub-3940256099942544/5224354917";
-
-    //this is the test for FINDPARTNER AD VIDEO ID
-    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
-
 
 
     private RewardedAd rewardAd;
@@ -208,11 +189,7 @@ public class GameScene extends AppCompatActivity
 
 
 
-    private final View.OnClickListener mOnTouchListener = (v) -> {
-
-            hideSystemUI();
-
-    };
+    private final View.OnClickListener mOnTouchListener = (v) -> hideSystemUI();
 
     private int duo =0;
 
@@ -264,8 +241,6 @@ public class GameScene extends AppCompatActivity
                         String hourS = "" + hour;
                         String minuteS = "" + minute;
                         String dayS = "" + day;
-
-                        totalTime = (day * 24 * 60) + (hour * 60) + minute;
 
                         if (hour < 10)
                             hourS = "0" + hour;
@@ -569,7 +544,7 @@ public void loadAd(AdRequest adRequest){
         caracterImg =findViewById(R.id.caracterImg);
         doubleEarn=findViewById(R.id.doubleEarn);
 
-        playerN =findViewById(R.id.playerN);
+        TextView playerN = findViewById(R.id.playerN);
         income=findViewById(R.id.income);
         balance=findViewById(R.id.balance);
         instantDollarButton=findViewById(R.id.instantDollarButton);
@@ -600,7 +575,7 @@ public void loadAd(AdRequest adRequest){
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
          runClockThread();
-         constraintLayout=findViewById(R.id.mainLayout);
+        ConstraintLayout constraintLayout = findViewById(R.id.mainLayout);
          constraintLayout.setOnClickListener(mOnTouchListener);
 
         slot =getIntent().getIntExtra("slotNumber",1);
@@ -1225,10 +1200,8 @@ public void loadAd(AdRequest adRequest){
 
         income.setText(String.format("%s$/%s", work.getIncome(), getString(R.string.hour)));
 
-        choosenWork =work;
-
-        player.setWork(choosenWork.getName());
-        player.setWork_time(choosenWork.getWork_time());
+            player.setWork(work.getName());
+        player.setWork_time(work.getWork_time());
         player.setWork_image_path(work.getImgPath());
         player.setWork_income(work.getIncome());
 
@@ -1373,9 +1346,7 @@ public void loadAd(AdRequest adRequest){
     @Override
     public void deliverSleep(int hoursNumber) {
 
-        sleepTime=hoursNumber;
-
-        if(sleepTime >0) {
+        if(hoursNumber >0) {
 
             energyBar.setProgress(hoursNumber * Params.ENERGY_GAIN_PER_HOUR + energyBar.getProgress());
             energypr.setText(String.format(Locale.ENGLISH,"%d/%d", energyBar.getProgress(), energyBar.getMax()));
@@ -1388,7 +1359,7 @@ public void loadAd(AdRequest adRequest){
                 healthpr.setText(String.format(Locale.ENGLISH,"%d/%d", healthbar.getProgress(), healthbar.getMax()));
             }
 
-            hour += sleepTime;
+            hour += hoursNumber;
 
             if (hour >= 24) {
                 hour -= 24;
@@ -1699,7 +1670,7 @@ public void loadAd(AdRequest adRequest){
         mainText.setVisibility(View.GONE);
         fragmentManager=getSupportFragmentManager();
         fragmentManager.popBackStack();
-        fragmentTransaction=fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in,R.animator.fade_out);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
 
 
 
@@ -1723,7 +1694,7 @@ public void loadAd(AdRequest adRequest){
 
     public void insertHomeFragment(){
 
-        homeFragment =new HomeFragment();
+        HomeFragment homeFragment = new HomeFragment();
         fragmentInsertionSecond(homeFragment);
     }
 
@@ -1753,8 +1724,6 @@ public void loadAd(AdRequest adRequest){
         hour=loaded_player.getHour();
         minute=loaded_player.getMinute();
         day=loaded_player.getDay();
-
-        totalTime= day * 24 + hour * 60 + minute;
 
         player=loaded_player;
 
@@ -1796,7 +1765,7 @@ public void loadAd(AdRequest adRequest){
 
         OneTimeWorkRequest oneTimeWorkRequest =new OneTimeWorkRequest.Builder(SaveToCloudWork.class)
                 .build();
-        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
+        WorkManager.getInstance(getApplicationContext()).enqueue(oneTimeWorkRequest);
         submitScore((long)player.getBalance());
     }
 

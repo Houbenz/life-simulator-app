@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import Workers.SaveToCloudWork;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +24,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.houbenz.lifesimulator.R;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
-import com.houbenz.lifesimulator.GameScene;
 import com.houbenz.lifesimulator.MainMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import conf.Params;
@@ -45,13 +51,14 @@ import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import viewmodels.ViewModelPartner;
 
-import static com.houbenz.lifesimulator.GameScene.APP_ADS_ID;
 
 
 public class RelationFragment extends Fragment //implements RewardedVideoAdListener
 {
 
    // private RewardedVideoAd mRewardVideoAd;
+
+    private RewardedAd rewardAd;
 
     public RelationFragment() {
 
@@ -86,6 +93,71 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
     private boolean cancelTimer =false;
 
+
+
+    //this is the original FINDPARTNER AD VIDEO ID
+    // public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-5859725902066144/8271930745";
+
+    //this is the test for FINDPARTNER AD VIDEO ID
+    public final static String AD_VIDEO_PARTNER_ID = "ca-app-pub-3940256099942544/5224354917";
+
+
+
+    public void addFullScreenContentCallback(AdRequest adRequest){
+        rewardAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                Log.d("MyAd","ad was shown relationship");
+                rewardAd=null;
+                loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+                Log.d("MyAd","ad failed to show relationship");
+
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+                Log.d("MyAd","ad dismissed relationship");
+                loadAd(adRequest);
+            }
+
+        });
+
+    }
+
+    public void loadAd(AdRequest adRequest){
+       RewardedAd.load(requireActivity(), AD_VIDEO_PARTNER_ID, adRequest, new RewardedAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull RewardedAd lRewardedAd) {
+                super.onAdLoaded(lRewardedAd);
+                rewardAd = lRewardedAd;
+                addFullScreenContentCallback(adRequest);
+
+                if(player1.getDating().equals("false")) {
+                    adButtonFindPartner.setVisibility(View.VISIBLE);
+                }
+
+                Log.d("MyAd", "Ad loaded relationship");
+
+
+            }
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.d("MyAd", loadAdError.getMessage());
+                rewardAd=null;
+            }
+        });
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,26 +177,15 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
         mariage=fragment.findViewById(R.id.mariage);
         mariagePhotos=fragment.findViewById(R.id.mariagephotos);
 
-/*
-        try {
-            MobileAds.initialize(getContext(), APP_ADS_ID);
 
-        }catch (Exception e){
-            Toast.makeText(getContext(),"not loading :/",Toast.LENGTH_LONG).show();
-        }
-
-
-        mRewardVideoAd =MobileAds.getRewardedVideoAdInstance(getActivity());
-        mRewardVideoAd.setRewardedVideoAdListener(this);
-
-        loadRewardAd();
-*/
+        AdRequest adRequest = new AdRequest.Builder().build();
+        loadAd(adRequest);
 
 
 
         viewmodel = new ViewModelProvider(requireActivity()).get(ViewModelPartner.class);
 
-        slot = getArguments().getInt("slot");
+        slot = getArguments() != null ? getArguments().getInt("slot") : 0;
 
         player1 = MainMenu.myAppDataBase.myDao().getPlayer(slot);
 
@@ -132,14 +193,14 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
         //initiate relation progress bar
         if(player1.getRelationBar() < 100){
             relationBar.setProgress(player1.getRelationBar());
-            progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+            progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
             if(player1.getMarried().equals("true")) {
 
                 mariagePhotos.setVisibility(View.VISIBLE);
             }
         }
         else {
-            progressText.setText("100/100");
+            progressText.setText(R.string.hundred);
             relationBar.setProgress(99);
 
             if(player1.getMarried().equals("false")) {
@@ -245,19 +306,19 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
             Gift chocolate = MainMenu.myAppDataBase.myDao().getChocolate();
 
             if (roses.getGiftCount() < 10)
-                rosesNumber.setText("0" + roses.getGiftCount());
+                rosesNumber.setText(String.format(Locale.ENGLISH,"0%d", roses.getGiftCount()));
             else
-                rosesNumber.setText(roses.getGiftCount() + "");
+                rosesNumber.setText(String.format(Locale.ENGLISH,"%d", roses.getGiftCount()));
 
             if (jewelry.getGiftCount() < 10)
-                jeweleryNumber.setText("0" + jewelry.getGiftCount());
+                jeweleryNumber.setText(String.format(Locale.ENGLISH,"0%d", jewelry.getGiftCount()));
             else
-                jeweleryNumber.setText(jewelry.getGiftCount() + "");
+                jeweleryNumber.setText(String.format(Locale.ENGLISH,"%d", jewelry.getGiftCount()));
 
             if (chocolate.getGiftCount() < 10)
-                chocolateNumber.setText("0" + chocolate.getGiftCount());
+                chocolateNumber.setText(String.format(Locale.ENGLISH,"0%d", chocolate.getGiftCount()));
             else
-                chocolateNumber.setText(chocolate.getGiftCount() + "");
+                chocolateNumber.setText(String.format(Locale.ENGLISH,"%d", chocolate.getGiftCount()));
 
             //GiftRose Button
             giftRoses.setOnClickListener(view1 -> {
@@ -271,13 +332,13 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         MainMenu.myAppDataBase.myDao().updateGift(roses);
 
                         if (roses.getGiftCount() < 10)
-                            rosesNumber.setText("0" + roses.getGiftCount());
+                            rosesNumber.setText(String.format(Locale.ENGLISH,"0%d", roses.getGiftCount()));
                         else
-                            rosesNumber.setText(roses.getGiftCount() + "");
+                            rosesNumber.setText(String.format(Locale.ENGLISH,"%d", roses.getGiftCount()));
 
 
                         relationBar.setProgress(relationBar.getProgress() + Params.ROSES_BONUS );
-                        progressText.setText(relationBar.getProgress()+"/"+relationBar.getMax());
+                        progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
 
                          viewmodel.setRelationBar(relationBar.getProgress());
 
@@ -287,7 +348,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         rosesNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.ROSES_BONUS+" "+getString(R.string.to_relation));
+                        relationPlusText.setText(String.format(Locale.ENGLISH,"+ %d %s", Params.ROSES_BONUS, getString(R.string.to_relation)));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
                             relationPlusText.setText("");
                             relationPlusText.setVisibility(View.INVISIBLE);
@@ -310,12 +371,12 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         MainMenu.myAppDataBase.myDao().updateGift(chocolate);
 
                         if (chocolate.getGiftCount() < 10)
-                            chocolateNumber.setText("0" + chocolate.getGiftCount());
+                            chocolateNumber.setText(String.format(Locale.ENGLISH,"0%d", chocolate.getGiftCount()));
                         else
-                            chocolateNumber.setText(chocolate.getGiftCount() + "");
+                            chocolateNumber.setText(String.format(Locale.ENGLISH,"%d", chocolate.getGiftCount()));
 
                         relationBar.setProgress(relationBar.getProgress() + Params.CHOCOLATE_BONUS );
-                        progressText.setText(relationBar.getProgress()+"/"+relationBar.getMax());
+                        progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                         player1.setRelationBar(relationBar.getProgress());
 
 
@@ -327,7 +388,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         chocolateNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.CHOCOLATE_BONUS+" "+getString(R.string.to_relation));
+                        relationPlusText.setText(String.format(Locale.ENGLISH,"+ %d %s", Params.CHOCOLATE_BONUS, getString(R.string.to_relation)));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -351,13 +412,13 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         MainMenu.myAppDataBase.myDao().updateGift(jewelry);
 
                         if (jewelry.getGiftCount() < 10)
-                            jeweleryNumber.setText("0" + jewelry.getGiftCount());
+                            jeweleryNumber.setText(String.format(Locale.ENGLISH,"0%d", jewelry.getGiftCount()));
                         else
-                            jeweleryNumber.setText(jewelry.getGiftCount() + "");
+                            jeweleryNumber.setText(String.format(Locale.ENGLISH,"%d", jewelry.getGiftCount()));
 
                         relationBar.setProgress(relationBar.getProgress() + Params.JEWELRY_BONUS );
 
-                        progressText.setText(relationBar.getProgress()+"/"+relationBar.getMax());
+                        progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                         player1.setRelationBar(relationBar.getProgress());
 
                         viewmodel.setRelationBar(relationBar.getProgress());
@@ -368,7 +429,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                         jeweleryNumber.setAlpha(1f);
 
                         relationPlusText.setVisibility(View.VISIBLE);
-                        relationPlusText.setText("+ "+Params.JEWELRY_BONUS+" "+getString(R.string.to_relation));
+                        relationPlusText.setText(String.format(Locale.ENGLISH,"+ %d %s", Params.JEWELRY_BONUS, getString(R.string.to_relation)));
                         relationPlusText.animate().translationY(-100).alpha(0f).setDuration(1000).withEndAction(()->{
 
                             relationPlusText.setText("");
@@ -402,7 +463,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                             mariagePhotos.setVisibility(View.GONE);
                             player1.setRelationBar(0);
                             relationBar.setProgress(0);
-                            progressText.setText(relationBar.getProgress() + "/100");
+                            progressText.setText(String.format(Locale.ENGLISH,"%d/100", relationBar.getProgress()));
 
                             viewmodel.setRelationBar(relationBar.getProgress());
 
@@ -422,9 +483,9 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
                             //loadRewardAd();
 
-                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(getActivity());
+                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(requireActivity());
                             if(account != null && GoogleSignIn.hasPermissions(account))
-                                Games.getAchievementsClient(getActivity(),account).unlock(getString(R.string.achievement_break_up));
+                                Games.getAchievementsClient(requireActivity(),account).unlock(getString(R.string.achievement_break_up));
 
                         })).setNegativeButton(getString(R.string.no), ((dialog, which) -> {
                     dialog.cancel();
@@ -458,7 +519,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
 
 
-                dialogTitle.setText(getString(R.string.this_date_costs)+" " + randCost + "$, "+getString(R.string.continue_n));
+                dialogTitle.setText(String.format(Locale.ENGLISH,"%s %d$, %s", getString(R.string.this_date_costs), randCost, getString(R.string.continue_n)));
 
                 cofirm.setOnClickListener(v -> {
                     viewmodel.setGoDate(randCost);
@@ -468,7 +529,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
                     relationBar.setProgress(relationBar.getProgress() + 10);
 
-                    progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
+                    progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
                     player1.setRelationBar(relationBar.getProgress());
 
 
@@ -478,23 +539,46 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
                 });
 
-                /*
+
                 watchad.setOnClickListener(v2 ->{
-                    if(mRewardVideoAd.isLoaded()){
+                    if(rewardAd != null){
                         dateAd=true;
-                        mRewardVideoAd.show();
+
+                        countDownTimer.cancel();
+
+                        rewardAd.show(requireActivity(),rewardItem -> {
+
+                            if(!dateAd) {
+                                List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
+
+                                int min1 = 0;
+                                int max1 = 3;
+                                int random1 = (int) (Math.random() * max1) - min1;
+                                foundPartner(partners.get(random1));
+                            }
+                            else{
+                                //don't mind the 22 its just for the code to work properly
+                                viewmodel.setGoDate(2000);
+
+                                dateNumber++;
+
+                                relationBar.setProgress(relationBar.getProgress() + 10);
+
+                                progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
+                                player1.setRelationBar(relationBar.getProgress());
+                                viewmodel.setRelationBar(relationBar.getProgress());
+
+                                MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+                            }
+                        });
                     }
 
                     dialog.dismiss();
                 });
-*/
-                decline.setOnClickListener(v1 -> {
-                    dialog.cancel();
-                });
 
-                dialog.setOnDismissListener(dialog1 -> {
-                    dialog.cancel();
-                });
+                decline.setOnClickListener(v1 -> dialog.cancel());
+
+                dialog.setOnDismissListener(dialog1 ->  dialog.cancel());
                 dialog.show();
 
                 if(player1.getBalance() < randCost){
@@ -506,16 +590,42 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                 }
             }
         });
-/*
+
         adButtonFindPartner.setOnClickListener(v -> {
 
-            if(mRewardVideoAd.isLoaded()){
-                mRewardVideoAd.show();
+            if(rewardAd != null){
+                countDownTimer.cancel();
                 dateAd=false;
+                rewardAd.show(requireActivity(),rewardItem -> {
+
+                    if(!dateAd) {
+                        List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
+
+                        int min1 = 0;
+                        int max1 = 3;
+                        int random1 = (int) (Math.random() * max1) - min1;
+                        foundPartner(partners.get(random1));
+                    }
+                    else{
+                        //don't mind the 22 its just for the code to work properly
+                        viewmodel.setGoDate(2000);
+
+                        dateNumber++;
+
+                        relationBar.setProgress(relationBar.getProgress() + 10);
+
+                        progressText.setText(String.format(Locale.ENGLISH,"%d/%d", relationBar.getProgress(), relationBar.getMax()));
+                        player1.setRelationBar(relationBar.getProgress());
+                        viewmodel.setRelationBar(relationBar.getProgress());
+
+                        MainMenu.myAppDataBase.myDao().updatePlayer(player1);
+                    }
+
+                });
             }
 
         });
-*/
+
 
 
         mariage.setOnClickListener(view -> {
@@ -527,7 +637,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
 
                     Gift jewelry = MainMenu.myAppDataBase.myDao().getJewelry();
-                    numberRing.setText(""+jewelry.getGiftCount());
+                    numberRing.setText(String.format(Locale.ENGLISH,"%d", jewelry.getGiftCount()));
 
                     offerRingButton.setOnClickListener(view1 -> {
 
@@ -540,9 +650,9 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                                 MainMenu.myAppDataBase.myDao().updateGift(jewelry);
 
                                 if (jewelry.getGiftCount() < 10)
-                                    numberRing.setText("0" + jewelry.getGiftCount());
+                                    numberRing.setText(String.format(Locale.ENGLISH,"0%d", jewelry.getGiftCount()));
                                 else
-                                    numberRing.setText(jewelry.getGiftCount() + "");
+                                    numberRing.setText(String.format(Locale.ENGLISH,"%d", jewelry.getGiftCount()));
 
                                 MainMenu.myAppDataBase.myDao().updatePlayer(player1);
 
@@ -564,9 +674,9 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
 
 
-                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(getActivity());
+                            GoogleSignInAccount account=GoogleSignIn.getLastSignedInAccount(requireActivity());
                             if(account != null && GoogleSignIn.hasPermissions(account))
-                                Games.getAchievementsClient(getActivity(),account).unlock(getString(R.string.achievement_married));
+                                Games.getAchievementsClient(requireActivity(),account).unlock(getString(R.string.achievement_married));
                         }
                     });
                     dialog.show();
@@ -583,7 +693,8 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
             }
             });
-        sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
+        if(getContext() != null)
+            sharedPreferences=getContext().getSharedPreferences("myshared",Context.MODE_PRIVATE);
 
         String firstTime=sharedPreferences.getString("firstTimePartner","none");
 
@@ -613,7 +724,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.congrat_married);
         TextView text = dialog.findViewById(R.id.cong_text);
-        text.setText( getString(R.string.married_to)+" "+partnerName.getText().toString()+" !.");
+        text.setText(String.format(Locale.ENGLISH,"%s %s !.", getString(R.string.married_to), partnerName.getText().toString()));
         dialog.show();
 
     }
@@ -628,7 +739,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
             TextView title = dialog.findViewById(R.id.title);
 
             partnerImage.setImageURI(Uri.parse(partner.getImage()));
-            title.setText(getString(R.string.met_someone)+" " + partner.getName() + " !");
+            title.setText(String.format(Locale.ENGLISH,"%s %s !", getString(R.string.met_someone), partner.getName()));
 
             cancel.setOnClickListener(view -> {
                 dialog.dismiss();
@@ -675,7 +786,7 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
                             .build()
                             .show();
 
-                    sharedPreferences.edit().putString("firstTimeDate","finished");
+                    sharedPreferences.edit().putString("firstTimeDate","finished").apply();
                 }
 
                 dialog.cancel();
@@ -697,65 +808,6 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
 
         }
 
-/*
-    private void loadRewardAd(){
-            mRewardVideoAd.loadAd(GameScene.AD_VIDEO_PARTNER_ID, new AdRequest.Builder().build());
-    }
-
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-        if(player1.getDating().equals("false")) {
-            adButtonFindPartner.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() { }
-
-    @Override
-    public void onRewardedVideoStarted() {
-        countDownTimer.cancel();
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardAd(); }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-
-        if(!dateAd) {
-            List<Partner> partners = MainMenu.myAppDataBase.myDao().getPartners();
-
-            int min = 0;
-            int max = 3;
-            int random = (int) (Math.random() * max) - min;
-            foundPartner(partners.get(random));
-        }
-        else{
-            //don't mind the 22 its just for the code to work properly
-            viewmodel.setGoDate(2000);
-
-            dateNumber++;
-
-            relationBar.setProgress(relationBar.getProgress() + 10);
-
-            progressText.setText(relationBar.getProgress() + "/" + relationBar.getMax());
-            player1.setRelationBar(relationBar.getProgress());
-            viewmodel.setRelationBar(relationBar.getProgress());
-
-            MainMenu.myAppDataBase.myDao().updatePlayer(player1);
-        } }
-    @Override
-    public void onRewardedVideoAdLeftApplication() { }
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        loadRewardAd(); }
-    @Override
-    public void onRewardedVideoCompleted() { }
-
-*/
     @Override
     public void onDetach() {
         countDownTimer.cancel();
@@ -765,8 +817,8 @@ public class RelationFragment extends Fragment //implements RewardedVideoAdListe
     private void saveToCloud(){
         OneTimeWorkRequest oneTimeWorkRequest =new OneTimeWorkRequest.Builder(SaveToCloudWork.class)
                 .build();
-        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
-        GoogleSignInAccount account =GoogleSignIn.getLastSignedInAccount(getActivity());
+        WorkManager.getInstance(requireActivity()).enqueue(oneTimeWorkRequest);
+        GoogleSignInAccount account =GoogleSignIn.getLastSignedInAccount(requireActivity());
 
     }
 

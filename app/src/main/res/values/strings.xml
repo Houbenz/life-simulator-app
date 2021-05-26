@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
 
     <string name="app_name" translatable="false">Life Simulator</string>
@@ -28,7 +28,7 @@
     <string name="hintCaracterName">Caracter name</string>
 
 
-    <string name="prefSlot1" translatable="false">com.android.slot1</string>
+    <string name="prefSlot1" translatable="false" tools:ignore="Typos">com.android.slot1</string>
     <string name="prefSlot2" translatable="false">com.android.slot2</string>
     <string name="prefSlot3" translatable="false">com.android.slot3</string>
     <string name="buyButton">Buy</string>
@@ -54,7 +54,7 @@
     <string name="ultraSpeed">Ultra Speed x3</string>
     <string name="superSpeed">Super Speed x4</string>
     <string name="home">Home</string>
-    <string name="onWork">On Work ...</string>
+    <string name="onWork">On Work …</string>
     <string name="level">lvl</string>
     <string name="startwork">Start Working</string>
     <string name="xp">xp</string>
@@ -158,13 +158,13 @@
     <string name="chocolate">Chocolate</string>
     <string name="roses">Roses</string>
     <string name="found_partner">Congratulation you have found a partner !</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="proceed_found_partner">Would you like to proceed with your relation ?</string>
     <string name="offer_gift">Offer gift</string>
     <string name="break_up">Break up</string>
     <string name="go_date">Go on a date</string>
     <string name="relation_status">Relation status</string>
-    <string name="Propose_mariage">Propose mariage</string>
+    <string name="Propose_mariage">Propose Marriage</string>
     <string name="watch_ad_find_partner">Watch ad and find partner instantly</string>
     <string name="offer_ring">Offer ring</string>
     <string name="bank_section_tuto">in bank section you can deposit your money and withdaw it and gain interest with time !</string>
@@ -173,7 +173,7 @@
     <string name="learning_section_tuto">When the degree reaches the max, the player owns it</string>
     <string name="click_highschool_degree">click on Highschool degree to begin learning</string>
     <string name="save_image">would you like to save the image ?</string>
-    <string name="picture_saved_success">Picture save Succesfully</string>
+    <string name="picture_saved_success">Picture save Successfully</string>
     <string name="save_pic_longclick">you cas save this picture by long clicking on it !</string>
     <string name="start_looking_partner">Start looking for a partner</string>
     <string name="stop_looking_partner">Stop looking for a partner</string>
@@ -204,4 +204,5 @@
     <string name="house_benefice">Allows you to buy furnitures</string>
 
     <string name="achievements">Achievements</string>
+    <string name="hundred">100/100</string>
 </resources>

@@ -18,7 +18,7 @@
     <string name="ultraSpeed">Vitesse Ultra x3</string>
     <string name="superSpeed">Super Vitesse x4</string>
     <string name="home">Domicile</string>
-    <string name="onWork">En travail...</string>
+    <string name="onWork">En travail…</string>
     <string name="level">niv</string>
     <string name="startwork">Débuter travail</string>
     <string name="xp">xp</string>
@@ -165,4 +165,5 @@
     <string name="learn_time">Temp d\'apprentissage : 1 heure</string>
     <string name="house_benefice">Vous permet d\'acquèrir des meubles</string>
     <string name="achievements">Réussites</string>
+    <string name="hundred">100/100</string>
 </resources>

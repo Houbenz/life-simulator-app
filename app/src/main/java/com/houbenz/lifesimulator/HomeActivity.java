@@ -2,6 +2,7 @@ package com.houbenz.lifesimulator;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.android.houbenz.lifesimulator.R;
@@ -39,6 +41,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
+
+import java.util.Locale;
 
 import beans.Level;
 import conf.Params;
@@ -57,9 +61,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private Player player;
-    private FragmentTransaction transaction;
-    private FragmentManager fragmentManager;
-    private ConstraintLayout mConstraintLayout;
     private int slot ;
     private TextView dayView;
     private TextView time;
@@ -71,15 +72,13 @@ public class HomeActivity extends AppCompatActivity {
     private Button showOutsideHome2Button;
 
 
-    private ProgressBar healthbar;
+    private ProgressBar healthBar;
     private ProgressBar energyBar;
     private ProgressBar hungerBar;
 
-    private SeekBar speedSeekBar;
-
-    private TextView healthpr;
-    private TextView energypr;
-    private TextView hungerpr;
+    private TextView healthPr;
+    private TextView energyPr;
+    private TextView hungerPr;
     private TextView balance;
     private TextView levelNumber;
 
@@ -92,7 +91,6 @@ public class HomeActivity extends AppCompatActivity {
     private int day;
     private int hour;
     private int minute;
-    private int totalTime;
 
     private int minusRelation ;
 
@@ -100,11 +98,7 @@ public class HomeActivity extends AppCompatActivity {
     private ViewSwitcher switcher;
     private ViewModelPartner viewModel;
     private int speed=Params.TIME_SPEED_NORMAL;
-    private View.OnTouchListener mOnTouchListener = (v, event) ->{
-
-        hideSystemUI();
-        return false;
-    } ;
+    private final View.OnClickListener mOnTouchListener = (v) -> hideSystemUI();
 
 
     private GoogleSignInAccount account;
@@ -127,11 +121,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
     private void hideSystemUI() {
 
         View decorView = getWindow().getDecorView();
-
 
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE |
@@ -146,9 +138,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        viewModel.getRelationBar().observe(this,relationBar ->{
-            player.setRelationBar(relationBar);
-        });
+        viewModel.getRelationBar().observe(this,relationBar -> player.setRelationBar(relationBar));
         saveProgress();
         Intent intent = new Intent(this,GameScene.class);
         intent.putExtra("slotNumber",player.getId());
@@ -166,9 +156,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
-        viewModel.getRelationBar().observe(this,relationBar ->{
-            player.setRelationBar(relationBar);
-        });
+        viewModel.getRelationBar().observe(this,relationBar -> player.setRelationBar(relationBar));
         saveProgress();
         super.onDestroy();
         threadRun=false;
@@ -181,15 +169,15 @@ public class HomeActivity extends AppCompatActivity {
 
         dayView=findViewById(R.id.dayView);
         time=findViewById(R.id.time);
-        healthbar=findViewById(R.id.healthBar);
+        healthBar =findViewById(R.id.healthBar);
         energyBar=findViewById(R.id.energyBar);
         hungerBar=findViewById(R.id.hungerBar);
-        healthpr=findViewById(R.id.healthpr);
-        hungerpr=findViewById(R.id.hungerpr);
-        energypr=findViewById(R.id.energypr);
+        healthPr =findViewById(R.id.healthpr);
+        hungerPr =findViewById(R.id.hungerpr);
+        energyPr =findViewById(R.id.energypr);
         balance=findViewById(R.id.balance);
         levelNumber=findViewById(R.id.levelNumber);
-        speedSeekBar=findViewById(R.id.speedSeekBar);
+        SeekBar speedSeekBar = findViewById(R.id.speedSeekBar);
         speedName=findViewById(R.id.speedName);
         switcher=findViewById(R.id.switcherHomeActivity);
         showHomeButton=findViewById(R.id.showHomeButton);
@@ -209,7 +197,6 @@ public class HomeActivity extends AppCompatActivity {
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
 
                 //todo
-
             }else{
 
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -218,8 +205,8 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        mConstraintLayout=findViewById(R.id.constraintLayout);
-        mConstraintLayout.setOnTouchListener(mOnTouchListener);
+        ConstraintLayout mConstraintLayout = findViewById(R.id.constraintLayout);
+        mConstraintLayout.setOnClickListener(mOnTouchListener);
 
         slot =getIntent().getIntExtra("slot",0);
         minusRelation=getIntent().getIntExtra("minusRelation",0);
@@ -285,15 +272,15 @@ public class HomeActivity extends AppCompatActivity {
                 if(progress==0){
                     speedName.setText(getString(R.string.normalSpeed));
                     speed=Params.TIME_SPEED_NORMAL;
-                };
+                }
                 if(progress==1){
                     speedName.setText(getString(R.string.fastSpeed));
                     speed=Params.TIME_SPEED_FAST;
-                };
+                }
                 if(progress==2){
                     speedName.setText(getString(R.string.ultraSpeed));
                     speed=Params.TIME_SPEED_ULTRA_FAST;
-                };
+                }
                 if(progress==3){
                     speedName.setText(getString(R.string.superSpeed));
                     speed=Params.TIME_SPEED_SUPER_FAST;
@@ -306,27 +293,18 @@ public class HomeActivity extends AppCompatActivity {
         runClockThread();
         initialiseProgressBars();
 
-        viewModel = ViewModelProviders.of(this).get(ViewModelPartner.class);
+        viewModel = new ViewModelProvider(this).get(ViewModelPartner.class);
 
-        viewModel.isFoundPartner().observe(this,isFound ->{
-            player.setDating("true");
-
-        });
+        viewModel.isFoundPartner().observe(this,isFound ->player.setDating("true"));
 
         viewModel.isBreakUp().observe(this,isbreakUp ->{
             player.setDating("false");
             player.setMarried("false");
         });
 
-        viewModel.getRelationBar().observe(this,relationBar ->{
-            player.setRelationBar(relationBar);
-        });
+        viewModel.getRelationBar().observe(this,relationBar -> player.setRelationBar(relationBar));
 
-        viewModel.isMarried().observe(this,married ->{
-            player.setMarried("true");
-        });
-
-
+        viewModel.isMarried().observe(this,married -> player.setMarried("true"));
 
 
         //When dating occurs
@@ -348,7 +326,7 @@ public class HomeActivity extends AppCompatActivity {
                     });
                     animateHearts();
                     player.setBalance(newBalance);
-                    balance.setText(player.getBalance() + "$");
+                    balance.setText(String.format("%s$", player.getBalance()));
 
                     CountDownTimer timer = new CountDownTimer(5000, 1000) {
                         @Override
@@ -390,22 +368,19 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void animateProgressBar(@NonNull ProgressBar progressBar){
-        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->{
-
-            progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()->{
-                progressBar.animate().rotation(0f).setDuration(150);
-            }); });
+        progressBar.animate().rotation(-5f).scaleX(1.2f).scaleY(1.2f).setDuration(150).withEndAction(()->
+                progressBar.animate().rotation(5f).scaleX(1f).scaleY(1f).setDuration(150).withEndAction(()-> progressBar.animate().rotation(0f).setDuration(150)));
     }
     public void insertFragment(Fragment fragment){
 
         not_owned_text.setVisibility(View.GONE);
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         saveProgress();
         Bundle bundle = new Bundle();
         bundle.putInt("slot",slot);
         bundle.putInt("minusRelation",minusRelation);
         fragment.setArguments(bundle);
-        transaction =fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.placeFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -422,7 +397,7 @@ public class HomeActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
 
                         //For GAME OVER
-                        if (healthbar.getProgress() <= 0) {
+                        if (healthBar.getProgress() <= 0) {
                             Dialog dialog = new Dialog(this);
                             dialog.setContentView(R.layout.custom_toast_red);
 
@@ -447,8 +422,6 @@ public class HomeActivity extends AppCompatActivity {
                         String minuteS = "" + minute;
                         String dayS = "" + day;
 
-                        totalTime = (day * 24 * 60) + (hour * 60) + minute;
-
                         if (hour < 10)
                             hourS = "0" + hour;
 
@@ -464,7 +437,7 @@ public class HomeActivity extends AppCompatActivity {
                             minute = 0;
                             hour++;
                             hungerBar.setProgress(hungerBar.getProgress() - Params.HUNGER_LOSS_PER_HOUR);
-                            hungerpr.setText(hungerBar.getProgress() + "/" + hungerBar.getMax());
+                            hungerPr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
 
 
@@ -472,33 +445,33 @@ public class HomeActivity extends AppCompatActivity {
                                 animateProgressBar(hungerBar);
                             }
 
-                            if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthbar.getProgress() > 30){
+                            if(hungerBar.getProgress() <30 && hungerBar.getProgress() != 0 && healthBar.getProgress() > 30){
                                 showCustomToast(getString(R.string.low_hunger),"","yellow");
                             }
 
 
                             if (hungerBar.getProgress() == 0 && energyBar.getProgress() == 0) {
 
-                                healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
-                                healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
-                                animateProgressBar(healthbar);
+                                healthBar.setProgress(healthBar.getProgress() - Params.HEALTH_LOSS_PER_HOUR - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
+                                healthPr.setText(String.format(Locale.ENGLISH,"%d/%d", healthBar.getProgress(), healthBar.getMax()));
+                                animateProgressBar(healthBar);
 
                             } else {
                                 if (hungerBar.getProgress() == 0 && energyBar.getProgress() > 0) {
 
-                                    healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR);
-                                    healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
-                                    animateProgressBar(healthbar);
+                                    healthBar.setProgress(healthBar.getProgress() - Params.HEALTH_LOSS_PER_HOUR);
+                                    healthPr.setText(String.format(Locale.ENGLISH,"%d/%d", healthBar.getProgress(), healthBar.getMax()));
+                                    animateProgressBar(healthBar);
                                 } else {
                                     if (hungerBar.getProgress() > 0 && energyBar.getProgress() == 0) {
-                                        healthbar.setProgress(healthbar.getProgress() - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
-                                        healthpr.setText(healthbar.getProgress() + "/" + healthbar.getMax());
-                                        animateProgressBar(healthbar);
+                                        healthBar.setProgress(healthBar.getProgress() - Params.HEALTH_LOSS_PER_HOUR_IF_NO_ENERGY);
+                                        healthPr.setText(String.format(Locale.ENGLISH,"%d/%d", healthBar.getProgress(), healthBar.getMax()));
+                                        animateProgressBar(healthBar);
                                     }
                                 }
                             }
 
-                            if(healthbar.getProgress() <30 && hungerBar.getProgress() < 30){
+                            if(healthBar.getProgress() <30 && hungerBar.getProgress() < 30){
                                 showCustomToast(getString(R.string.low_health),
                                         "android.resource://com.houbenz.android.lifesimulator/drawable/health","red");
                             }
@@ -516,14 +489,14 @@ public class HomeActivity extends AppCompatActivity {
                                 balance.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).withEndAction(() -> {
                                     MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.money_gain);
                                     mp.start();
-                                    balance.setText(player.getBalance() + "$");
+                                    balance.setText(String.format("%s$", player.getBalance()));
                                     balance.animate().scaleX(1f).scaleY(1f).setDuration(300);
                                 });
                             }
                             //saveProgress();
                         }
-                        time.setText(hourS + ":" + minuteS);
-                        dayView.setText(getString(R.string.day) + " " + dayS);
+                        time.setText(String.format("%s:%s", hourS, minuteS));
+                        dayView.setText(String.format("%s %s", getString(R.string.day), dayS));
 
                     });
                 } catch (InterruptedException e) {
@@ -543,22 +516,22 @@ public class HomeActivity extends AppCompatActivity {
     public void showCustomToast(String message , String imgUrl, String type){
 
         LayoutInflater inflater=getLayoutInflater();
-        View layout = null;
+        View layout ;
 
         switch (type){
             case "green":
-                layout = inflater.inflate(R.layout.custom_toast_green,(ViewGroup)findViewById(R.id.cutom_toast_green));
+                layout = inflater.inflate(R.layout.custom_toast_green,findViewById(R.id.cutom_toast_green));
                 break ;
             case "red" :
-                layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red));
+                layout = inflater.inflate(R.layout.custom_toast_red,findViewById(R.id.cutom_toast_red));
                 break;
             case "gold" :
-                layout=inflater.inflate(R.layout.custom_toast_levelup,(ViewGroup)findViewById(R.id.cutom_toast_levelup));
+                layout=inflater.inflate(R.layout.custom_toast_levelup,findViewById(R.id.cutom_toast_levelup));
                 break;
             case "yellow" :
-                layout=inflater.inflate(R.layout.custom_toast_yellow,(ViewGroup)findViewById(R.id.cutom_toast_yellow));
+                layout=inflater.inflate(R.layout.custom_toast_yellow,findViewById(R.id.cutom_toast_yellow));
                 break;
-            default:layout = inflater.inflate(R.layout.custom_toast_red,(ViewGroup)findViewById(R.id.cutom_toast_red)); ;
+            default:layout = inflater.inflate(R.layout.custom_toast_red,findViewById(R.id.cutom_toast_red));
         }
 
 
@@ -589,14 +562,12 @@ public class HomeActivity extends AppCompatActivity {
         database.Player loaded_player = MainMenu.myAppDataBase.myDao().getPlayer(slot);
         //jobName.setText(loaded_player.getWork());
        // caracterImg.setImageURI(Uri.parse(loaded_player.getWork_image_path()));
-        balance.setText(loaded_player.getBalance()+"$");
+        balance.setText(String.format("%s$", loaded_player.getBalance()));
         //income.setText((int)loaded_player.getWork_income());
-        levelNumber.setText("lvl"+loaded_player.getLevel());
+        levelNumber.setText(String.format(Locale.ENGLISH,"lvl%d", loaded_player.getLevel()));
         hour=loaded_player.getHour();
         minute=loaded_player.getMinute();
         day=loaded_player.getDay();
-
-        totalTime= day * 24 + hour * 60 + minute;
 
         player=loaded_player;
 
@@ -606,7 +577,7 @@ public class HomeActivity extends AppCompatActivity {
         player.setLevel_object(level);
 
 
-        healthbar.setProgress(loaded_player.getHealthbar());
+        healthBar.setProgress(loaded_player.getHealthbar());
         energyBar.setProgress(loaded_player.getEnergybar());
         hungerBar.setProgress(loaded_player.getHungerbar());
 
@@ -619,7 +590,7 @@ public class HomeActivity extends AppCompatActivity {
         player.setMinute(minute);
         player.setDay(day);
 
-        player.setHealthbar(healthbar.getProgress());
+        player.setHealthbar(healthBar.getProgress());
         player.setHungerbar(hungerBar.getProgress());
         player.setEnergybar(energyBar.getProgress());
 
@@ -645,29 +616,29 @@ public class HomeActivity extends AppCompatActivity {
 
     public void initialiseProgressBars(){
 
-        healthbar.setIndeterminate(false);
-        healthbar.setMax(100);
+        healthBar.setIndeterminate(false);
+        healthBar.setMax(100);
 
-        healthpr.setText(healthbar.getProgress()+"/"+healthbar.getMax());
+        healthPr.setText(String.format(Locale.ENGLISH,"%d/%d", healthBar.getProgress(), healthBar.getMax()));
 
         energyBar.setIndeterminate(false);
         energyBar.setMax(100);
 
-        energypr.setText(energyBar.getProgress()+"/"+energyBar.getMax());
+        energyPr.setText(String.format(Locale.ENGLISH,"%d/%d", energyBar.getProgress(), energyBar.getMax()));
 
         hungerBar.setIndeterminate(false);
         hungerBar.setMax(100);
 
-        hungerpr.setText(hungerBar.getProgress()+"/"+hungerBar.getMax());
+        hungerPr.setText(String.format(Locale.ENGLISH,"%d/%d", hungerBar.getProgress(), hungerBar.getMax()));
 
 
         if(player.getLevel_object().getLevel()<10)
-            levelNumber.setText(getString(R.string.level)+": 0"+player.getLevel_object().getLevel());
+            levelNumber.setText(String.format(Locale.ENGLISH,"%s: 0%d", getString(R.string.level), player.getLevel_object().getLevel()));
 
         else
-            levelNumber.setText(getString(R.string.level)+": "+player.getLevel_object().getLevel());
+            levelNumber.setText(String.format(Locale.ENGLISH,"%s: %d", getString(R.string.level), player.getLevel_object().getLevel()));
 
-    };
+    }
 
 
 
@@ -690,7 +661,7 @@ public class HomeActivity extends AppCompatActivity {
                 datingMessage = findViewById(R.id.datingMessage);
 
 
-                datingMessage.setText(getString(R.string.relation_plus_ten)+ "10");
+                datingMessage.setText(String.format("%s10", getString(R.string.relation_plus_ten)));
                 datingMessage.setVisibility(View.VISIBLE);
                 datingMessage.animate().setDuration(1000).alpha(0f).translationY(-100).withEndAction(() ->{
                     datingMessage.setAlpha(1f);
@@ -705,6 +676,7 @@ public class HomeActivity extends AppCompatActivity {
 
         for(int i =0 ; i<30;i++){
 
+            @SuppressLint("InflateParams")
             View image= inflater.inflate(R.layout.heart_view,null);
             gridLayout.addView(image);
 
